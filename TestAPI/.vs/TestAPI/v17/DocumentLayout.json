@@ -3,11 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{D712D741-0430-4C89-9118-6C4DED0BAC81}|..\\WebService\\WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\controllers\\procesamientocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D712D741-0430-4C89-9118-6C4DED0BAC81}|..\\WebService\\WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\scripts\\metodosprocesamiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D712D741-0430-4C89-9118-6C4DED0BAC81}|..\\WebService\\WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\controllers\\procesamientocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\testapi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -17,7 +24,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -25,20 +32,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ProcesamientoController.cs",
-              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\ProcesamientoController.cs",
-              "RelativeDocumentMoniker": "..\\WebService\\Controllers\\ProcesamientoController.cs",
-              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\ProcesamientoController.cs",
-              "RelativeToolTip": "..\\WebService\\Controllers\\ProcesamientoController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAcAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs",
+              "RelativeDocumentMoniker": "Form1.cs",
+              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs",
+              "RelativeToolTip": "Form1.cs",
+              "ViewState": "AgIAAM0AAAAAAAAAAAAywOcAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-05T23:27:34.5Z",
+              "WhenOpened": "2025-06-09T20:35:24.564Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Form1.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
@@ -47,6 +54,32 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-04T00:02:12.124Z",
               "EditorCaption": " [Dise\u00F1o]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MetodosProcesamiento.cs",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Scripts\\MetodosProcesamiento.cs",
+              "RelativeDocumentMoniker": "..\\WebService\\Scripts\\MetodosProcesamiento.cs",
+              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Scripts\\MetodosProcesamiento.cs",
+              "RelativeToolTip": "..\\WebService\\Scripts\\MetodosProcesamiento.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-09T20:33:50.817Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProcesamientoController.cs",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\ProcesamientoController.cs",
+              "RelativeDocumentMoniker": "..\\WebService\\Controllers\\ProcesamientoController.cs",
+              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\ProcesamientoController.cs",
+              "RelativeToolTip": "..\\WebService\\Controllers\\ProcesamientoController.cs",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAUwIYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-05T23:27:34.5Z",
+              "EditorCaption": ""
             }
           ]
         }

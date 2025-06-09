@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
@@ -10,26 +11,47 @@ namespace WebService.Scripts
 {
 	public static class MetodosProcesamiento
 	{
-
 		public static Bitmap Escala_Grises(Bitmap btm)
 		{
-			BitmapData bmpdata = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height), ImageLockMode.ReadWrite, btm.PixelFormat);
-			int numbytes = bmpdata.Stride * btm.Height;
+			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			using (Graphics g = Graphics.FromImage(imagenFormato))
+			{
+				g.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height));
+			}
+
+			BitmapData bmpdata = imagenFormato.LockBits(
+				new Rectangle(0, 0, imagenFormato.Width, imagenFormato.Height),
+				ImageLockMode.ReadWrite,
+				imagenFormato.PixelFormat
+			);
+
+			int numbytes = bmpdata.Stride * imagenFormato.Height;
 			byte[] bytedata = new byte[numbytes];
 			IntPtr arregloImagen = bmpdata.Scan0;
 
 			Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
 
-			for (int i = 0; i < numbytes; i += 4)
+			for (int y = 0; y < imagenFormato.Height; y++)
 			{
-				byte gris = (byte)(0.0 * bytedata[i + 2] + 0.587 * bytedata[i + 1] + 0.114 * bytedata[i]);
-				bytedata[i] = bytedata[i + 1] = bytedata[i + 2] = gris;
+				int currentLine = y * bmpdata.Stride;
+				for (int x = 0; x < imagenFormato.Width; x++)
+				{
+					int currentPixel = currentLine + x * 4;
+
+					byte B = bytedata[currentPixel];
+					byte G = bytedata[currentPixel + 1];
+					byte R = bytedata[currentPixel + 2];
+
+					byte gris = (byte)(0.299 * R + 0.587 * G + 0.114 * B);
+
+					bytedata[currentPixel] = bytedata[currentPixel + 1] = bytedata[currentPixel + 2] = gris;
+				}
 			}
 
 			Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
-			btm.UnlockBits(bmpdata);
+			imagenFormato.UnlockBits(bmpdata);
 
-			return btm;
+			return imagenFormato;
 		}
 
 		public static Bitmap Binarizar(Bitmap btm)
