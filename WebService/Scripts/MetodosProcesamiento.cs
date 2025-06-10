@@ -75,7 +75,7 @@ namespace WebService.Scripts
 			}
 
 			byte promedioBrillo = (byte)(sum / pixelCount);
-			byte umbral = 130;
+			byte umbral = CalcularUmbralOtsu(bytedata, btm.Width, btm.Height, bmpdata.Stride);
 			bool objetoEsOscuro = promedioBrillo < umbral;
 
 			for (int i = 0; i < numbytes; i += 4)
@@ -153,7 +153,60 @@ namespace WebService.Scripts
 
 		public static Bitmap Etiquetado(Bitmap btm)
 		{
-			return btm;
+			btm = Detectar_Bordes(btm);
+			BitmapData bmpdata = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height), ImageLockMode.ReadWrite, btm.PixelFormat);
+			Bitmap etiquetado = new Bitmap(btm.Width, btm.Height);
+
+			return etiquetado;
+		}
+
+		public static byte CalcularUmbralOtsu(byte[] datosImagen, int ancho, int alto, int stride)
+		{
+			int[] histograma = new int[256];
+
+			for (int y = 0; y < alto; y++)
+			{
+				for (int x = 0; x < ancho; x++)
+				{
+					int index = y * stride + x * 4;
+					byte intensidad = datosImagen[index];
+					histograma[intensidad]++;
+				}
+			}
+
+			int total = ancho * alto;
+			float sum = 0;
+			for (int t = 0; t < 256; t++) sum += t * histograma[t];
+
+			float sumB = 0;
+			int wB = 0;
+			int wF = 0;
+			float varMax = 0;
+			byte threshold = 0;
+
+			for (int t = 0; t < 256; t++)
+			{
+				wB += histograma[t];
+				if (wB == 0) continue;
+
+				wF = total - wB;
+				if (wF == 0) break;
+
+				sumB += (float)(t * histograma[t]);
+
+				float mB = sumB / wB;
+				float mF = (sum - sumB) / wF;
+
+				float varBetween = (float)wB * (float)wF * (mB - mF) * (mB - mF);
+
+				if (varBetween > varMax)
+				{
+					varMax = varBetween;
+					threshold = (byte)t;
+				}
+			}
+
+			return threshold;
 		}
 	}
 }
