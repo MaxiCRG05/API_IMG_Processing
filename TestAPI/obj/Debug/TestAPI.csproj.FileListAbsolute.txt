@@ -18,3 +18,6 @@ C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Debug\TestAPI
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Debug\TestAPI.csproj.CoreCompileInputs.cache
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Debug\TestAPI.exe
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Debug\TestAPI.pdb
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Debug\TestAPI.csproj.Up2Date

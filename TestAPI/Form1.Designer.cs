@@ -38,6 +38,8 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.lbTiempo = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.lblObjetos = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
 			this.SuspendLayout();
@@ -144,11 +146,33 @@
 			this.lbTiempo.Text = "TIEMPO:";
 			this.lbTiempo.Visible = false;
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(21, 210);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(145, 13);
+			this.label5.TabIndex = 10;
+			this.label5.Text = "OBJETOS ENCONTRADOS:";
+			this.label5.Visible = false;
+			// 
+			// lblObjetos
+			// 
+			this.lblObjetos.AutoSize = true;
+			this.lblObjetos.Location = new System.Drawing.Point(21, 238);
+			this.lblObjetos.Name = "lblObjetos";
+			this.lblObjetos.Size = new System.Drawing.Size(145, 13);
+			this.lblObjetos.TabIndex = 11;
+			this.lblObjetos.Text = "OBJETOS ENCONTRADOS:";
+			this.lblObjetos.Visible = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1187, 375);
+			this.Controls.Add(this.lblObjetos);
+			this.Controls.Add(this.label5);
 			this.Controls.Add(this.lbTiempo);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
@@ -184,6 +208,8 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label lbTiempo;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label lblObjetos;
 	}
 }
 

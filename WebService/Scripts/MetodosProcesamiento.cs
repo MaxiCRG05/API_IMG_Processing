@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -9,6 +10,12 @@ using System.Web;
 
 namespace WebService.Scripts
 {
+	public class ResultadoMomentosHu
+	{
+		public double[] Moments { get; set; }
+		public PointF Center { get; set; }
+	}
+
 	public static class MetodosProcesamiento
 	{
 		public static Bitmap Escala_Grises(Bitmap btm)
@@ -155,7 +162,7 @@ namespace WebService.Scripts
 		{
 			btm = Binarizar(btm);
 
-			int[,] binaryMatrix = new int[btm.Height, btm.Width];
+			int[,] matrizBinaria = new int[btm.Height, btm.Width];
 			BitmapData bmpData = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height),
 											 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
@@ -170,7 +177,7 @@ namespace WebService.Scripts
 					for (int x = 0; x < btm.Width; x++)
 					{
 						int index = y * bmpData.Stride + x * 4;
-						binaryMatrix[y, x] = rgbValues[index] > 128 ? 1 : 0;
+						matrizBinaria[y, x] = rgbValues[index] > 128 ? 1 : 0;
 					}
 				}
 			}
@@ -179,7 +186,7 @@ namespace WebService.Scripts
 				btm.UnlockBits(bmpData);
 			}
 
-			int[,] labeledMatrix = LabelComponents(binaryMatrix);
+			int[,] labeledMatrix = LabelComponents(matrizBinaria);
 
 			Bitmap labeledImage = new Bitmap(btm.Width, btm.Height);
 			Random rand = new Random();
@@ -211,32 +218,65 @@ namespace WebService.Scripts
 			return labeledImage;
 		}
 
-		public static double[] CalcularMomentosHu(Bitmap imagen)
+
+		public static List<ResultadoMomentosHu> CalcularMomentosHuPorObjeto(Bitmap imagen)
 		{
 			imagen = Binarizar(imagen);
+			int[,] matrizBinaria = ConvertirAMatrizBinaria(imagen);
+			int[,] etiquetas = LabelComponents(matrizBinaria);
 
-			int[,] binaryMatrix = ConvertirAMatrizBinaria(imagen);
+			int maxLabel = 0;
+			for (int y = 0; y < etiquetas.GetLength(0); y++)
+			{
+				for (int x = 0; x < etiquetas.GetLength(1); x++)
+				{
+					if (etiquetas[y, x] > maxLabel)
+						maxLabel = etiquetas[y, x];
+				}
+			}
 
-			double m00, m10, m01;
-			CalcularMomentosGeometricos(binaryMatrix, out m00, out m10, out m01);
+			var resultados = new List<ResultadoMomentosHu>();
 
-			double xCentro = m10 / m00;
-			double yCentro = m01 / m00;
+			for (int label = 1; label <= maxLabel; label++)
+			{
+				int[,] objetoBinario = new int[matrizBinaria.GetLength(0), matrizBinaria.GetLength(1)];
+				for (int y = 0; y < objetoBinario.GetLength(0); y++)
+				{
+					for (int x = 0; x < objetoBinario.GetLength(1); x++)
+					{
+						objetoBinario[y, x] = etiquetas[y, x] == label ? 1 : 0;
+					}
+				}
 
-			double mu20, mu11, mu02, mu30, mu21, mu12, mu03;
-			CalcularMomentosCentrales(binaryMatrix, xCentro, yCentro,
-									out mu20, out mu11, out mu02,
-									out mu30, out mu21, out mu12, out mu03);
+				double m00, m10, m01;
+				CalcularMomentosGeometricos(objetoBinario, out m00, out m10, out m01);
 
-			double[] huMoments = new double[7];
-			CalcularMomentosHu(mu20, mu11, mu02, mu30, mu21, mu12, mu03, m00, huMoments);
+				if (m00 == 0) continue;
 
-			return huMoments;
+				double xCentro = m10 / m00;
+				double yCentro = m01 / m00;
+
+				double mu20, mu11, mu02, mu30, mu21, mu12, mu03;
+				CalcularMomentosCentrales(objetoBinario, xCentro, yCentro,
+										out mu20, out mu11, out mu02,
+										out mu30, out mu21, out mu12, out mu03);
+
+				double[] huMoments = new double[7];
+				CalcularMomentosHu(mu20, mu11, mu02, mu30, mu21, mu12, mu03, m00, huMoments);
+
+				resultados.Add(new ResultadoMomentosHu
+				{
+					Moments = huMoments,
+					Center = new PointF((float)xCentro, (float)yCentro)
+				});
+			}
+
+			return resultados;
 		}
 
 		private static int[,] ConvertirAMatrizBinaria(Bitmap imagen)
 		{
-			int[,] binaryMatrix = new int[imagen.Height, imagen.Width];
+			int[,] matrizBinaria = new int[imagen.Height, imagen.Width];
 			BitmapData bmpData = imagen.LockBits(new Rectangle(0, 0, imagen.Width, imagen.Height),
 											 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
@@ -251,7 +291,7 @@ namespace WebService.Scripts
 					for (int x = 0; x < imagen.Width; x++)
 					{
 						int index = y * bmpData.Stride + x * 4;
-						binaryMatrix[y, x] = rgbValues[index] > 128 ? 1 : 0;
+						matrizBinaria[y, x] = rgbValues[index] > 128 ? 1 : 0;
 					}
 				}
 			}
@@ -260,20 +300,20 @@ namespace WebService.Scripts
 				imagen.UnlockBits(bmpData);
 			}
 
-			return binaryMatrix;
+			return matrizBinaria;
 		}
 
-		private static void CalcularMomentosGeometricos(int[,] binaryMatrix, out double m00, out double m10, out double m01)
+		private static void CalcularMomentosGeometricos(int[,] matrizBinaria, out double m00, out double m10, out double m01)
 		{
 			m00 = 0; m10 = 0; m01 = 0;
-			int height = binaryMatrix.GetLength(0);
-			int width = binaryMatrix.GetLength(1);
+			int height = matrizBinaria.GetLength(0);
+			int width = matrizBinaria.GetLength(1);
 
 			for (int y = 0; y < height; y++)
 			{
 				for (int x = 0; x < width; x++)
 				{
-					if (binaryMatrix[y, x] == 1)
+					if (matrizBinaria[y, x] == 1)
 					{
 						m00 += 1;
 						m10 += x;
@@ -283,18 +323,18 @@ namespace WebService.Scripts
 			}
 		}
 
-		private static void CalcularMomentosCentrales(int[,] binaryMatrix, double xCentro, double yCentro, out double mu20, out double mu11, out double mu02, out double mu30, out double mu21, out double mu12, out double mu03)
+		private static void CalcularMomentosCentrales(int[,] matrizBinaria, double xCentro, double yCentro, out double mu20, out double mu11, out double mu02, out double mu30, out double mu21, out double mu12, out double mu03)
 		{
 			mu20 = 0; mu11 = 0; mu02 = 0;
 			mu30 = 0; mu21 = 0; mu12 = 0; mu03 = 0;
-			int height = binaryMatrix.GetLength(0);
-			int width = binaryMatrix.GetLength(1);
+			int height = matrizBinaria.GetLength(0);
+			int width = matrizBinaria.GetLength(1);
 
 			for (int y = 0; y < height; y++)
 			{
 				for (int x = 0; x < width; x++)
 				{
-					if (binaryMatrix[y, x] == 1)
+					if (matrizBinaria[y, x] == 1)
 					{
 						double xDiff = x - xCentro;
 						double yDiff = y - yCentro;

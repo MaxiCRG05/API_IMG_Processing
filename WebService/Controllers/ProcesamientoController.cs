@@ -12,8 +12,8 @@ using WebService.Scripts;
 
 namespace WebService.Controllers
 {
-    public class ProcesamientoController : ApiController
-    {
+	public class ProcesamientoController : ApiController
+	{
 		[HttpPost]
 		[ActionName("EscalaGrises")]
 		public async Task<HttpResponseMessage> EscalaGrises()
@@ -164,17 +164,61 @@ namespace WebService.Controllers
 
 				var file = provider.Contents.First();
 				var stream = await file.ReadAsStreamAsync();
-				Bitmap image = new Bitmap(stream);
+				Bitmap originalImage = new Bitmap(stream);
 
-				double[] momentosHu = MetodosProcesamiento.CalcularMomentosHu(image);
+				List<ResultadoMomentosHu> momentosHu = MetodosProcesamiento.CalcularMomentosHuPorObjeto(originalImage);
+				int totalObjetos = momentosHu.Count;
+
+				Bitmap markedImage = new Bitmap(MetodosProcesamiento.Binarizar(originalImage));
+
+				using (Graphics g = Graphics.FromImage(markedImage))
+				{
+					Pen redPen = new Pen(Color.Red, 3);
+					Font font = new Font("Arial", 12, FontStyle.Bold);
+					Brush redBrush = new SolidBrush(Color.Red);
+
+					foreach (var momento in momentosHu)
+					{
+						PointF center = momento.Center;
+						float radius = 10; 
+
+						g.DrawEllipse(redPen, center.X - radius, center.Y - radius,
+									 radius * 2, radius * 2);
+
+						float xSize = 8;
+						g.DrawLine(redPen, center.X - xSize, center.Y - xSize,
+								  center.X + xSize, center.Y + xSize);
+						g.DrawLine(redPen, center.X - xSize, center.Y + xSize,
+								  center.X + xSize, center.Y - xSize);
+
+						int index = momentosHu.IndexOf(momento) + 1;
+						g.DrawString(index.ToString(), font, redBrush,
+									center.X + radius + 2, center.Y - radius - 2);
+					}
+
+					string textoTotal = $"Total objetos: {totalObjetos}";
+					SizeF textSize = g.MeasureString(textoTotal, font);
+					g.DrawString(textoTotal, font, redBrush,
+								markedImage.Width - textSize.Width - 10,
+								markedImage.Height - textSize.Height - 10);
+				}
 
 				MemoryStream ms = new MemoryStream();
-				
-				ms.Position = 0;
+				markedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				string imageBase64 = Convert.ToBase64String(ms.ToArray());
 
-				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-				result.Content = new StreamContent(ms);
-				result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+				var response = new
+				{
+					Imagen = imageBase64,
+					TotalObjetos = totalObjetos
+				};
+
+				HttpResponseMessage result = Request.CreateResponse(HttpStatusCode.OK, response);
+				result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+				originalImage.Dispose();
+				markedImage.Dispose();
+				ms.Dispose();
 
 				return result;
 			}

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -43,6 +44,21 @@ namespace TestAPI
 			btnEnviar.Enabled = imgSubida && opcionSeleccionada;
 		}
 
+		public void PonerNumObjetos()
+		{
+			if (opcion == 4)
+			{
+				lblObjetos.Text = $"{api.GetObjetos()} objetos encontrados";
+				lblObjetos.Visible = true;
+				label5.Visible = true;
+			}
+			else
+			{
+				lblObjetos.Visible = false;
+				label5.Visible = false;
+			}
+		}
+
 		private void CrearAPI(string url)
 		{
 			api = new API(url);
@@ -67,6 +83,7 @@ namespace TestAPI
 				{
 					sw.Start();
 					btm_recibida = await api.Enviar(opcion, btm_cargada);
+					PonerNumObjetos();
 					imgRecibir.Image = btm_recibida;
 					sw.Stop();
 					PonerTiempo();
@@ -199,10 +216,16 @@ namespace TestAPI
 		private static HttpClient client = new HttpClient();
 		string url;
 		string[] opciones = { "EscalaGrises", "Binarizar", "DetectarBordes", "Etiquetado", "InvariantesHu" };
+		private int objetos = 0;
 
 		public API(string url)
 		{
 			this.url = url.TrimEnd('/');
+		}
+
+		public int GetObjetos()
+		{
+			return objetos;
 		}
 
 		public async Task<Bitmap> Enviar(int opcion, Bitmap img)
@@ -227,8 +250,27 @@ namespace TestAPI
 
 					if (response.IsSuccessStatusCode)
 					{
-						var responseStream = await response.Content.ReadAsStreamAsync();
-						return new Bitmap(responseStream);
+						if (opcion == 4)
+						{
+							var jsonResponse = await response.Content.ReadAsStringAsync();
+							var jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+
+							string imageBase64 = jsonObj.Imagen;
+							byte[] imageBytes = Convert.FromBase64String(imageBase64);
+
+							objetos = jsonObj.TotalObjetos;
+
+							using (MemoryStream imageStream = new MemoryStream(imageBytes))
+							{
+								return new Bitmap(imageStream);
+							}
+						}
+						else
+						{
+							var responseStream = await response.Content.ReadAsStreamAsync();
+							objetos = 0;
+							return new Bitmap(responseStream);
+						}
 					}
 					else
 					{
