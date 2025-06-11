@@ -1,7 +1,4 @@
 🖼️ #API de Procesamiento de Imágenes con Cliente
-https://img.shields.io/badge/C%2523-239120?style=for-the-badge&logo=c-sharp&logoColor=white
-https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white
-https://img.shields.io/badge/API-FF6C37?style=for-the-badge&logo=swagger&logoColor=white
 
 Un sistema completo de procesamiento de imágenes con API web backend y cliente en Windows Forms que ofrece diversas operaciones de visión por computadora.
 
@@ -78,9 +75,6 @@ POST /api/Procesamiento/InvariantesHu
 ###Hecho con ❤️ y C#
 
 🖼️ #Image Processing API & Client
-https://img.shields.io/badge/C%2523-239120?style=for-the-badge&logo=c-sharp&logoColor=white
-https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white
-https://img.shields.io/badge/API-FF6C37?style=for-the-badge&logo=swagger&logoColor=white
 
 A powerful image processing system with a Web API backend and Windows Forms client that provides various computer vision operations.
 
