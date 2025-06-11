@@ -102,8 +102,8 @@ namespace WebService.Scripts
 			BitmapData bmpdata = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height),
 												ImageLockMode.ReadWrite, btm.PixelFormat);
 			int numbytes = bmpdata.Stride * btm.Height;
-			int umbral = 45;
 			byte[] bytedata = new byte[numbytes];
+			int umbral = 60;
 			IntPtr arregloImagen = bmpdata.Scan0;
 			Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
 			byte[] copiaDatos = new byte[numbytes];
@@ -153,11 +153,338 @@ namespace WebService.Scripts
 
 		public static Bitmap Etiquetado(Bitmap btm)
 		{
-			btm = Detectar_Bordes(btm);
-			BitmapData bmpdata = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height), ImageLockMode.ReadWrite, btm.PixelFormat);
-			Bitmap etiquetado = new Bitmap(btm.Width, btm.Height);
+			btm = Binarizar(btm);
 
-			return etiquetado;
+			int[,] binaryMatrix = new int[btm.Height, btm.Width];
+			BitmapData bmpData = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height),
+											 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+			try
+			{
+				int bytes = Math.Abs(bmpData.Stride) * btm.Height;
+				byte[] rgbValues = new byte[bytes];
+				Marshal.Copy(bmpData.Scan0, rgbValues, 0, bytes);
+
+				for (int y = 0; y < btm.Height; y++)
+				{
+					for (int x = 0; x < btm.Width; x++)
+					{
+						int index = y * bmpData.Stride + x * 4;
+						binaryMatrix[y, x] = rgbValues[index] > 128 ? 1 : 0;
+					}
+				}
+			}
+			finally
+			{
+				btm.UnlockBits(bmpData);
+			}
+
+			int[,] labeledMatrix = LabelComponents(binaryMatrix);
+
+			Bitmap labeledImage = new Bitmap(btm.Width, btm.Height);
+			Random rand = new Random();
+			Dictionary<int, Color> labelColors = new Dictionary<int, Color>();
+
+			for (int y = 0; y < labeledMatrix.GetLength(0); y++)
+			{
+				for (int x = 0; x < labeledMatrix.GetLength(1); x++)
+				{
+					int label = labeledMatrix[y, x];
+					if (label > 0)
+					{
+						if (!labelColors.ContainsKey(label))
+						{
+							labelColors[label] = Color.FromArgb(
+								rand.Next(50, 255),
+								rand.Next(50, 255),
+								rand.Next(50, 255));
+						}
+						labeledImage.SetPixel(x, y, labelColors[label]);
+					}
+					else
+					{
+						labeledImage.SetPixel(x, y, Color.Black);
+					}
+				}
+			}
+
+			return labeledImage;
+		}
+
+		public static double[] CalcularMomentosHu(Bitmap imagen)
+		{
+			imagen = Binarizar(imagen);
+
+			int[,] binaryMatrix = ConvertirAMatrizBinaria(imagen);
+
+			double m00, m10, m01;
+			CalcularMomentosGeometricos(binaryMatrix, out m00, out m10, out m01);
+
+			double xCentro = m10 / m00;
+			double yCentro = m01 / m00;
+
+			double mu20, mu11, mu02, mu30, mu21, mu12, mu03;
+			CalcularMomentosCentrales(binaryMatrix, xCentro, yCentro,
+									out mu20, out mu11, out mu02,
+									out mu30, out mu21, out mu12, out mu03);
+
+			double[] huMoments = new double[7];
+			CalcularMomentosHu(mu20, mu11, mu02, mu30, mu21, mu12, mu03, m00, huMoments);
+
+			return huMoments;
+		}
+
+		private static int[,] ConvertirAMatrizBinaria(Bitmap imagen)
+		{
+			int[,] binaryMatrix = new int[imagen.Height, imagen.Width];
+			BitmapData bmpData = imagen.LockBits(new Rectangle(0, 0, imagen.Width, imagen.Height),
+											 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+			try
+			{
+				int bytes = Math.Abs(bmpData.Stride) * imagen.Height;
+				byte[] rgbValues = new byte[bytes];
+				Marshal.Copy(bmpData.Scan0, rgbValues, 0, bytes);
+
+				for (int y = 0; y < imagen.Height; y++)
+				{
+					for (int x = 0; x < imagen.Width; x++)
+					{
+						int index = y * bmpData.Stride + x * 4;
+						binaryMatrix[y, x] = rgbValues[index] > 128 ? 1 : 0;
+					}
+				}
+			}
+			finally
+			{
+				imagen.UnlockBits(bmpData);
+			}
+
+			return binaryMatrix;
+		}
+
+		private static void CalcularMomentosGeometricos(int[,] binaryMatrix, out double m00, out double m10, out double m01)
+		{
+			m00 = 0; m10 = 0; m01 = 0;
+			int height = binaryMatrix.GetLength(0);
+			int width = binaryMatrix.GetLength(1);
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (binaryMatrix[y, x] == 1)
+					{
+						m00 += 1;
+						m10 += x;
+						m01 += y;
+					}
+				}
+			}
+		}
+
+		private static void CalcularMomentosCentrales(int[,] binaryMatrix, double xCentro, double yCentro, out double mu20, out double mu11, out double mu02, out double mu30, out double mu21, out double mu12, out double mu03)
+		{
+			mu20 = 0; mu11 = 0; mu02 = 0;
+			mu30 = 0; mu21 = 0; mu12 = 0; mu03 = 0;
+			int height = binaryMatrix.GetLength(0);
+			int width = binaryMatrix.GetLength(1);
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (binaryMatrix[y, x] == 1)
+					{
+						double xDiff = x - xCentro;
+						double yDiff = y - yCentro;
+
+						mu20 += xDiff * xDiff;
+						mu11 += xDiff * yDiff;
+						mu02 += yDiff * yDiff;
+
+						mu30 += xDiff * xDiff * xDiff;
+						mu21 += xDiff * xDiff * yDiff;
+						mu12 += xDiff * yDiff * yDiff;
+						mu03 += yDiff * yDiff * yDiff;
+					}
+				}
+			}
+		}
+
+		private static void CalcularMomentosHu(double mu20, double mu11, double mu02, double mu30, double mu21, double mu12, double mu03, double m00, double[] huMoments)
+		{
+			double n20 = mu20 / Math.Pow(m00, 2);
+			double n11 = mu11 / Math.Pow(m00, 2);
+			double n02 = mu02 / Math.Pow(m00, 2);
+			double n30 = mu30 / Math.Pow(m00, 2.5);
+			double n21 = mu21 / Math.Pow(m00, 2.5);
+			double n12 = mu12 / Math.Pow(m00, 2.5);
+			double n03 = mu03 / Math.Pow(m00, 2.5);
+
+			huMoments[0] = n20 + n02;
+			huMoments[1] = Math.Pow((n20 - n02), 2) + 4 * Math.Pow(n11, 2);
+			huMoments[2] = Math.Pow((n30 - 3 * n12), 2) + Math.Pow((3 * n21 - n03), 2);
+			huMoments[3] = Math.Pow((n30 + n12), 2) + Math.Pow((n21 + n03), 2);
+			huMoments[4] = (n30 - 3 * n12) * (n30 + n12) * (Math.Pow((n30 + n12), 2) - 3 * Math.Pow((n21 + n03), 2)) +
+						  (3 * n21 - n03) * (n21 + n03) * (3 * Math.Pow((n30 + n12), 2) - Math.Pow((n21 + n03), 2));
+			huMoments[5] = (n20 - n02) * (Math.Pow((n30 + n12), 2) - Math.Pow((n21 + n03), 2)) +
+						  4 * n11 * (n30 + n12) * (n21 + n03);
+			huMoments[6] = (3 * n21 - n03) * (n30 + n12) * (Math.Pow((n30 + n12), 2) - 3 * Math.Pow((n21 + n03), 2)) -
+						  (n30 - 3 * n12) * (n21 + n03) * (3 * Math.Pow((n30 + n12), 2) - Math.Pow((n21 + n03), 2));
+
+			for (int i = 0; i < huMoments.Length; i++)
+			{
+				huMoments[i] = -Math.Sign(huMoments[i]) * Math.Log10(Math.Abs(huMoments[i]));
+			}
+		}
+
+		private static int[,] LabelComponents(int[,] binaryImage)
+		{
+			int width = binaryImage.GetLength(1);
+			int height = binaryImage.GetLength(0);
+			int[,] labels = new int[height, width];
+			Dictionary<int, int> equivalences = new Dictionary<int, int>();
+			int currentLabel = 1;
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (binaryImage[y, x] == 1)
+					{
+						List<int> neighborLabels = GetNeighborLabels(labels, y, x);
+
+						if (neighborLabels.Count == 0)
+						{
+							labels[y, x] = currentLabel;
+							currentLabel++;
+						}
+						else
+						{
+							int minLabel = GetMinimumLabel(neighborLabels);
+							labels[y, x] = minLabel;
+
+							foreach (int label in neighborLabels)
+							{
+								if (label != minLabel)
+								{
+									equivalences[label] = minLabel;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (labels[y, x] != 0)
+					{
+						labels[y, x] = FindRootLabel(equivalences, labels[y, x]);
+					}
+				}
+			}
+
+			Dictionary<int, int> relabelingMap = CreateRelabelingMap(labels);
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (labels[y, x] != 0)
+					{
+						labels[y, x] = relabelingMap[labels[y, x]];
+					}
+				}
+			}
+
+			return labels;
+		}
+
+		private static List<int> GetNeighborLabels(int[,] labels, int y, int x)
+		{
+			List<int> neighbors = new List<int>();
+			int height = labels.GetLength(0);
+			int width = labels.GetLength(1);
+
+			if (y > 0 && labels[y - 1, x] != 0)
+			{
+				neighbors.Add(labels[y - 1, x]);
+			}
+
+			if (x > 0 && labels[y, x - 1] != 0)
+			{
+				neighbors.Add(labels[y, x - 1]);
+			}
+
+			if (y > 0 && x > 0 && labels[y - 1, x - 1] != 0)
+			{
+				neighbors.Add(labels[y - 1, x - 1]);
+			}
+
+			if (y > 0 && x < width - 1 && labels[y - 1, x + 1] != 0)
+			{
+				neighbors.Add(labels[y - 1, x + 1]);
+			}
+
+			return neighbors;
+		}
+
+		private static int GetMinimumLabel(List<int> labels)
+		{
+			int min = int.MaxValue;
+			foreach (int label in labels)
+			{
+				if (label < min)
+				{
+					min = label;
+				}
+			}
+			return min;
+		}
+
+		private static int FindRootLabel(Dictionary<int, int> equivalences, int label)
+		{
+			while (equivalences.ContainsKey(label))
+			{
+				label = equivalences[label];
+			}
+			return label;
+		}
+
+		private static Dictionary<int, int> CreateRelabelingMap(int[,] labels)
+		{
+			HashSet<int> uniqueLabels = new HashSet<int>();
+			int height = labels.GetLength(0);
+			int width = labels.GetLength(1);
+
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					if (labels[y, x] != 0)
+					{
+						uniqueLabels.Add(labels[y, x]);
+					}
+				}
+			}
+
+			List<int> sortedLabels = new List<int>(uniqueLabels);
+			sortedLabels.Sort();
+
+			Dictionary<int, int> relabelingMap = new Dictionary<int, int>();
+			int newLabel = 1;
+
+			foreach (int label in sortedLabels)
+			{
+				relabelingMap[label] = newLabel;
+				newLabel++;
+			}
+
+			return relabelingMap;
 		}
 
 		public static byte CalcularUmbralOtsu(byte[] datosImagen, int ancho, int alto, int stride)

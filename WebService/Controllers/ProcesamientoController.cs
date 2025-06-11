@@ -149,5 +149,39 @@ namespace WebService.Controllers
 				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
 			}
 		}
+
+		[HttpPost]
+		[ActionName("InvariantesHu")]
+		public async Task<HttpResponseMessage> InvariantesHu()
+		{
+			try
+			{
+				if (!Request.Content.IsMimeMultipartContent())
+					throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+				var provider = new MultipartMemoryStreamProvider();
+				await Request.Content.ReadAsMultipartAsync(provider);
+
+				var file = provider.Contents.First();
+				var stream = await file.ReadAsStreamAsync();
+				Bitmap image = new Bitmap(stream);
+
+				//Bitmap grayImage = MetodosProcesamiento.CalcularMomentosHu(image);
+
+				MemoryStream ms = new MemoryStream();
+				//grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				ms.Position = 0;
+
+				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+				result.Content = new StreamContent(ms);
+				result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+
+				return result;
+			}
+			catch (Exception e)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+			}
+		}
 	}
 }

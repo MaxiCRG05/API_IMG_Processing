@@ -96,7 +96,8 @@
             "ESCALA DE GRISES",
             "BINARIZAR",
             "DETECTAR BORDES",
-            "ETIQUETADO"});
+            "ETIQUETADO",
+            "INVARIANTES DE HU"});
 			this.cbOpciones.Location = new System.Drawing.Point(12, 80);
 			this.cbOpciones.Name = "cbOpciones";
 			this.cbOpciones.Size = new System.Drawing.Size(169, 21);
