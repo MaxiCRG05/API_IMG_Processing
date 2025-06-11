@@ -198,7 +198,7 @@ namespace TestAPI
 	{
 		private static HttpClient client = new HttpClient();
 		string url;
-		string[] opciones = { "EscalaGrises", "Binarizar", "DetectarBordes", "Etiquetado"};
+		string[] opciones = { "EscalaGrises", "Binarizar", "DetectarBordes", "Etiquetado", "InvariantesHu" };
 
 		public API(string url)
 		{
@@ -232,13 +232,13 @@ namespace TestAPI
 					}
 					else
 					{
-						throw new Exception($"Error al enviar la imagen: {response.ReasonPhrase}");
+						throw new Exception($"Error: {response.ReasonPhrase}");
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Error al enviar la imagen: " + ex.Message);
+				Console.WriteLine("Error: " + ex.Message);
 				throw;
 			}
 		}

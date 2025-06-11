@@ -30,10 +30,10 @@ namespace WebService.Controllers
 				var stream = await file.ReadAsStreamAsync();
 				Bitmap image = new Bitmap(stream);
 
-				Bitmap grayImage = MetodosProcesamiento.Escala_Grises(image);
+				Bitmap respuesta = MetodosProcesamiento.Escala_Grises(image);
 
 				MemoryStream ms = new MemoryStream();
-				grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				respuesta.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 				ms.Position = 0;
 
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -64,10 +64,10 @@ namespace WebService.Controllers
 				var stream = await file.ReadAsStreamAsync();
 				Bitmap image = new Bitmap(stream);
 
-				Bitmap grayImage = MetodosProcesamiento.Binarizar(image);
+				Bitmap respuesta = MetodosProcesamiento.Binarizar(image);
 
 				MemoryStream ms = new MemoryStream();
-				grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				respuesta.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 				ms.Position = 0;
 
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -98,10 +98,10 @@ namespace WebService.Controllers
 				var stream = await file.ReadAsStreamAsync();
 				Bitmap image = new Bitmap(stream);
 
-				Bitmap grayImage = MetodosProcesamiento.Detectar_Bordes(image);
+				Bitmap respuesta = MetodosProcesamiento.Detectar_Bordes(image);
 
 				MemoryStream ms = new MemoryStream();
-				grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				respuesta.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 				ms.Position = 0;
 
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -132,10 +132,10 @@ namespace WebService.Controllers
 				var stream = await file.ReadAsStreamAsync();
 				Bitmap image = new Bitmap(stream);
 
-				Bitmap grayImage = MetodosProcesamiento.Etiquetado(image);
+				Bitmap respuesta = MetodosProcesamiento.Etiquetado(image);
 
 				MemoryStream ms = new MemoryStream();
-				grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				respuesta.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 				ms.Position = 0;
 
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -166,10 +166,10 @@ namespace WebService.Controllers
 				var stream = await file.ReadAsStreamAsync();
 				Bitmap image = new Bitmap(stream);
 
-				//Bitmap grayImage = MetodosProcesamiento.CalcularMomentosHu(image);
+				double[] momentosHu = MetodosProcesamiento.CalcularMomentosHu(image);
 
 				MemoryStream ms = new MemoryStream();
-				//grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				
 				ms.Position = 0;
 
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
