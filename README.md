@@ -1,124 +1,50 @@
-#🖼️ API de Procesamiento de Imágenes con Cliente
+# 🖼️ Image Processing API & Client [ESP/ENG]
+
+![.NET](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
+![ASP.NET](https://img.shields.io/badge/ASP.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
 
 Un sistema completo de procesamiento de imágenes con API web backend y cliente en Windows Forms que ofrece diversas operaciones de visión por computadora.
 
-##✨ Funcionalidades
-Escala de grises - Conversión de imágenes a tonos grises
+A complete image processing system with Web API backend and Windows Forms client providing various computer vision operations.
 
-Binarización - Umbralización adaptativa con método de Otsu
+## ✨ Funcionalidades / Features
 
-Detección de bordes - Implementación del operador Sobel
+| Español | English |
+|---------|---------|
+| **Escala de grises** - Conversión de imágenes a tonos grises | **Grayscale Conversion** - Convert images to grayscale |
+| **Binarización** - Umbralización adaptativa con método de Otsu | **Binarization** - Adaptive thresholding with Otsu's method |
+| **Detección de bordes** - Implementación del operador Sobel | **Edge Detection** - Sobel operator implementation |
+| **Etiquetado de componentes** - Análisis de componentes conectados con colores | **Component Labeling** - Connected components analysis with color coding |
+| **Momentos de Hu** - Descriptores de forma para reconocimiento de objetos | **Hu Moments** - Shape descriptors for object recognition |
+| **Métricas de rendimiento** - Medición del tiempo de procesamiento | **Performance Metrics** - Processing time measurement |
 
-Etiquetado de componentes - Análisis de componentes conectados con colores
+## 🛠️ Tecnologías / Technologies
 
-Momentos de Hu - Descriptores de forma para reconocimiento de objetos
+- **Backend**: ASP.NET Web API
+- **Cliente/Client**: Windows Forms (.NET)
+- **Procesamiento de imágenes/Image Processing**: System.Drawing, algoritmos personalizados/custom algorithms
+- **Comunicación/Communication**: HTTP, Multipart Form Data
 
-Métricas de rendimiento - Medición del tiempo de procesamiento
+## 📦 Instalación / Installation
 
-🛠️ ##Tecnologías
-Backend: ASP.NET Web API
+### Configuración del API / API Setup
 
-Cliente: Windows Forms (.NET)
-
-Procesamiento de imágenes: System.Drawing, algoritmos personalizados
-
-Comunicación: HTTP, Multipart Form Data
-
-📦 ##Instalación
-Configuración del API
-Clona el repositorio
-
-Abre el proyecto WebService en Visual Studio
+git clone https://github.com/tu-usuario/tu-repositorio.gitAbre el proyecto WebService en Visual Studio
 
 Compila y ejecuta el proyecto (URL por defecto: http://localhost:3193)
 
-Configuración del Cliente
+Configuración del Cliente / Client Setup
 Abre el proyecto TestAPI en Visual Studio
 
 Actualiza la variable url en Form1.cs si es necesario
 
 Compila y ejecuta la aplicación
 
-🖥️ ##Cómo usar
-Haz clic en "Subir Imagen" para cargar una imagen
+### 🖥️ Cómo usar / Usage
+Haz clic en "Subir Imagen" para cargar una imagen / Click "Subir Imagen" to load an image
 
-Selecciona una operación del menú desplegable:
-
-Escala de Grises
-
-Binarizar
-
-Detectar Bordes
-
-Etiquetado
-
-Invariantes Hu
-
-Haz clic en "Enviar" para procesar la imagen
-
-Doble clic en el resultado para guardarlo
-
-⚙️ ##Endpoints del API
-POST /api/Procesamiento/EscalaGrises
-
-POST /api/Procesamiento/Binarizar
-
-POST /api/Procesamiento/DetectarBordes
-
-POST /api/Procesamiento/Etiquetado
-
-POST /api/Procesamiento/InvariantesHu
-
-🤝 ##Contribuciones
-¡Las contribuciones son bienvenidas! Por favor abre un issue o envía un pull request.
-
-###Hecho con ❤️ y C#
-
-🖼️ #Image Processing API & Client
-
-A powerful image processing system with a Web API backend and Windows Forms client that provides various computer vision operations.
-
-✨ ##Features
-Grayscale Conversion - Convert images to grayscale
-
-Binarization - Adaptive thresholding with Otsu's method
-
-Edge Detection - Sobel operator implementation
-
-Component Labeling - Connected components analysis with color coding
-
-Hu Moments - Shape descriptors for object recognition
-
-Performance Metrics - Processing time measurement
-
-🛠️ ##Technologies
-Backend: ASP.NET Web API
-
-Client: Windows Forms (.NET)
-
-Image Processing: System.Drawing, custom algorithms
-
-Communication: HTTP, Multipart Form Data
-
-📦 ##Installation
-API Setup
-Clone the repository
-
-Open the WebService project in Visual Studio
-
-Build and run the project (default URL: http://localhost:3193)
-
-Client Setup
-Open the TestAPI project in Visual Studio
-
-Update the url variable in Form1.cs if needed
-
-Build and run the application
-
-🖥️ ##Usage
-Click "Subir Imagen" to load an image
-
-Select an operation from the dropdown:
+Selecciona una operación del menú desplegable / Select an operation from the dropdown:
 
 Escala de Grises (Grayscale)
 
@@ -130,20 +56,19 @@ Etiquetado (Component Labeling)
 
 Invariantes Hu (Hu Moments)
 
-Click "Enviar" to process the image
+Haz clic en "Enviar" para procesar la imagen / Click "Enviar" to process the image
 
-Double-click the result to save it
+Doble clic en el resultado para guardarlo / Double-click the result to save it
 
-⚙️ ##API Endpoints
-POST /api/Procesamiento/EscalaGrises
+### ⚙️ Endpoints del API / API Endpoints
+Método	Endpoint	Descripción
+POST	/api/Procesamiento/EscalaGrises	Convierte la imagen a escala de grises
+POST	/api/Procesamiento/Binarizar	Aplica binarización a la imagen
+POST	/api/Procesamiento/DetectarBordes	Detecta bordes usando operador Sobel
+POST	/api/Procesamiento/Etiquetado	Etiqueta componentes conectados
+POST	/api/Procesamiento/InvariantesHu	Calcula los momentos de Hu
 
-POST /api/Procesamiento/Binarizar
+### 🤝 Contribuciones / Contributing
+¡Las contribuciones son bienvenidas! Por favor abre un issue o envía un pull request.
 
-POST /api/Procesamiento/DetectarBordes
-
-POST /api/Procesamiento/Etiquetado
-
-POST /api/Procesamiento/InvariantesHu
-
-🤝 ##Contributing
-Contributions are welcome! Please open an issue or submit a pull request.
+# Contributions are welcome! Please open an issue or submit a pull request.
