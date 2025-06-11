@@ -30,7 +30,7 @@ A complete image processing system with Web API backend and Windows Forms client
 
 ### Configuración del API / API Setup
 
-git clone https://github.com/tu-usuario/tu-repositorio.gitAbre el proyecto WebService en Visual Studio
+git clone [https://github.com/tu-usuario/tu-repositorio.git](https://github.com/MaxiCRG05/API_IMG_Processing.git) Abre el proyecto WebService en Visual Studio
 
 Compila y ejecuta el proyecto (URL por defecto: http://localhost:3193)
 
