@@ -1,8 +1,8 @@
-🖼️ #API de Procesamiento de Imágenes con Cliente
+#🖼️ API de Procesamiento de Imágenes con Cliente
 
 Un sistema completo de procesamiento de imágenes con API web backend y cliente en Windows Forms que ofrece diversas operaciones de visión por computadora.
 
-✨ ##Funcionalidades
+##✨ Funcionalidades
 Escala de grises - Conversión de imágenes a tonos grises
 
 Binarización - Umbralización adaptativa con método de Otsu
