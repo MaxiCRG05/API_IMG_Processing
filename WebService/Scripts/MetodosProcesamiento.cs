@@ -374,7 +374,10 @@ namespace WebService.Scripts
 
 			for (int i = 0; i < huMoments.Length; i++)
 			{
-				huMoments[i] = -Math.Sign(huMoments[i]) * Math.Log10(Math.Abs(huMoments[i]));
+				if (Math.Abs(huMoments[i]) < 1e-100)
+					huMoments[i] = 0;
+				else
+					huMoments[i] = -Math.Sign(huMoments[i]) * Math.Log10(Math.Abs(huMoments[i]));
 			}
 		}
 

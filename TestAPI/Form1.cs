@@ -26,6 +26,25 @@ namespace TestAPI
 			ConfigurarTabla();
 		}
 
+		private void LimpiarLabels()
+		{
+			lbTiempo.Text = "";
+			lblObjetos.Text = "";
+		}
+
+		private void LimpiarImagenes()
+		{
+			imgEnviar.Image = null;
+			imgRecibir.Image = null;
+		}
+
+		private void LimpiarTabla()
+		{
+			tabla.Columns.Clear();
+			ConfigurarTabla();
+			tabla.Visible = false;
+		}
+
 		private void ConfigurarTabla()
 		{
 			tabla.Columns.Clear();
@@ -202,6 +221,13 @@ namespace TestAPI
 				MessageBox.Show($"Error al guardar la imagen: {ex.Message}", "Error",
 							  MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+		}
+
+		private void btnLimpiar_MouseClick(object sender, MouseEventArgs e)
+		{
+			LimpiarImagenes();
+			LimpiarLabels();
+			LimpiarTabla();
 		}
 
 		private void btnSubir_MouseClick(object sender, MouseEventArgs e)

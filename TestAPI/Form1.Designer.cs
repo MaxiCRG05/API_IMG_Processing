@@ -37,7 +37,6 @@
 			this.btnEnviar = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.lbTiempo = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.lblObjetos = new System.Windows.Forms.Label();
 			this.tabla = new System.Windows.Forms.DataGridView();
@@ -49,6 +48,8 @@
 			this.H5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.H6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.H7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.btnLimpiar = new System.Windows.Forms.Button();
+			this.lbTiempo = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tabla)).BeginInit();
@@ -140,21 +141,11 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(21, 183);
+			this.label4.Location = new System.Drawing.Point(21, 207);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(51, 13);
 			this.label4.TabIndex = 8;
 			this.label4.Text = "TIEMPO:";
-			// 
-			// lbTiempo
-			// 
-			this.lbTiempo.AutoSize = true;
-			this.lbTiempo.Location = new System.Drawing.Point(78, 183);
-			this.lbTiempo.Name = "lbTiempo";
-			this.lbTiempo.Size = new System.Drawing.Size(51, 13);
-			this.lbTiempo.TabIndex = 9;
-			this.lbTiempo.Text = "TIEMPO:";
-			this.lbTiempo.Visible = false;
 			// 
 			// label5
 			// 
@@ -243,11 +234,32 @@
 			this.H7.Name = "H7";
 			this.H7.ReadOnly = true;
 			// 
+			// btnLimpiar
+			// 
+			this.btnLimpiar.Location = new System.Drawing.Point(24, 157);
+			this.btnLimpiar.Name = "btnLimpiar";
+			this.btnLimpiar.Size = new System.Drawing.Size(148, 23);
+			this.btnLimpiar.TabIndex = 13;
+			this.btnLimpiar.Text = "LIMPIAR";
+			this.btnLimpiar.UseVisualStyleBackColor = true;
+			this.btnLimpiar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnLimpiar_MouseClick);
+			// 
+			// lbTiempo
+			// 
+			this.lbTiempo.AutoSize = true;
+			this.lbTiempo.Location = new System.Drawing.Point(78, 207);
+			this.lbTiempo.Name = "lbTiempo";
+			this.lbTiempo.Size = new System.Drawing.Size(51, 13);
+			this.lbTiempo.TabIndex = 9;
+			this.lbTiempo.Text = "TIEMPO:";
+			this.lbTiempo.Visible = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1187, 715);
+			this.Controls.Add(this.btnLimpiar);
 			this.Controls.Add(this.tabla);
 			this.Controls.Add(this.lblObjetos);
 			this.Controls.Add(this.label5);
@@ -286,7 +298,6 @@
 		private System.Windows.Forms.Button btnEnviar;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label lbTiempo;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label lblObjetos;
 		private System.Windows.Forms.DataGridView tabla;
@@ -298,6 +309,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn H5;
 		private System.Windows.Forms.DataGridViewTextBoxColumn H6;
 		private System.Windows.Forms.DataGridViewTextBoxColumn H7;
+		private System.Windows.Forms.Button btnLimpiar;
+		private System.Windows.Forms.Label lbTiempo;
 	}
 }
 
