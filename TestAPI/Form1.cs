@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace TestAPI
 {
@@ -30,7 +23,21 @@ namespace TestAPI
 		{
 			InitializeComponent();
 			CrearAPI(url);
-			btnEnviar.Enabled = false;
+			ConfigurarTabla();
+		}
+
+		private void ConfigurarTabla()
+		{
+			tabla.Columns.Clear();
+			tabla.Columns.Add("ID", "ID");
+			for (int i = 1; i <= 7; i++)
+			{
+				tabla.Columns.Add($"Hu{i}", $"Hu {i}");
+			}
+
+			tabla.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+			tabla.AllowUserToAddRows = false;
+			tabla.ReadOnly = true;
 		}
 
 		public void PonerTiempo()
@@ -75,6 +82,7 @@ namespace TestAPI
 			}
 			return null;
 		}
+
 		private async void btnEnviar_MouseClick(object sender, MouseEventArgs e)
 		{
 			try
@@ -85,6 +93,15 @@ namespace TestAPI
 					btm_recibida = await api.Enviar(opcion, btm_cargada);
 					PonerNumObjetos();
 					imgRecibir.Image = btm_recibida;
+
+					if (opcion == 4)
+					{
+						tabla.Visible = true;
+						MostrarMomentosHuEnTabla();
+					}
+					else
+						tabla.Visible = false;
+
 					sw.Stop();
 					PonerTiempo();
 					sw.Reset();
@@ -95,6 +112,37 @@ namespace TestAPI
 			catch (Exception ex)
 			{
 				MessageBox.Show("Error al enviar la imagen: " + ex.Message);
+			}
+		}
+
+		private void MostrarMomentosHuEnTabla()
+		{
+			tabla.Rows.Clear();
+
+			var momentosHu = api.GetMomentosHu();
+
+			for (int i = 0; i < momentosHu.Count; i++)
+			{
+				var momento = momentosHu[i];
+
+				DataGridViewRow row = new DataGridViewRow();
+				row.CreateCells(tabla);
+
+				row.Cells[0].Value = i + 1; 
+				for (int j = 0; j < 7; j++)
+				{
+					if (j < momento.Moments.Length)
+					{
+						row.Cells[j + 1].Value = momento.Moments[j];
+					}
+				}
+
+				tabla.Rows.Add(row);
+			}
+
+			for (int i = 1; i < tabla.Columns.Count; i++)
+			{
+				tabla.Columns[i].DefaultCellStyle.Format = "N6";
 			}
 		}
 
@@ -170,8 +218,6 @@ namespace TestAPI
 			VerificarEnviar();
 		}
 	}
-
-
 	public static class Globales
 	{
 		public static Bitmap CargarImagen()
@@ -210,6 +256,11 @@ namespace TestAPI
 		}
 	}
 
+	public class ResultadoMomentosHu
+	{
+		public PointF Center { get; set; }
+		public double[] Moments { get; set; }
+	}
 
 	public class API
 	{
@@ -217,6 +268,12 @@ namespace TestAPI
 		string url;
 		string[] opciones = { "EscalaGrises", "Binarizar", "DetectarBordes", "Etiquetado", "InvariantesHu" };
 		private int objetos = 0;
+		private List<ResultadoMomentosHu> momentosHu = new List<ResultadoMomentosHu>();
+
+		public List<ResultadoMomentosHu> GetMomentosHu()
+		{
+			return momentosHu;
+		}
 
 		public API(string url)
 		{
@@ -250,15 +307,21 @@ namespace TestAPI
 
 					if (response.IsSuccessStatusCode)
 					{
-						if (opcion == 4)
+						if (opcion == 4) 
 						{
 							var jsonResponse = await response.Content.ReadAsStringAsync();
-							var jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+							var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
 
 							string imageBase64 = jsonObj.Imagen;
 							byte[] imageBytes = Convert.FromBase64String(imageBase64);
 
 							objetos = jsonObj.TotalObjetos;
+
+							if (jsonObj.MomentosHu != null)
+							{
+								momentosHu = JsonConvert.DeserializeObject<List<ResultadoMomentosHu>>(
+									jsonObj.MomentosHu.ToString());
+							}
 
 							using (MemoryStream imageStream = new MemoryStream(imageBytes))
 							{
@@ -269,6 +332,7 @@ namespace TestAPI
 						{
 							var responseStream = await response.Content.ReadAsStreamAsync();
 							objetos = 0;
+							momentosHu.Clear(); 
 							return new Bitmap(responseStream);
 						}
 					}

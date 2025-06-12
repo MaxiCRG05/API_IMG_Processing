@@ -218,7 +218,6 @@ namespace WebService.Scripts
 			return labeledImage;
 		}
 
-
 		public static List<ResultadoMomentosHu> CalcularMomentosHuPorObjeto(Bitmap imagen)
 		{
 			imagen = Binarizar(imagen);

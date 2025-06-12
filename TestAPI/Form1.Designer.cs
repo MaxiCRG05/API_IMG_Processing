@@ -40,8 +40,18 @@
 			this.lbTiempo = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.lblObjetos = new System.Windows.Forms.Label();
+			this.tabla = new System.Windows.Forms.DataGridView();
+			this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.H7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.tabla)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// imgEnviar
@@ -149,7 +159,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(21, 210);
+			this.label5.Location = new System.Drawing.Point(21, 252);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(145, 13);
 			this.label5.TabIndex = 10;
@@ -159,18 +169,86 @@
 			// lblObjetos
 			// 
 			this.lblObjetos.AutoSize = true;
-			this.lblObjetos.Location = new System.Drawing.Point(21, 238);
+			this.lblObjetos.Location = new System.Drawing.Point(21, 280);
 			this.lblObjetos.Name = "lblObjetos";
 			this.lblObjetos.Size = new System.Drawing.Size(145, 13);
 			this.lblObjetos.TabIndex = 11;
 			this.lblObjetos.Text = "OBJETOS ENCONTRADOS:";
 			this.lblObjetos.Visible = false;
 			// 
+			// tabla
+			// 
+			this.tabla.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.tabla.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ID,
+            this.H1,
+            this.H2,
+            this.H3,
+            this.H4,
+            this.H5,
+            this.H6,
+            this.H7});
+			this.tabla.Location = new System.Drawing.Point(12, 382);
+			this.tabla.Name = "tabla";
+			this.tabla.Size = new System.Drawing.Size(1163, 321);
+			this.tabla.TabIndex = 12;
+			this.tabla.Visible = false;
+			// 
+			// ID
+			// 
+			this.ID.HeaderText = "ID";
+			this.ID.Name = "ID";
+			this.ID.ReadOnly = true;
+			this.ID.Width = 30;
+			// 
+			// H1
+			// 
+			this.H1.HeaderText = "H1";
+			this.H1.Name = "H1";
+			this.H1.ReadOnly = true;
+			// 
+			// H2
+			// 
+			this.H2.HeaderText = "H2";
+			this.H2.Name = "H2";
+			this.H2.ReadOnly = true;
+			// 
+			// H3
+			// 
+			this.H3.HeaderText = "H3";
+			this.H3.Name = "H3";
+			this.H3.ReadOnly = true;
+			// 
+			// H4
+			// 
+			this.H4.HeaderText = "H4";
+			this.H4.Name = "H4";
+			this.H4.ReadOnly = true;
+			// 
+			// H5
+			// 
+			this.H5.HeaderText = "H5";
+			this.H5.Name = "H5";
+			this.H5.ReadOnly = true;
+			// 
+			// H6
+			// 
+			this.H6.HeaderText = "H6";
+			this.H6.Name = "H6";
+			this.H6.ReadOnly = true;
+			// 
+			// H7
+			// 
+			this.H7.HeaderText = "H7";
+			this.H7.Name = "H7";
+			this.H7.ReadOnly = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1187, 375);
+			this.ClientSize = new System.Drawing.Size(1187, 715);
+			this.Controls.Add(this.tabla);
 			this.Controls.Add(this.lblObjetos);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.lbTiempo);
@@ -191,6 +269,7 @@
 			this.Text = "PROCESAMIENTO";
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.tabla)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -210,6 +289,15 @@
 		private System.Windows.Forms.Label lbTiempo;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label lblObjetos;
+		private System.Windows.Forms.DataGridView tabla;
+		private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H1;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H2;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H3;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H4;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H5;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H6;
+		private System.Windows.Forms.DataGridViewTextBoxColumn H7;
 	}
 }
 

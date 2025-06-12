@@ -180,7 +180,7 @@ namespace WebService.Controllers
 					foreach (var momento in momentosHu)
 					{
 						PointF center = momento.Center;
-						float radius = 10; 
+						float radius = 10;
 
 						g.DrawEllipse(redPen, center.X - radius, center.Y - radius,
 									 radius * 2, radius * 2);
@@ -210,7 +210,12 @@ namespace WebService.Controllers
 				var response = new
 				{
 					Imagen = imageBase64,
-					TotalObjetos = totalObjetos
+					TotalObjetos = totalObjetos,
+					MomentosHu = momentosHu.Select(m => new
+					{
+						Moments = m.Moments,
+						Center = new { X = m.Center.X, Y = m.Center.Y }
+					}).ToList()
 				};
 
 				HttpResponseMessage result = Request.CreateResponse(HttpStatusCode.OK, response);
