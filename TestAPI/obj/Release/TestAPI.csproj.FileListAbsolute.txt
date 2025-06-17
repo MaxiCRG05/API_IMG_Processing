@@ -1,0 +1,13 @@
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Release\TestAPI.exe.config
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Release\TestAPI.exe
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Release\TestAPI.pdb
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Release\Newtonsoft.Json.dll
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\bin\Release\Newtonsoft.Json.xml
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.csproj.AssemblyReference.cache
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.Form1.resources
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.Properties.Resources.resources
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.csproj.GenerateResource.cache
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.csproj.CoreCompileInputs.cache
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.csproj.Up2Date
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.exe
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\TestAPI\obj\Release\TestAPI.pdb

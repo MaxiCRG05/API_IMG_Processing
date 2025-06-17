@@ -62,7 +62,7 @@ namespace TestAPI
 		public void PonerTiempo()
 		{
 			lbTiempo.Visible = true;
-			lbTiempo.Text = $"{sw.ElapsedMilliseconds} ms";
+			lbTiempo.Text = (sw.ElapsedMilliseconds > 1000) ? (sw.ElapsedMilliseconds / 1000 < 60) ? ($"{sw.ElapsedMilliseconds / 1000.0:F2} segundos") : $"{sw.ElapsedMilliseconds / 60000}m {sw.ElapsedMilliseconds / 1000 % 60:F2}s" : $"{sw.ElapsedMilliseconds} ms";
 		}
 
 		public void VerificarEnviar()
