@@ -10,6 +10,7 @@ namespace WebService.Models
 	public class RedNeuronal
 	{
 		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
 		[ForeignKey(nameof(Capa))]

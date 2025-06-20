@@ -23,6 +23,7 @@ namespace WebService.Data
 		public DbSet<Models.Neuronas> Neuronas { get; set; }
 		public DbSet<Models.Umbrales> Umbrales { get; set; }
 		public DbSet<Models.Pesos> Pesos { get; set; }
+		public DbSet<Models.Rol> Roles { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{

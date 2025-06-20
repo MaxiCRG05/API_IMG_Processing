@@ -3,10 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D712D741-0430-4C89-9118-6C4DED0BAC81}|..\\WebService\\WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\app_start\\webapiconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\testapi\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FFBF7177-E03A-488D-9FD9-B7531111F142}|TestAPI.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -30,38 +27,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "WebApiConfig.cs",
-              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\App_Start\\WebApiConfig.cs",
-              "RelativeDocumentMoniker": "..\\WebService\\App_Start\\WebApiConfig.cs",
-              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\App_Start\\WebApiConfig.cs",
-              "RelativeToolTip": "..\\WebService\\App_Start\\WebApiConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T01:00:56.637Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAqwEAAAABHAAAAAAAAAA==",
+              "ViewState": "AgIAANYAAAAAAAAAAAAUwOAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-09T20:35:24.564Z"
+              "WhenOpened": "2025-06-19T22:55:26.471Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Form1.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\TestAPI\\Form1.cs [Dise\u00F1o]",
               "RelativeToolTip": "Form1.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-04T00:02:12.124Z"
+              "WhenOpened": "2025-06-04T00:02:12.124Z",
+              "EditorCaption": " [Dise\u00F1o]"
             }
           ]
         }

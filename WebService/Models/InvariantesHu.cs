@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -9,7 +10,12 @@ namespace WebService.Models
 	public class InvariantesHu
 	{
 		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
+
+		[ForeignKey(nameof(Objetos))]
+		public int ObjetoID { get; set; }
+
 		public double Hu1 { get; set; }
 		public double Hu2 { get; set; }
 		public double Hu3 { get; set; }

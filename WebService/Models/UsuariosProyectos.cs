@@ -10,6 +10,7 @@ namespace WebService.Models
 	public class UsuariosProyectos
 	{
 		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
 		[ForeignKey(nameof(Usuario))]

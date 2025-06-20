@@ -17,7 +17,7 @@ namespace TestAPI
 		Bitmap btm_cargada, btm_recibida;
 		bool imgSubida = false, opcionSeleccionada = false;
 		int opcion;
-		private string url = "http://localhost:3193/api/";
+		private string url = "http://localhost:35271/api";
 
 		public Form1()
 		{
@@ -313,7 +313,7 @@ namespace TestAPI
 
 		public async Task<Bitmap> Enviar(int opcion, Bitmap img)
 		{
-			string endpoint = $"{url}/Procesamiento/{opciones[opcion]}";
+			string endpoint = $"{url}/Procesos/{opciones[opcion]}";
 
 			try
 			{
