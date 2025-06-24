@@ -242,25 +242,32 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\AuthController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ProcesamientoController.cs" />
+    <Compile Include="Controllers\WEB\AuthController.cs" />
+    <Compile Include="Controllers\WEB\HomeController.cs" />
+    <Compile Include="Controllers\API\ProcesamientoController.cs" />
+    <Compile Include="Controllers\WEB\InvariantesHuController.cs" />
+    <Compile Include="Controllers\WEB\ObjetosController.cs" />
+    <Compile Include="Controllers\WEB\PesosController.cs" />
+    <Compile Include="Controllers\WEB\ProyectosController.cs" />
+    <Compile Include="Controllers\WEB\RedesNeuronalesController.cs" />
+    <Compile Include="Controllers\WEB\UmbralesController.cs" />
+    <Compile Include="Controllers\WEB\UsuariosController.cs" />
     <Compile Include="Data\Context.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Capas.cs" />
+    <Compile Include="Migrations\202506240003045_Inicial.cs" />
+    <Compile Include="Migrations\202506240003045_Inicial.Designer.cs">
+      <DependentUpon>202506240003045_Inicial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\InvariantesHu.cs" />
-    <Compile Include="Models\Neuronas.cs" />
     <Compile Include="Models\Objetos.cs" />
     <Compile Include="Models\Pesos.cs" />
-    <Compile Include="Models\Proyecto.cs" />
-    <Compile Include="Models\ProyectosObjetos.cs" />
-    <Compile Include="Models\RedNeuronal.cs" />
-    <Compile Include="Models\Rol.cs" />
+    <Compile Include="Models\Proyectos.cs" />
+    <Compile Include="Models\RedesNeuronales.cs" />
     <Compile Include="Models\Umbrales.cs" />
-    <Compile Include="Models\Usuario.cs" />
-    <Compile Include="Models\UsuariosProyectos.cs" />
+    <Compile Include="Models\Usuarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\MetodosProcesamiento.cs" />
   </ItemGroup>
@@ -364,15 +371,49 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Usuarios\Create.cshtml" />
+    <Content Include="Views\Usuarios\Delete.cshtml" />
+    <Content Include="Views\Usuarios\Details.cshtml" />
+    <Content Include="Views\Usuarios\Edit.cshtml" />
+    <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Proyectos\Create.cshtml" />
+    <Content Include="Views\Proyectos\Delete.cshtml" />
+    <Content Include="Views\Proyectos\Details.cshtml" />
+    <Content Include="Views\Proyectos\Edit.cshtml" />
+    <Content Include="Views\Proyectos\Index.cshtml" />
+    <Content Include="Views\Objetos\Create.cshtml" />
+    <Content Include="Views\Objetos\Delete.cshtml" />
+    <Content Include="Views\Objetos\Details.cshtml" />
+    <Content Include="Views\Objetos\Edit.cshtml" />
+    <Content Include="Views\Objetos\Index.cshtml" />
+    <Content Include="Views\InvariantesHu\Create.cshtml" />
+    <Content Include="Views\InvariantesHu\Delete.cshtml" />
+    <Content Include="Views\InvariantesHu\Details.cshtml" />
+    <Content Include="Views\InvariantesHu\Edit.cshtml" />
+    <Content Include="Views\InvariantesHu\Index.cshtml" />
+    <Content Include="Views\RedesNeuronales\Create.cshtml" />
+    <Content Include="Views\RedesNeuronales\Delete.cshtml" />
+    <Content Include="Views\RedesNeuronales\Details.cshtml" />
+    <Content Include="Views\RedesNeuronales\Edit.cshtml" />
+    <Content Include="Views\RedesNeuronales\Index.cshtml" />
+    <Content Include="Views\Pesos\Create.cshtml" />
+    <Content Include="Views\Pesos\Delete.cshtml" />
+    <Content Include="Views\Pesos\Details.cshtml" />
+    <Content Include="Views\Pesos\Edit.cshtml" />
+    <Content Include="Views\Pesos\Index.cshtml" />
+    <Content Include="Views\Umbrales\Create.cshtml" />
+    <Content Include="Views\Umbrales\Delete.cshtml" />
+    <Content Include="Views\Umbrales\Details.cshtml" />
+    <Content Include="Views\Umbrales\Edit.cshtml" />
+    <Content Include="Views\Umbrales\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -400,6 +441,11 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.7.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.0.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202506240003045_Inicial.resx">
+      <DependentUpon>202506240003045_Inicial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -10,12 +10,8 @@ namespace WebService.Models
 	public class InvariantesHu
 	{
 		[Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
-
-		[ForeignKey(nameof(Objetos))]
+		public int ID { get; set; }
 		public int ObjetoID { get; set; }
-
 		public double Hu1 { get; set; }
 		public double Hu2 { get; set; }
 		public double Hu3 { get; set; }
@@ -23,5 +19,7 @@ namespace WebService.Models
 		public double Hu5 { get; set; }
 		public double Hu6 { get; set; }
 		public double Hu7 { get; set; }
+		[ForeignKey("ObjetoID")]
+		public Objetos Objeto { get; set; }
 	}
 }

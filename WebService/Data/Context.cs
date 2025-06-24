@@ -12,18 +12,13 @@ namespace WebService.Data
 			: base("name=Context")
 		{
 		}
-		public DbSet<Models.Usuario> Usuario { get; set; }
-		public DbSet<Models.UsuariosProyectos> UsuariosProyectos { get; set; }
-		public DbSet<Models.Proyecto> Proyectos { get; set; }
-		public DbSet<Models.ProyectosObjetos> ProyectosObjetos { get; set; }
+		public DbSet<Models.Usuarios> Usuario { get; set; }
+		public DbSet<Models.Proyectos> Proyectos { get; set; }
 		public DbSet<Models.Objetos> Objetos { get; set; }
 		public DbSet<Models.InvariantesHu> InvariantesHu { get; set; }
-		public DbSet<Models.RedNeuronal> RedNeuronales { get; set; }
-		public DbSet<Models.Capas> Capas { get; set; }
-		public DbSet<Models.Neuronas> Neuronas { get; set; }
+		public DbSet<Models.RedesNeuronales> RedNeuronales { get; set; }
 		public DbSet<Models.Umbrales> Umbrales { get; set; }
 		public DbSet<Models.Pesos> Pesos { get; set; }
-		public DbSet<Models.Rol> Roles { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{

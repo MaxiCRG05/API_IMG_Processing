@@ -1,0 +1,35 @@
+﻿@model WebService.Models.Umbrales
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Umbrales</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RedesNeuronales.Arquitectura)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RedesNeuronales.Arquitectura)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Umbral)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Umbral)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

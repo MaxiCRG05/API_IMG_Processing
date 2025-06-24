@@ -10,10 +10,10 @@ namespace WebService.Models
 	public class Umbrales
 	{
 		[Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
-
+		public int ID { get; set; }
+		public int RedNeuronalID { get; set; }
 		public double Umbral { get; set; }
-
+		[ForeignKey("RedNeuronalID")]
+		public RedesNeuronales RedesNeuronales { get; set; }
 	}
 }

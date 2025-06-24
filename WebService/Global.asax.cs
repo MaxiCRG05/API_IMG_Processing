@@ -15,11 +15,6 @@ namespace WebService
     {
         protected void Application_Start()
         {
-			FirebaseApp.Create(new AppOptions()
-			{
-				Credential = GoogleCredential.FromFile(Server.MapPath("~/firebase-config.json")),
-			});
-
 			AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

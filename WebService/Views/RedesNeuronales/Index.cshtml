@@ -1,0 +1,58 @@
+﻿@model IEnumerable<WebService.Models.RedesNeuronales>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Proyecto.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Epocas)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Arquitectura)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Alfa)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ErrorMinimo)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Proyecto.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Epocas)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Arquitectura)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Alfa)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ErrorMinimo)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

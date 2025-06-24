@@ -1,0 +1,83 @@
+﻿@model WebService.Models.InvariantesHu
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>InvariantesHu</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Objeto.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Objeto.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu1)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu3)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu3)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu4)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu4)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu5)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu5)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu6)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu6)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hu7)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hu7)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

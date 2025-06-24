@@ -313,7 +313,7 @@ namespace TestAPI
 
 		public async Task<Bitmap> Enviar(int opcion, Bitmap img)
 		{
-			string endpoint = $"{url}/Procesos/{opciones[opcion]}";
+			string endpoint = $"{url}/Procesamiento/{opciones[opcion]}";
 
 			try
 			{
