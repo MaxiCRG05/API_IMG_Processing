@@ -99,6 +99,7 @@ namespace WebService.Scripts
 
 			Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
 			btm.UnlockBits(bmpdata);
+			btm = Cierre(btm, 5);
 
 			return btm;
 		}
@@ -236,8 +237,27 @@ namespace WebService.Scripts
 
 			var resultados = new List<ResultadoMomentosHu>();
 
+			Dictionary<int, double> areas = new Dictionary<int, double>();
 			for (int label = 1; label <= maxLabel; label++)
 			{
+				double m00 = 0;
+				for (int y = 0; y < etiquetas.GetLength(0); y++)
+				{
+					for (int x = 0; x < etiquetas.GetLength(1); x++)
+					{
+						if (etiquetas[y, x] == label)
+						{
+							m00 += 1;
+						}
+					}
+				}
+				areas[label] = m00;
+			}
+
+			for (int label = 1; label <= maxLabel; label++)
+			{
+				if (areas[label] <= 750) continue; 
+
 				int[,] objetoBinario = new int[matrizBinaria.GetLength(0), matrizBinaria.GetLength(1)];
 				for (int y = 0; y < objetoBinario.GetLength(0); y++)
 				{
@@ -576,6 +596,141 @@ namespace WebService.Scripts
 			}
 
 			return threshold;
+		}
+
+		public static Bitmap Erosionar(Bitmap btm, int tamanoKernel)
+		{
+			Bitmap btmErosionado = new Bitmap(btm.Width, btm.Height, btm.PixelFormat);
+
+			BitmapData bmpdataOriginal = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height), ImageLockMode.ReadWrite, btm.PixelFormat);
+
+			int stride = bmpdataOriginal.Stride;
+			byte[] bytedata = new byte[stride * btm.Height];
+			Marshal.Copy(bmpdataOriginal.Scan0, bytedata, 0, stride * btm.Height);
+
+			BitmapData bmpdataErosionado = btmErosionado.LockBits(new Rectangle(0, 0, btmErosionado.Width, btmErosionado.Height), ImageLockMode.WriteOnly, btmErosionado.PixelFormat);
+			byte[] outputData = new byte[stride * btm.Height];
+
+			int bytesPorPixel = Image.GetPixelFormatSize(btm.PixelFormat) / 8;
+
+			for (int y = 0; y < btm.Height; y++)
+			{
+				for (int x = 0; x < btm.Width; x++)
+				{
+					bool isObject = true;
+
+					// Recorre el vecindario definido por el kernel
+					for (int ky = -tamanoKernel / 2; ky <= tamanoKernel / 2; ky++)
+					{
+						for (int kx = -tamanoKernel / 2; kx <= tamanoKernel / 2; kx++)
+						{
+							int ny = y + ky;
+							int nx = x + kx;
+
+							if (ny >= 0 && ny < btm.Height && nx >= 0 && nx < btm.Width)
+							{
+								int indiceVecinos = (ny * stride) + (nx * bytesPorPixel);
+
+								if (bytedata[indiceVecinos] == 0)
+								{
+									isObject = false;
+									break;
+								}
+							}
+							else
+							{
+								isObject = false;
+								break;
+							}
+						}
+						if (!isObject) break;
+					}
+
+					int indiceActual = (y * stride) + (x * bytesPorPixel);
+					if (isObject)
+					{
+						outputData[indiceActual] = outputData[indiceActual + 1] = outputData[indiceActual + 2] = 255;
+					}
+					else
+					{
+						outputData[indiceActual] = outputData[indiceActual + 1] = outputData[indiceActual + 2] = 0;
+					}
+					if (bytesPorPixel == 4)
+					{
+						outputData[indiceActual + 3] = bytedata[indiceActual + 3];
+					}
+				}
+			}
+
+			Marshal.Copy(outputData, 0, bmpdataErosionado.Scan0, stride * btm.Height);
+
+			btm.UnlockBits(bmpdataOriginal);
+			btmErosionado.UnlockBits(bmpdataErosionado);
+
+			return btmErosionado;
+		}
+		public static Bitmap Dilatar(Bitmap btm, int tamanoKernel)
+		{
+			Bitmap btmDilatado = new Bitmap(btm.Width, btm.Height, btm.PixelFormat);
+
+			BitmapData bmpdataOriginal = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height), ImageLockMode.ReadWrite, btm.PixelFormat);
+
+			int stride = bmpdataOriginal.Stride;
+			byte[] bytedata = new byte[stride * btm.Height];
+			Marshal.Copy(bmpdataOriginal.Scan0, bytedata, 0, stride * btm.Height);
+
+			BitmapData bmpdataDilatado = btmDilatado.LockBits(new Rectangle(0, 0, btmDilatado.Width, btmDilatado.Height), ImageLockMode.WriteOnly, btmDilatado.PixelFormat);
+			byte[] outputData = new byte[stride * btm.Height];
+
+			Array.Copy(bytedata, outputData, bytedata.Length);
+
+			int bytesPorPixel = Image.GetPixelFormatSize(btm.PixelFormat) / 8;
+
+			for (int y = 0; y < btm.Height; y++)
+			{
+				for (int x = 0; x < btm.Width; x++)
+				{
+
+					bool isObject = false;
+					for (int ky = -tamanoKernel / 2; ky <= tamanoKernel / 2; ky++)
+					{
+						for (int kx = -tamanoKernel / 2; kx <= tamanoKernel / 2; kx++)
+						{
+							int ny = y + ky;
+							int nx = x + kx;
+
+							if (ny >= 0 && ny < btm.Height && nx >= 0 && nx < btm.Width)
+							{
+								int indiceVecinos = (ny * stride) + (nx * bytesPorPixel);
+								if (bytedata[indiceVecinos] == 255)
+								{
+									isObject = true;
+									break;
+								}
+							}
+						}
+						if (isObject) break;
+					}
+
+					int indiceActual = (y * stride) + (x * bytesPorPixel);
+					if (isObject)
+					{
+						outputData[indiceActual] = outputData[indiceActual + 1] = outputData[indiceActual + 2] = 255;
+					}
+				}
+			}
+
+			Marshal.Copy(outputData, 0, bmpdataDilatado.Scan0, stride * btm.Height);
+
+			btm.UnlockBits(bmpdataOriginal);
+			btmDilatado.UnlockBits(bmpdataDilatado);
+			return btmDilatado;
+		}
+		public static Bitmap Cierre(Bitmap btm, int tamanoKernel)
+		{
+			Bitmap imagenDilatada = Dilatar(btm, tamanoKernel);
+			Bitmap imagenCerrada = Erosionar(imagenDilatada, tamanoKernel);
+			return imagenCerrada;
 		}
 	}
 }

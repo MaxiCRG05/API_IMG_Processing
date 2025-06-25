@@ -12,18 +12,18 @@ using WebService.Models;
 
 namespace WebService.Controllers.WEB
 {
-    public class InvariantesHuController : Controller
+    public class InvariantesHusController : Controller
     {
         private Context db = new Context();
 
-        // GET: InvariantesHu
+        // GET: InvariantesHus
         public async Task<ActionResult> Index()
         {
             var invariantesHu = db.InvariantesHu.Include(i => i.Objeto);
             return View(await invariantesHu.ToListAsync());
         }
 
-        // GET: InvariantesHu/Details/5
+        // GET: InvariantesHus/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,14 +38,14 @@ namespace WebService.Controllers.WEB
             return View(invariantesHu);
         }
 
-        // GET: InvariantesHu/Create
+        // GET: InvariantesHus/Create
         public ActionResult Create()
         {
             ViewBag.ObjetoID = new SelectList(db.Objetos, "ID", "Nombre");
             return View();
         }
 
-        // POST: InvariantesHu/Create
+        // POST: InvariantesHus/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -63,7 +63,7 @@ namespace WebService.Controllers.WEB
             return View(invariantesHu);
         }
 
-        // GET: InvariantesHu/Edit/5
+        // GET: InvariantesHus/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,7 +79,7 @@ namespace WebService.Controllers.WEB
             return View(invariantesHu);
         }
 
-        // POST: InvariantesHu/Edit/5
+        // POST: InvariantesHus/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -96,7 +96,7 @@ namespace WebService.Controllers.WEB
             return View(invariantesHu);
         }
 
-        // GET: InvariantesHu/Delete/5
+        // GET: InvariantesHus/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
@@ -111,7 +111,7 @@ namespace WebService.Controllers.WEB
             return View(invariantesHu);
         }
 
-        // POST: InvariantesHu/Delete/5
+        // POST: InvariantesHus/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)

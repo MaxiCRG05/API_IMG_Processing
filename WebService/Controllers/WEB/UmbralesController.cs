@@ -50,7 +50,7 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,RedNeuronalID,Umbral")] Umbrales umbrales)
+        public async Task<ActionResult> Create([Bind(Include = "ID,RedNeuronalID,Umbral")] Umbrales umbrales)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,RedNeuronalID,Umbral")] Umbrales umbrales)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,RedNeuronalID,Umbral")] Umbrales umbrales)
         {
             if (ModelState.IsValid)
             {

@@ -242,10 +242,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\API\ObjetosController.cs" />
+    <Compile Include="Controllers\API\PMLController.cs" />
     <Compile Include="Controllers\WEB\AuthController.cs" />
     <Compile Include="Controllers\WEB\HomeController.cs" />
     <Compile Include="Controllers\API\ProcesamientoController.cs" />
-    <Compile Include="Controllers\WEB\InvariantesHuController.cs" />
+    <Compile Include="Controllers\WEB\InvariantesHusController.cs" />
     <Compile Include="Controllers\WEB\ObjetosController.cs" />
     <Compile Include="Controllers\WEB\PesosController.cs" />
     <Compile Include="Controllers\WEB\ProyectosController.cs" />
@@ -256,9 +258,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202506240003045_Inicial.cs" />
-    <Compile Include="Migrations\202506240003045_Inicial.Designer.cs">
-      <DependentUpon>202506240003045_Inicial.cs</DependentUpon>
+    <Compile Include="Migrations\202506242317585_Inicial.cs" />
+    <Compile Include="Migrations\202506242317585_Inicial.Designer.cs">
+      <DependentUpon>202506242317585_Inicial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\InvariantesHu.cs" />
@@ -376,26 +378,16 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Usuarios\Create.cshtml" />
-    <Content Include="Views\Usuarios\Delete.cshtml" />
-    <Content Include="Views\Usuarios\Details.cshtml" />
-    <Content Include="Views\Usuarios\Edit.cshtml" />
-    <Content Include="Views\Usuarios\Index.cshtml" />
-    <Content Include="Views\Proyectos\Create.cshtml" />
-    <Content Include="Views\Proyectos\Delete.cshtml" />
-    <Content Include="Views\Proyectos\Details.cshtml" />
-    <Content Include="Views\Proyectos\Edit.cshtml" />
-    <Content Include="Views\Proyectos\Index.cshtml" />
     <Content Include="Views\Objetos\Create.cshtml" />
     <Content Include="Views\Objetos\Delete.cshtml" />
     <Content Include="Views\Objetos\Details.cshtml" />
     <Content Include="Views\Objetos\Edit.cshtml" />
     <Content Include="Views\Objetos\Index.cshtml" />
-    <Content Include="Views\InvariantesHu\Create.cshtml" />
-    <Content Include="Views\InvariantesHu\Delete.cshtml" />
-    <Content Include="Views\InvariantesHu\Details.cshtml" />
-    <Content Include="Views\InvariantesHu\Edit.cshtml" />
-    <Content Include="Views\InvariantesHu\Index.cshtml" />
+    <Content Include="Views\InvariantesHus\Create.cshtml" />
+    <Content Include="Views\InvariantesHus\Delete.cshtml" />
+    <Content Include="Views\InvariantesHus\Details.cshtml" />
+    <Content Include="Views\InvariantesHus\Edit.cshtml" />
+    <Content Include="Views\InvariantesHus\Index.cshtml" />
     <Content Include="Views\RedesNeuronales\Create.cshtml" />
     <Content Include="Views\RedesNeuronales\Delete.cshtml" />
     <Content Include="Views\RedesNeuronales\Details.cshtml" />
@@ -411,6 +403,16 @@
     <Content Include="Views\Umbrales\Details.cshtml" />
     <Content Include="Views\Umbrales\Edit.cshtml" />
     <Content Include="Views\Umbrales\Index.cshtml" />
+    <Content Include="Views\Usuarios\Create.cshtml" />
+    <Content Include="Views\Usuarios\Delete.cshtml" />
+    <Content Include="Views\Usuarios\Details.cshtml" />
+    <Content Include="Views\Usuarios\Edit.cshtml" />
+    <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Proyectos\Create.cshtml" />
+    <Content Include="Views\Proyectos\Delete.cshtml" />
+    <Content Include="Views\Proyectos\Details.cshtml" />
+    <Content Include="Views\Proyectos\Edit.cshtml" />
+    <Content Include="Views\Proyectos\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -443,8 +445,8 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202506240003045_Inicial.resx">
-      <DependentUpon>202506240003045_Inicial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202506242317585_Inicial.resx">
+      <DependentUpon>202506242317585_Inicial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
