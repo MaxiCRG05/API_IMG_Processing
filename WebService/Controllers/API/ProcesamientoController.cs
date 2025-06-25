@@ -132,10 +132,10 @@ namespace WebService.Controllers
 				var stream = await file.ReadAsStreamAsync();
 				Bitmap image = new Bitmap(stream);
 
-				Bitmap grayImage = MetodosProcesamiento.Etiquetado(image);
+				Bitmap etiquetado = MetodosProcesamiento.Etiquetado(image);
 
 				MemoryStream ms = new MemoryStream();
-				grayImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				etiquetado.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 				ms.Position = 0;
 
 				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
@@ -169,9 +169,9 @@ namespace WebService.Controllers
 				List<ResultadoMomentosHu> momentosHu = MetodosProcesamiento.CalcularMomentosHuPorObjeto(originalImage);
 				int totalObjetos = momentosHu.Count;
 
-				Bitmap markedImage = new Bitmap(MetodosProcesamiento.Binarizar(originalImage));
+				Bitmap invariancias = new Bitmap(MetodosProcesamiento.Binarizar(originalImage));
 
-				using (Graphics g = Graphics.FromImage(markedImage))
+				using (Graphics g = Graphics.FromImage(invariancias))
 				{
 					Pen redPen = new Pen(Color.Red, 3);
 					Font font = new Font("Arial", 12, FontStyle.Bold);
@@ -199,12 +199,12 @@ namespace WebService.Controllers
 					string textoTotal = $"Total objetos: {totalObjetos}";
 					SizeF textSize = g.MeasureString(textoTotal, font);
 					g.DrawString(textoTotal, font, redBrush,
-								markedImage.Width - textSize.Width - 10,
-								markedImage.Height - textSize.Height - 10);
+								invariancias.Width - textSize.Width - 10,
+								invariancias.Height - textSize.Height - 10);
 				}
 
 				MemoryStream ms = new MemoryStream();
-				markedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+				invariancias.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 				string imageBase64 = Convert.ToBase64String(ms.ToArray());
 
 				var response = new
@@ -222,7 +222,7 @@ namespace WebService.Controllers
 				result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
 				originalImage.Dispose();
-				markedImage.Dispose();
+				invariancias.Dispose();
 				ms.Dispose();
 
 				return result;

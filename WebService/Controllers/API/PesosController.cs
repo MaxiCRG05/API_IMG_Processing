@@ -14,44 +14,44 @@ using WebService.Models;
 
 namespace WebService.Controllers.API
 {
-    public class ObjetosController : ApiController
+    public class PesosController : ApiController
     {
         private Context db = new Context();
 
-        // GET: api/Objetos
-        public IQueryable<Objetos> GetObjetos()
+		// GET: api/Pesos/
+		public IQueryable<Pesos> GetPesos()
         {
-            return db.Objetos;
+            return db.Pesos;
         }
 
-        // GET: api/Objetos/5
-        [ResponseType(typeof(Objetos))]
-        public async Task<IHttpActionResult> GetObjetos(int id)
+        // GET: api/Pesos/5
+        [ResponseType(typeof(Pesos))]
+        public async Task<IHttpActionResult> GetPesos(int id)
         {
-            Objetos objetos = await db.Objetos.FindAsync(id);
-            if (objetos == null)
+            Pesos pesos = await db.Pesos.FindAsync(id);
+            if (pesos == null)
             {
                 return NotFound();
             }
 
-            return Ok(objetos);
+            return Ok(pesos);
         }
 
-        // PUT: api/Objetos/5
+        // PUT: api/Pesos/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutObjetos(int id, Objetos objetos)
+        public async Task<IHttpActionResult> PutPesos(int id, Pesos pesos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != objetos.ID)
+            if (id != pesos.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(objetos).State = EntityState.Modified;
+            db.Entry(pesos).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace WebService.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ObjetosExists(id))
+                if (!PesosExists(id))
                 {
                     return NotFound();
                 }
@@ -72,35 +72,35 @@ namespace WebService.Controllers.API
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Objetos
-        [ResponseType(typeof(Objetos))]
-        public async Task<IHttpActionResult> PostObjetos(Objetos objetos)
+        // POST: api/Pesos
+        [ResponseType(typeof(Pesos))]
+        public async Task<IHttpActionResult> PostPesos(Pesos pesos)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Objetos.Add(objetos);
+            db.Pesos.Add(pesos);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = objetos.ID }, objetos);
+            return CreatedAtRoute("DefaultApi", new { id = pesos.ID }, pesos);
         }
 
-        // DELETE: api/Objetos/5
-        [ResponseType(typeof(Objetos))]
-        public async Task<IHttpActionResult> DeleteObjetos(int id)
+        // DELETE: api/Pesos/5
+        [ResponseType(typeof(Pesos))]
+        public async Task<IHttpActionResult> DeletePesos(int id)
         {
-            Objetos objetos = await db.Objetos.FindAsync(id);
-            if (objetos == null)
+            Pesos pesos = await db.Pesos.FindAsync(id);
+            if (pesos == null)
             {
                 return NotFound();
             }
 
-            db.Objetos.Remove(objetos);
+            db.Pesos.Remove(pesos);
             await db.SaveChangesAsync();
 
-            return Ok(objetos);
+            return Ok(pesos);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,9 +112,9 @@ namespace WebService.Controllers.API
             base.Dispose(disposing);
         }
 
-        private bool ObjetosExists(int id)
+        private bool PesosExists(int id)
         {
-            return db.Objetos.Count(e => e.ID == id) > 0;
+            return db.Pesos.Count(e => e.ID == id) > 0;
         }
     }
 }

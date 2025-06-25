@@ -14,11 +14,24 @@ namespace WebService
             // Rutas de Web API
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{action}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
-        }
+			config.Routes.MapHttpRoute(
+				name: "ProcesamientoApi",
+				routeTemplate: "api/Procesamiento/{action}/{id}",
+				defaults: new { controller = "Procesamiento", id = RouteParameter.Optional }
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "PML",
+				routeTemplate: "api/PML/{action}/{id}",
+				defaults: new { controller = "PML",id = RouteParameter.Optional }
+			);
+
+			config.Routes.MapHttpRoute(
+				name: "DefaultApi",
+				routeTemplate: "api/{controller}/{id}",
+				defaults: new { id = RouteParameter.Optional }
+			);
+		}
     }
 }
+

@@ -242,11 +242,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\API\ObjetosController.cs" />
     <Compile Include="Controllers\API\PMLController.cs" />
+    <Compile Include="Controllers\API\PesosController.cs" />
+    <Compile Include="Controllers\API\ProcesamientoController.cs" />
     <Compile Include="Controllers\WEB\AuthController.cs" />
     <Compile Include="Controllers\WEB\HomeController.cs" />
-    <Compile Include="Controllers\API\ProcesamientoController.cs" />
     <Compile Include="Controllers\WEB\InvariantesHusController.cs" />
     <Compile Include="Controllers\WEB\ObjetosController.cs" />
     <Compile Include="Controllers\WEB\PesosController.cs" />

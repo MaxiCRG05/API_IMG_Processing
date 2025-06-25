@@ -21,9 +21,51 @@ namespace WebService.Controllers.API
 			return db.Pesos.ToList();
 		}
 
+		[HttpGet]
+		[ActionName("Umbrales")]
+		public List<Umbrales> Umbrales()
+		{
+			return db.Umbrales.ToList();
+		}
+
+		[HttpGet]
+		[ActionName("RedesNeuronales")]
+		public List<RedesNeuronales> RedesNeuronales()
+		{
+			return db.RedNeuronales.ToList();
+		}
+		
+		[HttpGet]
+		[ActionName("InvariantesHu")]
+		public List<InvariantesHu> InvariantesHu()
+		{
+			return db.InvariantesHu.ToList();
+		}
+
+		[HttpGet]
+		[ActionName("Objetos")]
+		public List<Objetos> Objetos()
+		{
+			return db.Objetos.ToList();
+		}
+
+		[HttpGet]
+		[ActionName("Proyectos")]
+		public List<Proyectos> Proyectos()
+		{
+			return db.Proyectos.ToList();
+		}
+
+		[HttpGet]
+		[ActionName("Usuarios")]
+		public List<Usuarios> Usuarios()
+		{
+			return db.Usuario.ToList();
+		}
+
 		[HttpPut]
 		[ActionName("Actualizar")]
-		public void Put()
+		public void Put()	
 		{
 			db.Set<Pesos>().RemoveRange(db.Pesos);
 		}
