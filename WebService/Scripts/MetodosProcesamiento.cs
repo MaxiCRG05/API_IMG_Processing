@@ -248,7 +248,7 @@ namespace WebService.Scripts
 
 			for (int label = 1; label <= maxLabel; label++)
 			{
-				if (areas[label] <= 2000) continue; 
+				if (areas[label] <= 1500) continue; 
 
 				int[,] objetoBinario = new int[matrizBinaria.GetLength(0), matrizBinaria.GetLength(1)];
 				for (int y = 0; y < objetoBinario.GetLength(0); y++)

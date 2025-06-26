@@ -5,14 +5,14 @@ using System.Web.Http;
 
 namespace WebService
 {
-    public static class WebApiConfig
-    {
-        public static void Register(HttpConfiguration config)
-        {
-            // Configuración y servicios de Web API
+	public static class WebApiConfig
+	{
+		public static void Register(HttpConfiguration config)
+		{
+			// Configuración y servicios de Web API
 
-            // Rutas de Web API
-            config.MapHttpAttributeRoutes();
+			// Rutas de Web API
+			config.MapHttpAttributeRoutes();
 
 			config.Routes.MapHttpRoute(
 				name: "ProcesamientoApi",
@@ -32,6 +32,6 @@ namespace WebService
 				defaults: new { id = RouteParameter.Optional }
 			);
 		}
-    }
+	}
 }
 
