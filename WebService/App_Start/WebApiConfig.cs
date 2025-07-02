@@ -21,9 +21,15 @@ namespace WebService
 			);
 
 			config.Routes.MapHttpRoute(
-				name: "PML",
+				name: "PMLApi",
 				routeTemplate: "api/PML/{action}/{id}",
-				defaults: new { controller = "PML",id = RouteParameter.Optional }
+				defaults: new { controller = "PML", id = RouteParameter.Optional }
+			);
+			
+			config.Routes.MapHttpRoute(
+				name: "AuthApi",
+				routeTemplate: "api/Auth/{action}/{id}",
+				defaults: new { controller = "Auth", id = RouteParameter.Optional }
 			);
 
 			config.Routes.MapHttpRoute(

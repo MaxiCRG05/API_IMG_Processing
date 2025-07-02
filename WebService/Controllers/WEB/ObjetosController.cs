@@ -19,7 +19,8 @@ namespace WebService.Controllers.WEB
         // GET: Objetos
         public async Task<ActionResult> Index()
         {
-            return View(await db.Objetos.ToListAsync());
+            var objetos = db.Objetos.Include(o => o.Categorias);
+            return View(await objetos.ToListAsync());
         }
 
         // GET: Objetos/Details/5
@@ -29,17 +30,18 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Objetos objetos = await db.Objetos.FindAsync(id);
-            if (objetos == null)
+            Objeto objeto = await db.Objetos.FindAsync(id);
+            if (objeto == null)
             {
                 return HttpNotFound();
             }
-            return View(objetos);
+            return View(objeto);
         }
 
         // GET: Objetos/Create
         public ActionResult Create()
         {
+            ViewBag.CategoriasID = new SelectList(db.Categorias, "ID", "Nombre");
             return View();
         }
 
@@ -48,16 +50,17 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,Nombre,Clasificación")] Objetos objetos)
+        public async Task<ActionResult> Create([Bind(Include = "ID,CategoriasID,Nombre,Imagen")] Objeto objeto)
         {
             if (ModelState.IsValid)
             {
-                db.Objetos.Add(objetos);
+                db.Objetos.Add(objeto);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(objetos);
+            ViewBag.CategoriasID = new SelectList(db.Categorias, "ID", "Nombre", objeto.CategoriasID);
+            return View(objeto);
         }
 
         // GET: Objetos/Edit/5
@@ -67,12 +70,13 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Objetos objetos = await db.Objetos.FindAsync(id);
-            if (objetos == null)
+            Objeto objeto = await db.Objetos.FindAsync(id);
+            if (objeto == null)
             {
                 return HttpNotFound();
             }
-            return View(objetos);
+            ViewBag.CategoriasID = new SelectList(db.Categorias, "ID", "Nombre", objeto.CategoriasID);
+            return View(objeto);
         }
 
         // POST: Objetos/Edit/5
@@ -80,15 +84,16 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,Nombre,Clasificación")] Objetos objetos)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,CategoriasID,Nombre,Imagen")] Objeto objeto)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(objetos).State = EntityState.Modified;
+                db.Entry(objeto).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(objetos);
+            ViewBag.CategoriasID = new SelectList(db.Categorias, "ID", "Nombre", objeto.CategoriasID);
+            return View(objeto);
         }
 
         // GET: Objetos/Delete/5
@@ -98,12 +103,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Objetos objetos = await db.Objetos.FindAsync(id);
-            if (objetos == null)
+            Objeto objeto = await db.Objetos.FindAsync(id);
+            if (objeto == null)
             {
                 return HttpNotFound();
             }
-            return View(objetos);
+            return View(objeto);
         }
 
         // POST: Objetos/Delete/5
@@ -111,8 +116,8 @@ namespace WebService.Controllers.WEB
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Objetos objetos = await db.Objetos.FindAsync(id);
-            db.Objetos.Remove(objetos);
+            Objeto objeto = await db.Objetos.FindAsync(id);
+            db.Objetos.Remove(objeto);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

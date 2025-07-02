@@ -7,6 +7,7 @@ using System.Web;
 
 namespace WebService.Models
 {
+	[Table("InvariantesHu")]
 	public class InvariantesHu
 	{
 		[Key]
@@ -20,6 +21,6 @@ namespace WebService.Models
 		public double Hu6 { get; set; }
 		public double Hu7 { get; set; }
 		[ForeignKey("ObjetoID")]
-		public Objetos Objeto { get; set; }
+		public Objeto Objeto { get; set; }
 	}
 }

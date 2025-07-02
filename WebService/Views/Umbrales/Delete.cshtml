@@ -1,4 +1,4 @@
-﻿@model WebService.Models.Umbrales
+﻿@model WebService.Models.Umbral
 
 @{
     ViewBag.Title = "Delete";
@@ -9,23 +9,23 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Umbrales</h4>
+    <h4>Umbral</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.RedesNeuronales.Arquitectura)
+            @Html.DisplayNameFor(model => model.RedNeuronal.Arquitectura)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RedesNeuronales.Arquitectura)
+            @Html.DisplayFor(model => model.RedNeuronal.Arquitectura)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Umbral)
+            @Html.DisplayNameFor(model => model.Umbrales)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Umbral)
+            @Html.DisplayFor(model => model.Umbrales)
         </dd>
 
     </dl>

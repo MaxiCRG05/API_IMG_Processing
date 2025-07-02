@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebService.Models.RedesNeuronales>
+﻿@model IEnumerable<WebService.Models.RedNeuronal>
 
 @{
     ViewBag.Title = "Index";
@@ -25,7 +25,7 @@
             @Html.DisplayNameFor(model => model.Alfa)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ErrorMinimo)
+            @Html.DisplayNameFor(model => model.ErrorMin)
         </th>
         <th></th>
     </tr>
@@ -45,7 +45,7 @@
             @Html.DisplayFor(modelItem => item.Alfa)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.ErrorMinimo)
+            @Html.DisplayFor(modelItem => item.ErrorMin)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

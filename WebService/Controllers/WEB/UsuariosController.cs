@@ -19,7 +19,7 @@ namespace WebService.Controllers.WEB
         // GET: Usuarios
         public async Task<ActionResult> Index()
         {
-            return View(await db.Usuario.ToListAsync());
+            return View(await db.Usuarios.ToListAsync());
         }
 
         // GET: Usuarios/Details/5
@@ -29,12 +29,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Usuarios usuarios = await db.Usuario.FindAsync(id);
-            if (usuarios == null)
+            Usuario usuario = await db.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
                 return HttpNotFound();
             }
-            return View(usuarios);
+            return View(usuario);
         }
 
         // GET: Usuarios/Create
@@ -48,16 +48,16 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,Nombre,Correo,Contraseña")] Usuarios usuarios)
+        public async Task<ActionResult> Create([Bind(Include = "ID,Nombre,Correo,Contraseña,Rol")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
-                db.Usuario.Add(usuarios);
+                db.Usuarios.Add(usuario);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(usuarios);
+            return View(usuario);
         }
 
         // GET: Usuarios/Edit/5
@@ -67,12 +67,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Usuarios usuarios = await db.Usuario.FindAsync(id);
-            if (usuarios == null)
+            Usuario usuario = await db.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
                 return HttpNotFound();
             }
-            return View(usuarios);
+            return View(usuario);
         }
 
         // POST: Usuarios/Edit/5
@@ -80,15 +80,15 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,Nombre,Correo,Contraseña")] Usuarios usuarios)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,Nombre,Correo,Contraseña,Rol")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(usuarios).State = EntityState.Modified;
+                db.Entry(usuario).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(usuarios);
+            return View(usuario);
         }
 
         // GET: Usuarios/Delete/5
@@ -98,12 +98,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Usuarios usuarios = await db.Usuario.FindAsync(id);
-            if (usuarios == null)
+            Usuario usuario = await db.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
                 return HttpNotFound();
             }
-            return View(usuarios);
+            return View(usuario);
         }
 
         // POST: Usuarios/Delete/5
@@ -111,8 +111,8 @@ namespace WebService.Controllers.WEB
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Usuarios usuarios = await db.Usuario.FindAsync(id);
-            db.Usuario.Remove(usuarios);
+            Usuario usuario = await db.Usuarios.FindAsync(id);
+            db.Usuarios.Remove(usuario);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

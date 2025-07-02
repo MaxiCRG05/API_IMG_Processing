@@ -281,5 +281,5 @@ C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebS
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.csproj.Up2Date
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.dll
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.pdb
-C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.Migrations.Inicial.resources
+C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.Migrations.InitialCreate.resources
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.csproj.GenerateResource.cache

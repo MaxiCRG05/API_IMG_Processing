@@ -19,7 +19,7 @@ namespace WebService.Controllers.WEB
         // GET: Pesos
         public async Task<ActionResult> Index()
         {
-            var pesos = db.Pesos.Include(p => p.RedesNeuronales);
+            var pesos = db.Pesos.Include(p => p.RedNeuronal);
             return View(await pesos.ToListAsync());
         }
 
@@ -30,18 +30,18 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pesos pesos = await db.Pesos.FindAsync(id);
-            if (pesos == null)
+            Peso peso = await db.Pesos.FindAsync(id);
+            if (peso == null)
             {
                 return HttpNotFound();
             }
-            return View(pesos);
+            return View(peso);
         }
 
         // GET: Pesos/Create
         public ActionResult Create()
         {
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura");
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura");
             return View();
         }
 
@@ -50,17 +50,17 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,RedNeuronalID,Peso")] Pesos pesos)
+        public async Task<ActionResult> Create([Bind(Include = "ID,RedNeuronalID,Pesos")] Peso peso)
         {
             if (ModelState.IsValid)
             {
-                db.Pesos.Add(pesos);
+                db.Pesos.Add(peso);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura", pesos.RedNeuronalID);
-            return View(pesos);
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura", peso.RedNeuronalID);
+            return View(peso);
         }
 
         // GET: Pesos/Edit/5
@@ -70,13 +70,13 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pesos pesos = await db.Pesos.FindAsync(id);
-            if (pesos == null)
+            Peso peso = await db.Pesos.FindAsync(id);
+            if (peso == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura", pesos.RedNeuronalID);
-            return View(pesos);
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura", peso.RedNeuronalID);
+            return View(peso);
         }
 
         // POST: Pesos/Edit/5
@@ -84,16 +84,16 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,RedNeuronalID,Peso")] Pesos pesos)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,RedNeuronalID,Pesos")] Peso peso)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(pesos).State = EntityState.Modified;
+                db.Entry(peso).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura", pesos.RedNeuronalID);
-            return View(pesos);
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura", peso.RedNeuronalID);
+            return View(peso);
         }
 
         // GET: Pesos/Delete/5
@@ -103,12 +103,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Pesos pesos = await db.Pesos.FindAsync(id);
-            if (pesos == null)
+            Peso peso = await db.Pesos.FindAsync(id);
+            if (peso == null)
             {
                 return HttpNotFound();
             }
-            return View(pesos);
+            return View(peso);
         }
 
         // POST: Pesos/Delete/5
@@ -116,8 +116,8 @@ namespace WebService.Controllers.WEB
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Pesos pesos = await db.Pesos.FindAsync(id);
-            db.Pesos.Remove(pesos);
+            Peso peso = await db.Pesos.FindAsync(id);
+            db.Pesos.Remove(peso);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

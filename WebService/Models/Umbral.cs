@@ -7,13 +7,14 @@ using System.Web;
 
 namespace WebService.Models
 {
-	public class Proyectos
+	[Table("Umbrales")]
+	public class Umbral
 	{
 		[Key]
 		public int ID { get; set; }
-		public int UsuariosID { get; set; }
-		public string Nombre { get; set; }
-		[ForeignKey("UsuariosID")]
-		public Usuarios Usuario { get; set; }
+		public int RedNeuronalID { get; set; }
+		public double Umbrales { get; set; }
+		[ForeignKey("RedNeuronalID")]
+		public RedNeuronal RedNeuronal { get; set; }
 	}
 }

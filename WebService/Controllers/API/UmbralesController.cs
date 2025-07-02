@@ -19,39 +19,39 @@ namespace WebService.Controllers.API
         private Context db = new Context();
 
         // GET: api/Umbrales
-        public IQueryable<Umbrales> GetUmbrales()
+        public IQueryable<Umbral> GetUmbrales()
         {
             return db.Umbrales;
         }
 
         // GET: api/Umbrales/5
-        [ResponseType(typeof(Umbrales))]
-        public async Task<IHttpActionResult> GetUmbrales(int id)
+        [ResponseType(typeof(Umbral))]
+        public async Task<IHttpActionResult> GetUmbral(int id)
         {
-            Umbrales umbrales = await db.Umbrales.FindAsync(id);
-            if (umbrales == null)
+            Umbral umbral = await db.Umbrales.FindAsync(id);
+            if (umbral == null)
             {
                 return NotFound();
             }
 
-            return Ok(umbrales);
+            return Ok(umbral);
         }
 
         // PUT: api/Umbrales/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutUmbrales(int id, Umbrales umbrales)
+        public async Task<IHttpActionResult> PutUmbral(int id, Umbral umbral)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != umbrales.ID)
+            if (id != umbral.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(umbrales).State = EntityState.Modified;
+            db.Entry(umbral).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace WebService.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UmbralesExists(id))
+                if (!UmbralExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +73,34 @@ namespace WebService.Controllers.API
         }
 
         // POST: api/Umbrales
-        [ResponseType(typeof(Umbrales))]
-        public async Task<IHttpActionResult> PostUmbrales(Umbrales umbrales)
+        [ResponseType(typeof(Umbral))]
+        public async Task<IHttpActionResult> PostUmbral(Umbral umbral)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Umbrales.Add(umbrales);
+            db.Umbrales.Add(umbral);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = umbrales.ID }, umbrales);
+            return CreatedAtRoute("DefaultApi", new { id = umbral.ID }, umbral);
         }
 
         // DELETE: api/Umbrales/5
-        [ResponseType(typeof(Umbrales))]
-        public async Task<IHttpActionResult> DeleteUmbrales(int id)
+        [ResponseType(typeof(Umbral))]
+        public async Task<IHttpActionResult> DeleteUmbral(int id)
         {
-            Umbrales umbrales = await db.Umbrales.FindAsync(id);
-            if (umbrales == null)
+            Umbral umbral = await db.Umbrales.FindAsync(id);
+            if (umbral == null)
             {
                 return NotFound();
             }
 
-            db.Umbrales.Remove(umbrales);
+            db.Umbrales.Remove(umbral);
             await db.SaveChangesAsync();
 
-            return Ok(umbrales);
+            return Ok(umbral);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,7 +112,7 @@ namespace WebService.Controllers.API
             base.Dispose(disposing);
         }
 
-        private bool UmbralesExists(int id)
+        private bool UmbralExists(int id)
         {
             return db.Umbrales.Count(e => e.ID == id) > 0;
         }

@@ -19,39 +19,39 @@ namespace WebService.Controllers.API
         private Context db = new Context();
 
         // GET: api/RedesNeuronales
-        public IQueryable<RedesNeuronales> GetRedNeuronales()
+        public IQueryable<RedNeuronal> GetRedesNeuronales()
         {
-            return db.RedNeuronales;
+            return db.RedesNeuronales;
         }
 
         // GET: api/RedesNeuronales/5
-        [ResponseType(typeof(RedesNeuronales))]
-        public async Task<IHttpActionResult> GetRedesNeuronales(int id)
+        [ResponseType(typeof(RedNeuronal))]
+        public async Task<IHttpActionResult> GetRedNeuronal(int id)
         {
-            RedesNeuronales redesNeuronales = await db.RedNeuronales.FindAsync(id);
-            if (redesNeuronales == null)
+            RedNeuronal redNeuronal = await db.RedesNeuronales.FindAsync(id);
+            if (redNeuronal == null)
             {
                 return NotFound();
             }
 
-            return Ok(redesNeuronales);
+            return Ok(redNeuronal);
         }
 
         // PUT: api/RedesNeuronales/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutRedesNeuronales(int id, RedesNeuronales redesNeuronales)
+        public async Task<IHttpActionResult> PutRedNeuronal(int id, RedNeuronal redNeuronal)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != redesNeuronales.ID)
+            if (id != redNeuronal.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(redesNeuronales).State = EntityState.Modified;
+            db.Entry(redNeuronal).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace WebService.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RedesNeuronalesExists(id))
+                if (!RedNeuronalExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +73,34 @@ namespace WebService.Controllers.API
         }
 
         // POST: api/RedesNeuronales
-        [ResponseType(typeof(RedesNeuronales))]
-        public async Task<IHttpActionResult> PostRedesNeuronales(RedesNeuronales redesNeuronales)
+        [ResponseType(typeof(RedNeuronal))]
+        public async Task<IHttpActionResult> PostRedNeuronal(RedNeuronal redNeuronal)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.RedNeuronales.Add(redesNeuronales);
+            db.RedesNeuronales.Add(redNeuronal);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = redesNeuronales.ID }, redesNeuronales);
+            return CreatedAtRoute("DefaultApi", new { id = redNeuronal.ID }, redNeuronal);
         }
 
         // DELETE: api/RedesNeuronales/5
-        [ResponseType(typeof(RedesNeuronales))]
-        public async Task<IHttpActionResult> DeleteRedesNeuronales(int id)
+        [ResponseType(typeof(RedNeuronal))]
+        public async Task<IHttpActionResult> DeleteRedNeuronal(int id)
         {
-            RedesNeuronales redesNeuronales = await db.RedNeuronales.FindAsync(id);
-            if (redesNeuronales == null)
+            RedNeuronal redNeuronal = await db.RedesNeuronales.FindAsync(id);
+            if (redNeuronal == null)
             {
                 return NotFound();
             }
 
-            db.RedNeuronales.Remove(redesNeuronales);
+            db.RedesNeuronales.Remove(redNeuronal);
             await db.SaveChangesAsync();
 
-            return Ok(redesNeuronales);
+            return Ok(redNeuronal);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,9 +112,9 @@ namespace WebService.Controllers.API
             base.Dispose(disposing);
         }
 
-        private bool RedesNeuronalesExists(int id)
+        private bool RedNeuronalExists(int id)
         {
-            return db.RedNeuronales.Count(e => e.ID == id) > 0;
+            return db.RedesNeuronales.Count(e => e.ID == id) > 0;
         }
     }
 }

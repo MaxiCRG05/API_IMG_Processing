@@ -19,39 +19,39 @@ namespace WebService.Controllers.API
         private Context db = new Context();
 
         // GET: api/Usuarios
-        public IQueryable<Usuarios> GetUsuario()
+        public IQueryable<Usuario> GetUsuarios()
         {
-            return db.Usuario;
+            return db.Usuarios;
         }
 
         // GET: api/Usuarios/5
-        [ResponseType(typeof(Usuarios))]
-        public async Task<IHttpActionResult> GetUsuarios(int id)
+        [ResponseType(typeof(Usuario))]
+        public async Task<IHttpActionResult> GetUsuario(int id)
         {
-            Usuarios usuarios = await db.Usuario.FindAsync(id);
-            if (usuarios == null)
+            Usuario usuario = await db.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
                 return NotFound();
             }
 
-            return Ok(usuarios);
+            return Ok(usuario);
         }
 
         // PUT: api/Usuarios/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutUsuarios(int id, Usuarios usuarios)
+        public async Task<IHttpActionResult> PutUsuario(int id, Usuario usuario)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != usuarios.ID)
+            if (id != usuario.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(usuarios).State = EntityState.Modified;
+            db.Entry(usuario).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace WebService.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UsuariosExists(id))
+                if (!UsuarioExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +73,34 @@ namespace WebService.Controllers.API
         }
 
         // POST: api/Usuarios
-        [ResponseType(typeof(Usuarios))]
-        public async Task<IHttpActionResult> PostUsuarios(Usuarios usuarios)
+        [ResponseType(typeof(Usuario))]
+        public async Task<IHttpActionResult> PostUsuario(Usuario usuario)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Usuario.Add(usuarios);
+            db.Usuarios.Add(usuario);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = usuarios.ID }, usuarios);
+            return CreatedAtRoute("DefaultApi", new { id = usuario.ID }, usuario);
         }
 
         // DELETE: api/Usuarios/5
-        [ResponseType(typeof(Usuarios))]
-        public async Task<IHttpActionResult> DeleteUsuarios(int id)
+        [ResponseType(typeof(Usuario))]
+        public async Task<IHttpActionResult> DeleteUsuario(int id)
         {
-            Usuarios usuarios = await db.Usuario.FindAsync(id);
-            if (usuarios == null)
+            Usuario usuario = await db.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
                 return NotFound();
             }
 
-            db.Usuario.Remove(usuarios);
+            db.Usuarios.Remove(usuario);
             await db.SaveChangesAsync();
 
-            return Ok(usuarios);
+            return Ok(usuario);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,9 +112,9 @@ namespace WebService.Controllers.API
             base.Dispose(disposing);
         }
 
-        private bool UsuariosExists(int id)
+        private bool UsuarioExists(int id)
         {
-            return db.Usuario.Count(e => e.ID == id) > 0;
+            return db.Usuarios.Count(e => e.ID == id) > 0;
         }
     }
 }

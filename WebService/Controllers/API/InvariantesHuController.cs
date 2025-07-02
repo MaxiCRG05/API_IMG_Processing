@@ -18,13 +18,13 @@ namespace WebService.Controllers.API
     {
         private Context db = new Context();
 
-        // GET: api/InvariantesHus
+        // GET: api/InvariantesHu
         public IQueryable<InvariantesHu> GetInvariantesHu()
         {
             return db.InvariantesHu;
         }
 
-        // GET: api/InvariantesHus/5
+        // GET: api/InvariantesHu/5
         [ResponseType(typeof(InvariantesHu))]
         public async Task<IHttpActionResult> GetInvariantesHu(int id)
         {
@@ -37,7 +37,7 @@ namespace WebService.Controllers.API
             return Ok(invariantesHu);
         }
 
-        // PUT: api/InvariantesHus/5
+        // PUT: api/InvariantesHu/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutInvariantesHu(int id, InvariantesHu invariantesHu)
         {
@@ -72,7 +72,7 @@ namespace WebService.Controllers.API
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/InvariantesHus
+        // POST: api/InvariantesHu
         [ResponseType(typeof(InvariantesHu))]
         public async Task<IHttpActionResult> PostInvariantesHu(InvariantesHu invariantesHu)
         {
@@ -87,7 +87,7 @@ namespace WebService.Controllers.API
             return CreatedAtRoute("DefaultApi", new { id = invariantesHu.ID }, invariantesHu);
         }
 
-        // DELETE: api/InvariantesHus/5
+        // DELETE: api/InvariantesHu/5
         [ResponseType(typeof(InvariantesHu))]
         public async Task<IHttpActionResult> DeleteInvariantesHu(int id)
         {

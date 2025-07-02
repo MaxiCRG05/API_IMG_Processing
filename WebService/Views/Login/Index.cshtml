@@ -1,0 +1,193 @@
+﻿@{
+	Layout = null; 
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Visión Artificial</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.google.com/specimen/Oswald&display=swap" rel="stylesheet">
+
+	<script>
+		function loginConGoogle() {
+			const clientId = '762196913246-1f707v5f5theghpt6aamv644sgapsp1v.apps.googleusercontent.com';
+			const redirectUri = 'http://127.0.0.1:35271/Login/Acceder';
+			const scope = 'email profile';
+			const responseType = 'token';
+
+			const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&include_granted_scopes=true`;
+
+			window.open(authUrl, '_blank', 'width=500,height=600');
+		}
+	</script>
+
+	<style>
+
+		body {
+			font-family: "Inter", sans-serif;
+			background-color: #f5f5f5;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+			color: #333;
+		}
+
+		.login-container {
+			background-color: white;
+			padding: 2.5rem;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			width: 100%;
+			max-width: 400px;
+			text-align: center;
+		}
+
+		h1, h2 {
+			font-family: "Oswald", cursive;
+			color: #000000;
+		}
+
+		h1 {
+			font-size: 52px;
+		}
+
+		h2 {
+			font-size: 18px;
+			padding-bottom: 5%;
+		}
+
+		.google-btn {
+			background-color: #545E75;
+			color: white;
+			border: none;
+			padding: 12px 20px;
+			border-radius: 4px;
+			font-size: 1rem;
+			cursor: pointer;
+			width: 100%;
+			margin-bottom: 1.5rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+		}
+
+		.divider {
+			display: flex;
+			align-items: center;
+			margin: 1.5rem 0;
+			color: #95a5a6;
+		}
+
+			.divider::before, .divider::after {
+				content: "";
+				flex: 1;
+				border-bottom: 1px solid #ddd;
+			}
+
+			.divider::before {
+				margin-right: 10px;
+			}
+
+			.divider::after {
+				margin-left: 10px;
+			}
+
+		.form-group {
+			margin-bottom: 1.5rem;
+			text-align: left;
+		}
+
+			.form-group label {
+				display: block;
+				margin-bottom: 0.5rem;
+				font-size: 0.9rem;
+				color: #7f8c8d;
+			}
+
+			.form-group input {
+				width: 100%;
+				padding: 12px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				font-size: 1rem;
+			}
+
+		.password-link {
+			text-align: left;
+			margin-bottom: 1.5rem;
+		}
+
+			.password-link a {
+				color: #3498db;
+				text-decoration: none;
+				font-size: 0.9rem;
+			}
+
+		.login-btn {
+			background-color: #82A0BC;
+			color: white;
+			border: none;
+			padding: 12px;
+			border-radius: 4px;
+			font-size: 1rem;
+			cursor: pointer;
+			width: 100%;
+			margin-bottom: 1.5rem;
+		}
+
+		.signup-link {
+			font-size: 0.9rem;
+			color: #7f8c8d;
+		}
+
+			.signup-link a {
+				color: #3498db;
+				text-decoration: none;
+			}
+	</style>
+</head>
+<body>
+	<div class="login-container">
+		<h1>¡BIENVENIDO!</h1>
+		<h2>UTILIZA ESTE SITIO PARA CREAR PROYECTOS CON VISIÓN ARTIFICIAL PARA IDENTIFICAR OBJETOS EN TUS IMÁGENES.</h2>
+		<br/>
+		<button class="google-btn" onclick="loginConGoogle()">
+			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
+				<path d="M12.545 10.239v3.821h5.445c-0.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866 0.549 3.921 1.453l2.814-2.814c-1.786-1.667-4.166-2.698-6.735-2.698-5.522 0-10 4.477-10 10s4.478 10 10 10c8.396 0 10-7.524 10-10 0-0.67-0.069-1.325-0.189-1.961h-9.811z"></path>
+			</svg>
+			Iniciar sesión con Google
+		</button>
+
+		<div class="divider">o</div>
+
+		<form asp-action="Login" method="post">
+			<div class="form-group">
+				<label for="email">Correo electrónico</label>
+				<input type="email" id="email" name="email" placeholder="Ingresa tu email" required>
+			</div>
+
+			<div class="form-group">
+				<label for="password">Contraseña</label>
+				<input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+			</div> 
+
+			<div class="password-link">
+				<a href="#">Recuperar contraseña</a>
+			</div>
+
+			<button type="submit" class="login-btn">Iniciar sesión →</button>
+		</form>
+
+		<div class="signup-link">
+			¿No tienes cuenta? <a href="#">Crear un usuario</a>.
+		</div>
+	</div>
+</body>
+</html>

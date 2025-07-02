@@ -1,4 +1,4 @@
-﻿@model WebService.Models.Pesos
+﻿@model WebService.Models.Peso
 
 @{
     ViewBag.Title = "Details";
@@ -8,23 +8,23 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Pesos</h4>
+    <h4>Peso</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.RedesNeuronales.Arquitectura)
+            @Html.DisplayNameFor(model => model.RedNeuronal.Arquitectura)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RedesNeuronales.Arquitectura)
+            @Html.DisplayFor(model => model.RedNeuronal.Arquitectura)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Peso)
+            @Html.DisplayNameFor(model => model.Pesos)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Peso)
+            @Html.DisplayFor(model => model.Pesos)
         </dd>
 
     </dl>

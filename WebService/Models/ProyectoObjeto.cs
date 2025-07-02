@@ -7,16 +7,19 @@ using System.Web;
 
 namespace WebService.Models
 {
-	public class RedesNeuronales
+	[Table("Proyectos_Objetos")]
+	public class ProyectoObjeto
 	{
 		[Key]
 		public int ID { get; set; }
+
 		public int ProyectoID { get; set; }
-		public int Epocas {  get; set; }
-		public string Arquitectura { get; set; }
-		public double Alfa {  get; set; }
-		public double ErrorMinimo {  get; set; }
+		public int ObjetoID { get; set; }
+
 		[ForeignKey("ProyectoID")]
-		public Proyectos Proyecto { get; set; }
+		public virtual Proyecto Proyecto { get; set; }
+
+		[ForeignKey("ObjetoID")]
+		public virtual Objeto Objeto { get; set; }
 	}
 }

@@ -18,40 +18,40 @@ namespace WebService.Controllers.API
     {
         private Context db = new Context();
 
-		// GET: api/Pesos/
-		public IQueryable<Pesos> GetPesos()
+        // GET: api/Pesos
+        public IQueryable<Peso> GetPesos()
         {
             return db.Pesos;
         }
 
         // GET: api/Pesos/5
-        [ResponseType(typeof(Pesos))]
-        public async Task<IHttpActionResult> GetPesos(int id)
+        [ResponseType(typeof(Peso))]
+        public async Task<IHttpActionResult> GetPeso(int id)
         {
-            Pesos pesos = await db.Pesos.FindAsync(id);
-            if (pesos == null)
+            Peso peso = await db.Pesos.FindAsync(id);
+            if (peso == null)
             {
                 return NotFound();
             }
 
-            return Ok(pesos);
+            return Ok(peso);
         }
 
         // PUT: api/Pesos/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPesos(int id, Pesos pesos)
+        public async Task<IHttpActionResult> PutPeso(int id, Peso peso)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != pesos.ID)
+            if (id != peso.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(pesos).State = EntityState.Modified;
+            db.Entry(peso).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace WebService.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PesosExists(id))
+                if (!PesoExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +73,34 @@ namespace WebService.Controllers.API
         }
 
         // POST: api/Pesos
-        [ResponseType(typeof(Pesos))]
-        public async Task<IHttpActionResult> PostPesos(Pesos pesos)
+        [ResponseType(typeof(Peso))]
+        public async Task<IHttpActionResult> PostPeso(Peso peso)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Pesos.Add(pesos);
+            db.Pesos.Add(peso);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = pesos.ID }, pesos);
+            return CreatedAtRoute("DefaultApi", new { id = peso.ID }, peso);
         }
 
         // DELETE: api/Pesos/5
-        [ResponseType(typeof(Pesos))]
-        public async Task<IHttpActionResult> DeletePesos(int id)
+        [ResponseType(typeof(Peso))]
+        public async Task<IHttpActionResult> DeletePeso(int id)
         {
-            Pesos pesos = await db.Pesos.FindAsync(id);
-            if (pesos == null)
+            Peso peso = await db.Pesos.FindAsync(id);
+            if (peso == null)
             {
                 return NotFound();
             }
 
-            db.Pesos.Remove(pesos);
+            db.Pesos.Remove(peso);
             await db.SaveChangesAsync();
 
-            return Ok(pesos);
+            return Ok(peso);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,7 +112,7 @@ namespace WebService.Controllers.API
             base.Dispose(disposing);
         }
 
-        private bool PesosExists(int id)
+        private bool PesoExists(int id)
         {
             return db.Pesos.Count(e => e.ID == id) > 0;
         }

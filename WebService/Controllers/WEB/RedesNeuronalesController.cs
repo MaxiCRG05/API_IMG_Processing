@@ -19,8 +19,8 @@ namespace WebService.Controllers.WEB
         // GET: RedesNeuronales
         public async Task<ActionResult> Index()
         {
-            var redNeuronales = db.RedNeuronales.Include(r => r.Proyecto);
-            return View(await redNeuronales.ToListAsync());
+            var redesNeuronales = db.RedesNeuronales.Include(r => r.Proyecto);
+            return View(await redesNeuronales.ToListAsync());
         }
 
         // GET: RedesNeuronales/Details/5
@@ -30,12 +30,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            RedesNeuronales redesNeuronales = await db.RedNeuronales.FindAsync(id);
-            if (redesNeuronales == null)
+            RedNeuronal redNeuronal = await db.RedesNeuronales.FindAsync(id);
+            if (redNeuronal == null)
             {
                 return HttpNotFound();
             }
-            return View(redesNeuronales);
+            return View(redNeuronal);
         }
 
         // GET: RedesNeuronales/Create
@@ -50,17 +50,17 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,ProyectoID,Epocas,Arquitectura,Alfa,ErrorMinimo")] RedesNeuronales redesNeuronales)
+        public async Task<ActionResult> Create([Bind(Include = "ID,ProyectoID,Epocas,Arquitectura,Alfa,ErrorMin")] RedNeuronal redNeuronal)
         {
             if (ModelState.IsValid)
             {
-                db.RedNeuronales.Add(redesNeuronales);
+                db.RedesNeuronales.Add(redNeuronal);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ProyectoID = new SelectList(db.Proyectos, "ID", "Nombre", redesNeuronales.ProyectoID);
-            return View(redesNeuronales);
+            ViewBag.ProyectoID = new SelectList(db.Proyectos, "ID", "Nombre", redNeuronal.ProyectoID);
+            return View(redNeuronal);
         }
 
         // GET: RedesNeuronales/Edit/5
@@ -70,13 +70,13 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            RedesNeuronales redesNeuronales = await db.RedNeuronales.FindAsync(id);
-            if (redesNeuronales == null)
+            RedNeuronal redNeuronal = await db.RedesNeuronales.FindAsync(id);
+            if (redNeuronal == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ProyectoID = new SelectList(db.Proyectos, "ID", "Nombre", redesNeuronales.ProyectoID);
-            return View(redesNeuronales);
+            ViewBag.ProyectoID = new SelectList(db.Proyectos, "ID", "Nombre", redNeuronal.ProyectoID);
+            return View(redNeuronal);
         }
 
         // POST: RedesNeuronales/Edit/5
@@ -84,16 +84,16 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,ProyectoID,Epocas,Arquitectura,Alfa,ErrorMinimo")] RedesNeuronales redesNeuronales)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,ProyectoID,Epocas,Arquitectura,Alfa,ErrorMin")] RedNeuronal redNeuronal)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(redesNeuronales).State = EntityState.Modified;
+                db.Entry(redNeuronal).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.ProyectoID = new SelectList(db.Proyectos, "ID", "Nombre", redesNeuronales.ProyectoID);
-            return View(redesNeuronales);
+            ViewBag.ProyectoID = new SelectList(db.Proyectos, "ID", "Nombre", redNeuronal.ProyectoID);
+            return View(redNeuronal);
         }
 
         // GET: RedesNeuronales/Delete/5
@@ -103,12 +103,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            RedesNeuronales redesNeuronales = await db.RedNeuronales.FindAsync(id);
-            if (redesNeuronales == null)
+            RedNeuronal redNeuronal = await db.RedesNeuronales.FindAsync(id);
+            if (redNeuronal == null)
             {
                 return HttpNotFound();
             }
-            return View(redesNeuronales);
+            return View(redNeuronal);
         }
 
         // POST: RedesNeuronales/Delete/5
@@ -116,8 +116,8 @@ namespace WebService.Controllers.WEB
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            RedesNeuronales redesNeuronales = await db.RedNeuronales.FindAsync(id);
-            db.RedNeuronales.Remove(redesNeuronales);
+            RedNeuronal redNeuronal = await db.RedesNeuronales.FindAsync(id);
+            db.RedesNeuronales.Remove(redNeuronal);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

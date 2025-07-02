@@ -19,7 +19,7 @@ namespace WebService.Controllers.WEB
         // GET: Proyectos
         public async Task<ActionResult> Index()
         {
-            var proyectos = db.Proyectos.Include(p => p.Usuario);
+            var proyectos = db.Proyectos.Include(p => p.Usuarios);
             return View(await proyectos.ToListAsync());
         }
 
@@ -30,18 +30,18 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Proyectos proyectos = await db.Proyectos.FindAsync(id);
-            if (proyectos == null)
+            Proyecto proyecto = await db.Proyectos.FindAsync(id);
+            if (proyecto == null)
             {
                 return HttpNotFound();
             }
-            return View(proyectos);
+            return View(proyecto);
         }
 
         // GET: Proyectos/Create
         public ActionResult Create()
         {
-            ViewBag.UsuariosID = new SelectList(db.Usuario, "ID", "Nombre");
+            ViewBag.UsuarioID = new SelectList(db.Usuarios, "ID", "Nombre");
             return View();
         }
 
@@ -50,17 +50,17 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,UsuariosID,Nombre")] Proyectos proyectos)
+        public async Task<ActionResult> Create([Bind(Include = "ID,UsuarioID,Nombre,FechaCreacion,FechaModificacion")] Proyecto proyecto)
         {
             if (ModelState.IsValid)
             {
-                db.Proyectos.Add(proyectos);
+                db.Proyectos.Add(proyecto);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.UsuariosID = new SelectList(db.Usuario, "ID", "Nombre", proyectos.UsuariosID);
-            return View(proyectos);
+            ViewBag.UsuarioID = new SelectList(db.Usuarios, "ID", "Nombre", proyecto.UsuarioID);
+            return View(proyecto);
         }
 
         // GET: Proyectos/Edit/5
@@ -70,13 +70,13 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Proyectos proyectos = await db.Proyectos.FindAsync(id);
-            if (proyectos == null)
+            Proyecto proyecto = await db.Proyectos.FindAsync(id);
+            if (proyecto == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.UsuariosID = new SelectList(db.Usuario, "ID", "Nombre", proyectos.UsuariosID);
-            return View(proyectos);
+            ViewBag.UsuarioID = new SelectList(db.Usuarios, "ID", "Nombre", proyecto.UsuarioID);
+            return View(proyecto);
         }
 
         // POST: Proyectos/Edit/5
@@ -84,16 +84,16 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,UsuariosID,Nombre")] Proyectos proyectos)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,UsuarioID,Nombre,FechaCreacion,FechaModificacion")] Proyecto proyecto)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(proyectos).State = EntityState.Modified;
+                db.Entry(proyecto).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.UsuariosID = new SelectList(db.Usuario, "ID", "Nombre", proyectos.UsuariosID);
-            return View(proyectos);
+            ViewBag.UsuarioID = new SelectList(db.Usuarios, "ID", "Nombre", proyecto.UsuarioID);
+            return View(proyecto);
         }
 
         // GET: Proyectos/Delete/5
@@ -103,12 +103,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Proyectos proyectos = await db.Proyectos.FindAsync(id);
-            if (proyectos == null)
+            Proyecto proyecto = await db.Proyectos.FindAsync(id);
+            if (proyecto == null)
             {
                 return HttpNotFound();
             }
-            return View(proyectos);
+            return View(proyecto);
         }
 
         // POST: Proyectos/Delete/5
@@ -116,8 +116,8 @@ namespace WebService.Controllers.WEB
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Proyectos proyectos = await db.Proyectos.FindAsync(id);
-            db.Proyectos.Remove(proyectos);
+            Proyecto proyecto = await db.Proyectos.FindAsync(id);
+            db.Proyectos.Remove(proyecto);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

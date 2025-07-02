@@ -1,8 +1,5 @@
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
-using System.Linq;
-using System.Reflection;
+﻿using System.Data.Entity;
+using WebService.Models;
 
 namespace WebService.Data
 {
@@ -12,13 +9,15 @@ namespace WebService.Data
 			: base("name=Context")
 		{
 		}
-		public DbSet<Models.Usuarios> Usuario { get; set; }
-		public DbSet<Models.Proyectos> Proyectos { get; set; }
-		public DbSet<Models.Objetos> Objetos { get; set; }
-		public DbSet<Models.InvariantesHu> InvariantesHu { get; set; }
-		public DbSet<Models.RedesNeuronales> RedNeuronales { get; set; }
-		public DbSet<Models.Umbrales> Umbrales { get; set; }
-		public DbSet<Models.Pesos> Pesos { get; set; }
+		public DbSet<Usuario> Usuarios { get; set; }
+		public DbSet<Proyecto> Proyectos { get; set; }
+		public DbSet<ProyectoObjeto> ProyectosObjetos { get; set; }
+		public DbSet<Objeto> Objetos { get; set; }
+		public DbSet<InvariantesHu> InvariantesHu { get; set; }
+		public DbSet<RedNeuronal> RedesNeuronales { get; set; }
+		public DbSet<Umbral> Umbrales { get; set; }
+		public DbSet<Peso> Pesos { get; set; }
+		public DbSet<Categoria> Categorias { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{

@@ -19,39 +19,39 @@ namespace WebService.Controllers.API
         private Context db = new Context();
 
         // GET: api/Proyectos
-        public IQueryable<Proyectos> GetProyectos()
+        public IQueryable<Proyecto> GetProyectos()
         {
             return db.Proyectos;
         }
 
         // GET: api/Proyectos/5
-        [ResponseType(typeof(Proyectos))]
-        public async Task<IHttpActionResult> GetProyectos(int id)
+        [ResponseType(typeof(Proyecto))]
+        public async Task<IHttpActionResult> GetProyecto(int id)
         {
-            Proyectos proyectos = await db.Proyectos.FindAsync(id);
-            if (proyectos == null)
+            Proyecto proyecto = await db.Proyectos.FindAsync(id);
+            if (proyecto == null)
             {
                 return NotFound();
             }
 
-            return Ok(proyectos);
+            return Ok(proyecto);
         }
 
         // PUT: api/Proyectos/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutProyectos(int id, Proyectos proyectos)
+        public async Task<IHttpActionResult> PutProyecto(int id, Proyecto proyecto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != proyectos.ID)
+            if (id != proyecto.ID)
             {
                 return BadRequest();
             }
 
-            db.Entry(proyectos).State = EntityState.Modified;
+            db.Entry(proyecto).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace WebService.Controllers.API
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProyectosExists(id))
+                if (!ProyectoExists(id))
                 {
                     return NotFound();
                 }
@@ -73,34 +73,34 @@ namespace WebService.Controllers.API
         }
 
         // POST: api/Proyectos
-        [ResponseType(typeof(Proyectos))]
-        public async Task<IHttpActionResult> PostProyectos(Proyectos proyectos)
+        [ResponseType(typeof(Proyecto))]
+        public async Task<IHttpActionResult> PostProyecto(Proyecto proyecto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Proyectos.Add(proyectos);
+            db.Proyectos.Add(proyecto);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = proyectos.ID }, proyectos);
+            return CreatedAtRoute("DefaultApi", new { id = proyecto.ID }, proyecto);
         }
 
         // DELETE: api/Proyectos/5
-        [ResponseType(typeof(Proyectos))]
-        public async Task<IHttpActionResult> DeleteProyectos(int id)
+        [ResponseType(typeof(Proyecto))]
+        public async Task<IHttpActionResult> DeleteProyecto(int id)
         {
-            Proyectos proyectos = await db.Proyectos.FindAsync(id);
-            if (proyectos == null)
+            Proyecto proyecto = await db.Proyectos.FindAsync(id);
+            if (proyecto == null)
             {
                 return NotFound();
             }
 
-            db.Proyectos.Remove(proyectos);
+            db.Proyectos.Remove(proyecto);
             await db.SaveChangesAsync();
 
-            return Ok(proyectos);
+            return Ok(proyecto);
         }
 
         protected override void Dispose(bool disposing)
@@ -112,7 +112,7 @@ namespace WebService.Controllers.API
             base.Dispose(disposing);
         }
 
-        private bool ProyectosExists(int id)
+        private bool ProyectoExists(int id)
         {
             return db.Proyectos.Count(e => e.ID == id) > 0;
         }

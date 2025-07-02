@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.LongRunning;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Web;
 
 namespace WebService.Scripts
@@ -18,6 +20,30 @@ namespace WebService.Scripts
 
 	public static class MetodosProcesamiento
 	{
+		private const int salTam = 16;
+
+		private const int hashTam = 32;
+
+		private const int repeticiones = 10000;
+
+		public static string Encriptar(string txt)
+		{
+			byte[] sal;
+			new RNGCryptoServiceProvider().GetBytes(sal = new byte[salTam]);
+
+			var pbkdf2 = new Rfc2898DeriveBytes(txt, sal, repeticiones, HashAlgorithmName.SHA256);
+			byte[] hash = pbkdf2.GetBytes(hashTam);
+
+			byte[] hashBytes = new byte[salTam + hashTam];
+			Array.Copy(sal, 0, hashBytes, 0, salTam);
+			Array.Copy(hash, 0, hashBytes, salTam, hashTam);
+
+			string hashedPassword = Convert.ToBase64String(hashBytes);
+
+			return hashedPassword;
+		}
+
+
 		public static Bitmap Escala_Grises(Bitmap btm)
 		{
 			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);

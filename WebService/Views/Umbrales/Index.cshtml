@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebService.Models.Umbrales>
+﻿@model IEnumerable<WebService.Models.Umbral>
 
 @{
     ViewBag.Title = "Index";
@@ -13,10 +13,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.RedesNeuronales.Arquitectura)
+            @Html.DisplayNameFor(model => model.RedNeuronal.Arquitectura)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Umbral)
+            @Html.DisplayNameFor(model => model.Umbrales)
         </th>
         <th></th>
     </tr>
@@ -24,10 +24,10 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.RedesNeuronales.Arquitectura)
+            @Html.DisplayFor(modelItem => item.RedNeuronal.Arquitectura)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Umbral)
+            @Html.DisplayFor(modelItem => item.Umbrales)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

@@ -19,7 +19,7 @@ namespace WebService.Controllers.WEB
         // GET: Umbrales
         public async Task<ActionResult> Index()
         {
-            var umbrales = db.Umbrales.Include(u => u.RedesNeuronales);
+            var umbrales = db.Umbrales.Include(u => u.RedNeuronal);
             return View(await umbrales.ToListAsync());
         }
 
@@ -30,18 +30,18 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Umbrales umbrales = await db.Umbrales.FindAsync(id);
-            if (umbrales == null)
+            Umbral umbral = await db.Umbrales.FindAsync(id);
+            if (umbral == null)
             {
                 return HttpNotFound();
             }
-            return View(umbrales);
+            return View(umbral);
         }
 
         // GET: Umbrales/Create
         public ActionResult Create()
         {
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura");
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura");
             return View();
         }
 
@@ -50,17 +50,17 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,RedNeuronalID,Umbral")] Umbrales umbrales)
+        public async Task<ActionResult> Create([Bind(Include = "ID,RedNeuronalID,Umbrales")] Umbral umbral)
         {
             if (ModelState.IsValid)
             {
-                db.Umbrales.Add(umbrales);
+                db.Umbrales.Add(umbral);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura", umbrales.RedNeuronalID);
-            return View(umbrales);
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura", umbral.RedNeuronalID);
+            return View(umbral);
         }
 
         // GET: Umbrales/Edit/5
@@ -70,13 +70,13 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Umbrales umbrales = await db.Umbrales.FindAsync(id);
-            if (umbrales == null)
+            Umbral umbral = await db.Umbrales.FindAsync(id);
+            if (umbral == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura", umbrales.RedNeuronalID);
-            return View(umbrales);
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura", umbral.RedNeuronalID);
+            return View(umbral);
         }
 
         // POST: Umbrales/Edit/5
@@ -84,16 +84,16 @@ namespace WebService.Controllers.WEB
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,RedNeuronalID,Umbral")] Umbrales umbrales)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,RedNeuronalID,Umbrales")] Umbral umbral)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(umbrales).State = EntityState.Modified;
+                db.Entry(umbral).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.RedNeuronalID = new SelectList(db.RedNeuronales, "ID", "Arquitectura", umbrales.RedNeuronalID);
-            return View(umbrales);
+            ViewBag.RedNeuronalID = new SelectList(db.RedesNeuronales, "ID", "Arquitectura", umbral.RedNeuronalID);
+            return View(umbral);
         }
 
         // GET: Umbrales/Delete/5
@@ -103,12 +103,12 @@ namespace WebService.Controllers.WEB
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Umbrales umbrales = await db.Umbrales.FindAsync(id);
-            if (umbrales == null)
+            Umbral umbral = await db.Umbrales.FindAsync(id);
+            if (umbral == null)
             {
                 return HttpNotFound();
             }
-            return View(umbrales);
+            return View(umbral);
         }
 
         // POST: Umbrales/Delete/5
@@ -116,8 +116,8 @@ namespace WebService.Controllers.WEB
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Umbrales umbrales = await db.Umbrales.FindAsync(id);
-            db.Umbrales.Remove(umbrales);
+            Umbral umbral = await db.Umbrales.FindAsync(id);
+            db.Umbrales.Remove(umbral);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

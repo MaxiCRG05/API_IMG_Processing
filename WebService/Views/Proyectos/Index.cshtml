@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebService.Models.Proyectos>
+﻿@model IEnumerable<WebService.Models.Proyecto>
 
 @{
     ViewBag.Title = "Index";
@@ -13,10 +13,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Usuario.Nombre)
+            @Html.DisplayNameFor(model => model.Usuarios.Nombre)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaCreacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaModificacion)
         </th>
         <th></th>
     </tr>
@@ -24,10 +30,16 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Usuario.Nombre)
+            @Html.DisplayFor(modelItem => item.Usuarios.Nombre)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaCreacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaModificacion)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |

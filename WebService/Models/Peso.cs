@@ -7,13 +7,14 @@ using System.Web;
 
 namespace WebService.Models
 {
-	public class Umbrales
+	[Table("Pesos")]
+	public class Peso
 	{
 		[Key]
 		public int ID { get; set; }
 		public int RedNeuronalID { get; set; }
-		public double Umbral { get; set; }
+		public double Pesos { get; set; }
 		[ForeignKey("RedNeuronalID")]
-		public RedesNeuronales RedesNeuronales { get; set; }
+		public RedNeuronal RedNeuronal { get; set; }
 	}
 }
