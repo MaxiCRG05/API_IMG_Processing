@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.props" Condition="Exists('packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.props')" />
   <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -255,8 +254,10 @@
     <Compile Include="Controllers\API\RedesNeuronalesController.cs" />
     <Compile Include="Controllers\API\UmbralesController.cs" />
     <Compile Include="Controllers\API\UsuariosController.cs" />
+    <Compile Include="Controllers\WEB\AdminController.cs" />
     <Compile Include="Controllers\WEB\CategoriasController.cs" />
     <Compile Include="Controllers\WEB\HomeController.cs" />
+    <Compile Include="Controllers\WEB\IAController.cs" />
     <Compile Include="Controllers\WEB\InvariantesHuController.cs" />
     <Compile Include="Controllers\WEB\LoginController.cs" />
     <Compile Include="Controllers\WEB\ObjetosController.cs" />
@@ -304,6 +305,16 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\IMGS\Lapiz.png" />
+    <Content Include="Content\IMGS\Cruz.png" />
+    <Content Include="Content\IMGS\LogOut.png" />
+    <Content Include="Content\IMGS\Fx.png" />
+    <Content Include="Content\IMGS\FlechaAbajo.png" />
+    <Content Include="Content\IMGS\Save.png" />
+    <Content Include="Content\IMGS\Img.png" />
+    <Content Include="Content\IMGS\FlechaRegresar.png" />
+    <Content Include="Content\IMGS\Cruz2.png" />
+    <Content Include="Content\IMGS\Cruz3.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -438,6 +449,11 @@
     <Content Include="Views\ProyectosObjetos\Edit.cshtml" />
     <Content Include="Views\ProyectosObjetos\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Shared\GlobalAdmin.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\Agregar.cshtml" />
+    <Content Include="Views\Admin\Modificar.cshtml" />
+    <Content Include="Views\IA\Crear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -512,14 +528,11 @@
     <Error Condition="!Exists('packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets'))" />
     <Error Condition="!Exists('packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets'))" />
     <Error Condition="!Exists('packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
-    <Error Condition="!Exists('packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.props'))" />
-    <Error Condition="!Exists('packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.targets'))" />
   </Target>
   <Import Project="packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
   <Import Project="packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets" Condition="Exists('packages\Google.Api.CommonProtos.2.16.0\build\Google.Api.CommonProtos.targets')" />
   <Import Project="packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets" Condition="Exists('packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" />
   <Import Project="packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
-  <Import Project="packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.targets" Condition="Exists('packages\Tailwind.MSBuild.1.1.0\build\Tailwind.MSBuild.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

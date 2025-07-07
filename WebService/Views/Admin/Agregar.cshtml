@@ -1,0 +1,147 @@
+﻿@{
+	ViewBag.Title = "Agregar";
+	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Añadir Objeto</title>
+	<style>
+		body {
+			margin: 0;
+			background-color: #ffffff;
+			font-family: 'Inter', sans-serif;
+		}
+
+		.header {
+			background: linear-gradient(to right, #8ab3db, #2f4668);
+			color: white;
+			padding: 30px 0;
+			text-align: center;
+			font-size: 28px;
+			font-weight: bold;
+			letter-spacing: 1px;
+		}
+
+		.return-btn {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			background-color: #82A0BC;
+			border: none;
+			border-radius: 40px;
+			padding: 13px 25px 13px 25px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+			.return-btn:hover {
+				background-color: #5a768f;
+			}
+
+		.container {
+			display: flex;
+			justify-content: space-between;
+			padding: 40px;
+		}
+
+		.form-section {
+			width: 45%;
+		}
+
+			.form-section input,
+			.form-section select,
+			.form-section button {
+				min-width: 400px;
+				padding: 12px;
+				margin: 20px 0px 20px 0px;
+				border-radius: 20px;
+				border: 2px solid #aac0d4;
+				font-size: 16px;
+				transition: 0.3s ease-in-out;
+			}
+
+			.form-section select{
+				text-align: center;
+			}
+
+			.form-section button {
+				background-color: #8daac8;
+				color: white;
+				border: none;
+				font-weight: bold;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+				.form-section button:hover {
+					background-color: #304D6D;
+					border-color: yellow;
+					border: 2px;
+				}
+
+				.form-section button img {
+					margin-left: 8px;
+				}
+
+		.preview-box {
+			width: 50%;
+			border: 2px solid #2f4668;
+			border-radius: 10px;
+			height: 500px;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="header">
+		<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+			<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+		</button>
+		<h1>AGREGAR OBJETO</h1>
+	</div>
+
+	<div class="container">
+		<div class="form-section">
+			<form method="post">
+				<label for="NombreObjeto">Nombre del objeto</label><br />
+				<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Tornillo" />
+				<br />
+				<select id="Categoria" name="Categoria">
+					<option disabled selected>Seleccione la categoría</option>
+					<option>Oficina</option>
+					<option>Papelería</option>
+				</select>
+
+				<button type="button" id="NuevaCategoria" onclick="">
+					Nueva categoría
+					<img src="~/Content/IMGS/Cruz2.png" alt="guardar" width="20" />
+				</button>
+
+				<button type="button" id="InvariantesHu" onclick="">
+					Subir invariantes de Hu
+					<img src="~/Content/IMGS/Fx.png" alt="f(x)" width="20" />
+				</button>
+
+				<button type="button" id="Imagen" onclick="">
+					Subir imagen
+					<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
+				</button>
+
+				<button type="submit" id="Guardar">
+					Guardar objeto
+					<img src="~/Content/IMGS/Save.png" alt="guardar" width="20" />
+				</button>
+			</form>
+		</div>
+
+		<div class="preview-box">
+			<img src="" id="imgObjeto"/>
+		</div>
+	</div>
+</body>
+</html>

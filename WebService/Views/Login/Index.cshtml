@@ -1,5 +1,6 @@
 ﻿@{
-	Layout = null; 
+	ViewBag.Title = "Login";
+	Layout = null;
 }
 
 <!DOCTYPE html>
@@ -8,22 +9,6 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Visión Artificial</title>
-
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-	<link href="https://fonts.google.com/specimen/Oswald&display=swap" rel="stylesheet">
-
-	<script>
-		function loginConGoogle() {
-			const clientId = '762196913246-1f707v5f5theghpt6aamv644sgapsp1v.apps.googleusercontent.com';
-			const redirectUri = 'http://127.0.0.1:35271/Login/Acceder';
-			const scope = 'email profile';
-			const responseType = 'token';
-
-			const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&include_granted_scopes=true`;
-
-			window.open(authUrl, '_blank', 'width=500,height=600');
-		}
-	</script>
 
 	<style>
 
@@ -44,12 +29,13 @@
 			border-radius: 8px;
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 			width: 100%;
+			height: 700px;
 			max-width: 400px;
 			text-align: center;
 		}
 
 		h1, h2 {
-			font-family: "Oswald", cursive;
+			font-family: "Koulen", cursive;
 			color: #000000;
 		}
 
@@ -114,7 +100,9 @@
 			.form-group input {
 				width: 100%;
 				padding: 12px;
-				border: 1px solid #ddd;
+				border-top: 2px;
+				border-right: 2px;
+				border-left: 2px;
 				border-radius: 4px;
 				font-size: 1rem;
 			}
@@ -140,7 +128,13 @@
 			cursor: pointer;
 			width: 100%;
 			margin-bottom: 1.5rem;
+			transition: 0.3s ease-in-out;
 		}
+
+			.login-btn:hover, .google-btn:hover {
+				background-color: #0092ff;
+				transform: scale(1.1);
+			}
 
 		.signup-link {
 			font-size: 0.9rem;
@@ -151,43 +145,102 @@
 				color: #3498db;
 				text-decoration: none;
 			}
+
+			.signup-link a, .password-link a, .google-btn {
+				transition: 0.3s ease-in-out;
+			}
+
+				.signup-link a:hover, .password-link a:hover {
+					color: #292fa1;
+				}
+
+
+				input{
+	     				animation: colorespipipi 2s ease-in-out;
+				}
+
+		@@keyframes colorespipipi {
+			0% {
+				background-color: aqua
+			}
+
+			, 50% {
+				background-color: red
+			}
+
+			,100% {
+				background-color: green
+			}
+		}
 	</style>
 </head>
-<body>
-	<div class="login-container">
-		<h1>¡BIENVENIDO!</h1>
-		<h2>UTILIZA ESTE SITIO PARA CREAR PROYECTOS CON VISIÓN ARTIFICIAL PARA IDENTIFICAR OBJETOS EN TUS IMÁGENES.</h2>
-		<br/>
-		<button class="google-btn" onclick="loginConGoogle()">
-			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
-				<path d="M12.545 10.239v3.821h5.445c-0.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866 0.549 3.921 1.453l2.814-2.814c-1.786-1.667-4.166-2.698-6.735-2.698-5.522 0-10 4.477-10 10s4.478 10 10 10c8.396 0 10-7.524 10-10 0-0.67-0.069-1.325-0.189-1.961h-9.811z"></path>
-			</svg>
-			Iniciar sesión con Google
-		</button>
+	<body>
+		<div class="login-container">
+			<h1>¡BIENVENIDO!</h1>
+			<h2>UTILIZA ESTE SITIO PARA CREAR PROYECTOS CON VISIÓN ARTIFICIAL PARA IDENTIFICAR OBJETOS EN TUS IMÁGENES.</h2>
+			<br />
+			<button class="google-btn" onclick="loginConGoogle()">
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white">
+					<path d="M12.545 10.239v3.821h5.445c-0.712 2.315-2.647 3.972-5.445 3.972-3.332 0-6.033-2.701-6.033-6.032s2.701-6.032 6.033-6.032c1.498 0 2.866 0.549 3.921 1.453l2.814-2.814c-1.786-1.667-4.166-2.698-6.735-2.698-5.522 0-10 4.477-10 10s4.478 10 10 10c8.396 0 10-7.524 10-10 0-0.67-0.069-1.325-0.189-1.961h-9.811z"></path>
+				</svg>
+				Iniciar sesión con Google
+			</button>
 
-		<div class="divider">o</div>
+			<div class="divider">o</div>
 
-		<form asp-action="Login" method="post">
-			<div class="form-group">
-				<label for="email">Correo electrónico</label>
-				<input type="email" id="email" name="email" placeholder="Ingresa tu email" required>
+			<form asp-action="Login" method="post">
+				<div class="form-group">
+					<label id="lblEmail" for="email"></label>
+					<input type="email" id="email" name="email"  placeholder="Correo electrónico" required>
+				</div>
+
+				<div class="form-group">
+					<label id="lblPass" for="password"></label>
+					<input type="password" id="password" name="password"  placeholder="Contraseña" required>
+				</div>
+
+				<div class="password-link">
+					<a href="#">Recuperar contraseña</a>
+				</div>
+
+				<button type="submit" class="login-btn">Iniciar sesión</button>
+			</form>
+
+			<div class="signup-link">
+				¿No tienes cuenta? <a href="#">Crear un usuario</a>.
 			</div>
-
-			<div class="form-group">
-				<label for="password">Contraseña</label>
-				<input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-			</div> 
-
-			<div class="password-link">
-				<a href="#">Recuperar contraseña</a>
-			</div>
-
-			<button type="submit" class="login-btn">Iniciar sesión →</button>
-		</form>
-
-		<div class="signup-link">
-			¿No tienes cuenta? <a href="#">Crear un usuario</a>.
 		</div>
-	</div>
-</body>
+	</body>
+	<script>
+		let inputCorreo = document.getElementById("email");
+		let inputPass = document.getElementById("password");
+		let lblEmail = document.getElementById("lblEmail");
+		let lblPass = document.getElementById("lblPass");
+		let isActive1 = false
+
+		inputCorreo.addEventListener("click", () => {
+			if (inputCorreo.placeholder == "") {
+				inputCorreo.placeholder = "Ingresa tu correo";
+			}
+			else {
+				inputCorreo.placeholder = "";
+				lblEmail.textContent = "Correo electrónico";
+			}
+		});
+
+		function loginConGoogle() {
+			const clientId = '762196913246-1f707v5f5theghpt6aamv644sgapsp1v.apps.googleusercontent.com';
+			const redirectUri = 'http://127.0.0.1:35271/Login/Acceder';
+			const scope = 'email profile';
+			const responseType = 'token';
+
+			const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&include_granted_scopes=true`;
+
+			window.open(authUrl, '_blank', 'width=500,height=600');
+		}
+
+		function desplazar() {
+			
+		}
+	</script>
 </html>

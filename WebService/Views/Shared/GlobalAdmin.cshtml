@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+	<link href="https://fonts.google.com/specimen/Inter%display=swap" rel="stylesheet">
+	<link href="https://fonts.google.com/specimen/Oswald&display=swap" rel="stylesheet">
+	<link href="https://fonts.google.com/specimen/Koulen&display=swap" rel="stylesheet">
+</head>
+<body>
+	@RenderBody()
+	<style>
+		.header {
+			font-family: 'Inter', sans-serif;
+			background: linear-gradient(to right, #A7CCED, #304D6D);
+			color: white;
+			padding: 60px 30px 60px 30px;
+			text-align: center;
+			border-bottom-left-radius: 80%;
+			border-bottom-right-radius: 80%;
+			position: relative;
+			cursor: default;
+		}
+			.header h1 {
+				margin: 0;
+				font-size: 48px;
+				font-weight: bold;
+				transition: 0.5s ease-in;
+			}
+
+				.header h1:hover {
+					color: #0a00ff;
+				}
+
+			.header p {
+				margin-top: 10px;
+				font-size: 20px;
+				text-transform: uppercase;
+				transition: 0.4s ease-in;
+			}
+
+				.header p:hover {
+					color: #0a00ff;
+				}
+
+	</style>
+
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+
+					colors: {
+						'custom-opa': 'rgba(255, 065, 195, 0.9)',
+						'custom-primary': '#4f46e5'
+					},
+					fontFamily: {
+						oswald: ['Oswald', 'sans-serif'],
+						inter: ['Inter', 'sans-serif'],
+						koulen: ['Koulen', 'cursive']
+					}
+				}
+			}
+		}
+	</script>
+</body>
+</html>

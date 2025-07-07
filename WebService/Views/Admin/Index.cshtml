@@ -1,0 +1,143 @@
+﻿@{
+	ViewBag.Title = "Principal";
+	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bienvenido</title>
+	<style>
+		body {
+			margin: 0;
+			background-color: #ffffff;
+		}
+
+		.logout-btn {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			background-color: #82A0BC;
+			border: none;
+			border-radius: 30%;
+			padding: 13px 20px 13px 24px;
+			cursor: pointer;
+			transition: background-color 0.5s ease-in-out;
+		}
+
+			.logout-btn:hover {
+				background-color: #333;
+			}
+
+		.container {
+			display: flex;
+			justify-content: center;
+			gap: 80px;
+			margin-top: 100px;
+			flex-wrap: wrap;
+		}
+
+		.card {
+			font-family: 'Koulen', cursive;
+			position: relative;
+			background: white;
+			border-radius: 10px;
+			padding: 30px;
+			text-align: center;
+			width: 350px;
+			height: 400px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease-in-out;
+			border: none;
+		}
+			.card::before {
+				content: "";
+				position: absolute;
+				top: -2px;
+				left: -2px;
+				right: -2px;
+				bottom: -2px;
+				background: linear-gradient(to right, #A7CCED, #304D6D);
+				border-radius: 12px;
+				z-index: -1;
+			}
+
+			.card:hover::before {
+				background: linear-gradient(to right, #82A0BC, #39648C);
+			}
+
+			.card:hover {
+				border-color: #82A0BC;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+			}
+
+			.card .icon{
+				align-self: center;
+				margin-bottom: 20px;
+			}
+
+			.card h2 {
+				margin-bottom: 30px;
+				font-size: 24px;
+				font-weight: bold;
+			}
+
+			.card p {
+				font-size: 14px;
+				margin-bottom: 20px;
+				color: #333;
+			}
+
+			.card a {
+				display: inline-block;
+				margin-top: 10px;
+				padding: 10px 20px;
+				background-color: #82A0BC;
+				color: white;
+				text-decoration: none;
+				border-radius: 10px;
+				transition: 0.3s ease-in-out;
+			}
+
+				.card a:hover {
+					background-color: #244f8f;
+					transform:scale(1.05)
+				}
+	</style>
+</head>
+<body>
+
+	<div class="header">
+		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Logout'">
+			<img src="~/Content/IMGS/LogOut.png" />
+		</button>
+		<h1>BIENVENIDO @User.Identity.Name</h1>
+		<p>¿QUÉ DESEA REALIZAR?</p>
+	</div>
+
+	<div class="container">
+		<div class="card">
+			<h2>AGREGAR OBJETO</h2>
+			<div class="icon">
+				<img src="~/Content/IMGS/Cruz.png"/>
+			</div>
+			<p>Cargue nuevos objetos para los futuros proyectos de los clientes.</p>
+			<br />
+			<a href="/Admin/Agregar">Agregar objeto</a>
+		</div>
+
+		<div class="card">
+			<h2>MODIFICAR OBJETO</h2>
+			<div class="icon">
+				<img src="~/Content/IMGS/Lapiz.png" />
+			</div>
+			<p>Modifique objetos que se hayan cargado de forma errónea y pueda volver a cargarlos.</p>
+			<br />
+			<a href="/Admin/Modificar">Modificar objeto</a>
+		</div>
+	</div>
+
+</body>
+</html>
