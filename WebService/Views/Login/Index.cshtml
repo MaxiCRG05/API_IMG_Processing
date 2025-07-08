@@ -9,7 +9,8 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Visión Artificial</title>
-
+	<script src="https://unpkg.com/dotlottie/player-component/dist/dotlottie-player.mjs" type="module" > </script>
+	
 	<style>
 
 		body {
@@ -99,6 +100,7 @@
 
 			.form-group input {
 				width: 100%;
+				max-width: 380px;
 				padding: 12px;
 				border-top: 2px;
 				border-right: 2px;
@@ -155,24 +157,9 @@
 				}
 
 
-				input{
-	     				animation: colorespipipi 2s ease-in-out;
-				}
-
-		@@keyframes colorespipipi {
-			0% {
-				background-color: aqua
-			}
-
-			, 50% {
-				background-color: red
-			}
-
-			,100% {
-				background-color: green
-			}
-		}
 	</style>
+
+
 </head>
 	<body>
 		<div class="login-container">
@@ -211,36 +198,37 @@
 			</div>
 		</div>
 	</body>
-	<script>
-		let inputCorreo = document.getElementById("email");
-		let inputPass = document.getElementById("password");
-		let lblEmail = document.getElementById("lblEmail");
-		let lblPass = document.getElementById("lblPass");
-		let isActive1 = false
-
-		inputCorreo.addEventListener("click", () => {
-			if (inputCorreo.placeholder == "") {
-				inputCorreo.placeholder = "Ingresa tu correo";
-			}
-			else {
-				inputCorreo.placeholder = "";
-				lblEmail.textContent = "Correo electrónico";
-			}
-		});
-
-		function loginConGoogle() {
-			const clientId = '762196913246-1f707v5f5theghpt6aamv644sgapsp1v.apps.googleusercontent.com';
-			const redirectUri = 'http://127.0.0.1:35271/Login/Acceder';
-			const scope = 'email profile';
-			const responseType = 'token';
-
-			const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&include_granted_scopes=true`;
-
-			window.open(authUrl, '_blank', 'width=500,height=600');
-		}
-
-		function desplazar() {
-			
-		}
-	</script>
 </html>
+
+<script>
+	let inputCorreo = document.getElementById("email");
+	let inputPass = document.getElementById("password");
+	let lblEmail = document.getElementById("lblEmail");
+	let lblPass = document.getElementById("lblPass");
+	let isActive1 = false
+
+	inputCorreo.addEventListener("click", () => {
+		if (inputCorreo.placeholder == "") {
+			inputCorreo.placeholder = "Ingresa tu correo";
+		}
+		else {
+			inputCorreo.placeholder = "";
+			lblEmail.textContent = "Correo electrónico";
+		}
+	});
+
+	function loginConGoogle() {
+		const clientId = '762196913246-1f707v5f5theghpt6aamv644sgapsp1v.apps.googleusercontent.com';
+		const redirectUri = 'http://127.0.0.1:35271/Login/Acceder';
+		const scope = 'email profile';
+		const responseType = 'token';
+
+		const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&include_granted_scopes=true`;
+
+		window.open(authUrl, '_blank', 'width=500,height=600');
+	}
+
+	function desplazar() {
+
+	}
+</script>
