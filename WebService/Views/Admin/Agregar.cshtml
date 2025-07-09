@@ -8,7 +8,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Añadir Objeto</title>
+	<title>Agregar Objeto</title>
 	<style>
 		body {
 			margin: 0;
@@ -26,21 +26,7 @@
 			letter-spacing: 1px;
 		}
 
-		.return-btn {
-			position: absolute;
-			top: 20px;
-			left: 20px;
-			background-color: #82A0BC;
-			border: none;
-			border-radius: 40px;
-			padding: 13px 25px 13px 25px;
-			cursor: pointer;
-			transition: background-color 0.3s ease;
-		}
-
-			.return-btn:hover {
-				background-color: #5a768f;
-			}
+		
 
 		.container {
 			display: flex;
@@ -49,6 +35,7 @@
 		}
 
 		.form-section {
+			margin-top: 50px;
 			width: 45%;
 		}
 
@@ -108,9 +95,6 @@
 	<div class="container">
 		<div class="form-section">
 			<form method="post">
-				<label for="NombreObjeto">Nombre del objeto</label><br />
-				<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Tornillo" />
-				<br />
 				<select id="Categoria" name="Categoria">
 					<option disabled selected>Seleccione la categoría</option>
 					<option>Oficina</option>

@@ -15,7 +15,12 @@ namespace WebService.Controllers.WEB
         }
 
         public ActionResult Registro()
-        {
+        { 
+            return View();
+        }
+        
+        public ActionResult Recuperar()
+        { 
             return View();
         }
     }

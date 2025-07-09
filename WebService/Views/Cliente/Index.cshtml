@@ -1,0 +1,48 @@
+﻿
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/Global.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
+	<link href="~/Content/style.css" rel="stylesheet" />
+	<title>Inicio</title>
+</head>
+<body>
+	<header>
+		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Logout'">
+			<img src="~/Content/IMGS/LogOut.png" />
+		</button>
+		<div class="titulos">
+			<!-- -->
+			<h1>Bienvenido @User.Identity.Name</h1>
+			<h2>¿EN QUÉ PROYECTO TRABAJAREMOS HOY?</h2>
+		</div>
+	</header>
+	<input type="submit" value="Crear nuevo proyecto">
+	<div class="borde">
+		<table>
+			<thead>
+				<tr>
+					<th>Proyecto</th>
+					<th class="modificacion">Fecha de modificación</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><a href="#">escritorio</a></td>
+					<td>252531</td>
+				</tr>
+				<tr>
+					<td><a href="#">lapices</a></td>
+					<td>254125</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

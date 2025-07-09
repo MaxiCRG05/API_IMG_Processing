@@ -15,22 +15,6 @@
 			background-color: #ffffff;
 		}
 
-		.logout-btn {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-			background-color: #82A0BC;
-			border: none;
-			border-radius: 30%;
-			padding: 13px 20px 13px 24px;
-			cursor: pointer;
-			transition: background-color 0.5s ease-in-out;
-		}
-
-			.logout-btn:hover {
-				background-color: #333;
-			}
-
 		.container {
 			display: flex;
 			justify-content: center;
@@ -73,10 +57,23 @@
 				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
 			}
 
-			.card .icon{
+			.card .icon {
 				align-self: center;
 				margin-bottom: 20px;
+				transition: 0.3s ease-in-out;
 			}
+
+				.card .icon:hover {
+					margin-bottom: 20px;
+				}
+				
+				.card .icon img {
+					transition: transform 0.5s ease;
+				}
+
+				.card:hover .icon img {
+					animation: rotate360 0.5s ease-in-out;
+				}
 
 			.card h2 {
 				margin-bottom: 30px;
@@ -105,6 +102,24 @@
 					background-color: #244f8f;
 					transform:scale(1.05)
 				}
+
+		@@keyframes rotate360 {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			50% {
+				transform: rotate(180deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		.delete-icon {
+			transform: rotate(-45deg);
+		}
 	</style>
 </head>
 <body>
@@ -141,11 +156,10 @@
 		<div class="card">
 			<h2>ELIMINAR OBJETO</h2>
 			<div class="icon">
-				<img src="~/Content/IMGS/Cruz.png" style="offset-rotate: reverse -45deg;" />
+				<img src="~/Content/IMGS/Cruz.png" class="delete-icon" />
 			</div>
-			<p>Modifique objetos que se hayan cargado de forma errónea y pueda volver a cargarlos.</p>
-			<br />
-			<a href="/Admin/Modificar">Modificar objeto</a>
+			<p>Elimine objetos para que dejen de estar disponibles en los proyectos de los nuevos usuarios.</p>
+			<a href="/Admin/Eliminar">Eliminar objeto</a>
 		</div>
 	</div>
 
