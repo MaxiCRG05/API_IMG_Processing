@@ -13,5 +13,10 @@ namespace WebService.Controllers.WEB
         {
             return View();
         }
+
+        public ActionResult Proyecto()
+        {
+			return View();
+		}
     }
 }

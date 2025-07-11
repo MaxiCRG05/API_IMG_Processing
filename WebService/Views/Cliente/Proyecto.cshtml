@@ -1,0 +1,64 @@
+﻿@{
+	ViewBag.Title = "Proyecto";
+	Layout = "~/Views/Shared/Global.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=dehaze" />
+	<link rel="stylesheet" href="~/Content/ObjetoNuevo.css">
+	<title>Proyecto</title>
+</head>
+<body>
+	<header>
+		<div class="retroceder">
+			<span class="material-symbols-outlined">dehaze</span>
+		</div>
+		<div class="titulos">
+			<h1>@User.Identity.Name</h1>
+		</div>
+	</header>
+	<section>
+		<article>
+			<button type="submit" onclick="location.href = '/IA/Crear'">Crear red neuronal<img src="~/Content/IMGS/red.svg" alt=""></button>
+			<div class="opciones">
+				<div class="etiqueta">Selecciona alguna opción<img src="~/Content/IMGS/opciones.svg" alt="opciones" class="flecha"></div>
+				<div class="select-options">
+					<label class="opcion">
+						<img src="~/Content/IMGS/pera_binarizada.png" alt="imagen" class="objeto">
+						Pera
+						<input type="checkbox">
+						<span class="marcado"></span>
+					</label>
+				</div>
+			</div>
+			<button type="submit">Entrenar red neuronal<img src="~/Content/IMGS/study.svg" alt="Entrenar"></button>
+			<button type="submit">Subir imagen<img src="~/Content/IMGS/image.svg" alt="imagen"></button>
+			<button type="submit">Reconocer objetos<img src="~/Content/IMGS/reconocer.svg" alt="Reconocer"></button>
+		</article>
+		<aside>
+		</aside>
+	</section>
+	<script src="~/Scripts/proyecto.js"></script>
+	<div id="menuLateral" class="menu-lateral oculto">
+		<div class="menu-header">
+			<span class="close-menu" id="cerrarMenu"><img src="~/Content/IMGS/cerrar.svg" alt="Cerrar menú"></span>
+		</div>
+		<ul class="menu-lista">
+			<li><img src="~/Content/IMGS/save-negro.svg" alt="Guardar" class="menu-icono"> Guardar</li>
+			<li class="submenu">
+				<img src="~/Content/IMGS/modificar.svg" alt="Modificar proyecto" class="menu-icono"> Modificar proyecto
+				<ul class="subopciones">
+					<li><img src="~/Content/IMGS/modificar.svg" alt="Modificar nombre del proyecto" class="menu-icono"> Modificar nombre</li>
+					<li><img src="~/Content/IMGS/red-negro.svg" alt="Modificar red neuronal" class="menu-icono"> Modificar arquitectura</li>
+				</ul>
+			</li>
+			<li onclick="location.href = '/Cliente'"><img src="~/Content/IMGS/salir.svg" alt="Salir" class="menu-icono"> Salir del proyecto</li>
+			<li><img src="~/Content/IMGS/borrar.svg" alt="Borrar" class="menu-icono"> Eliminar proyecto</li>
+		</ul>
+	</div>
+</body>
+</html>

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using WebService.Data;
 using WebService.Models;
+using WebService.Scripts;
 
 namespace WebService.Controllers.WEB
 {
@@ -125,5 +126,30 @@ namespace WebService.Controllers.WEB
             }
             base.Dispose(disposing);
         }
-    }
+
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Registrar(Usuario usuario)
+		{
+			if (ModelState.IsValid)
+			{ 
+				if (db.Usuarios.Any(u => u.Correo == usuario.Correo))
+				{
+					ModelState.AddModelError("Correo", "El correo ya está registrado");
+					return View("Registro", usuario);
+				}
+
+				usuario.Contraseña = MetodosProcesamiento.Encriptar(usuario.Contraseña);
+
+				usuario.Rol = "Usuario";
+
+				db.Usuarios.Add(usuario);
+				db.SaveChanges();
+
+				return RedirectToAction("Login", "Login");
+			}
+            return View("Index", usuario);
+		}
+	}
 }

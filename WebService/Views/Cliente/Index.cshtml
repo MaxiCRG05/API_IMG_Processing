@@ -3,6 +3,8 @@
 	ViewBag.Title = "Index";
 	Layout = "~/Views/Shared/Global.cshtml";
 }
+
+@Html.AntiForgeryToken()
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +25,7 @@
 			<h2>¿EN QUÉ PROYECTO TRABAJAREMOS HOY?</h2>
 		</div>
 	</header>
-	<input type="submit" value="Crear nuevo proyecto">
+	<input onclick="location.href='/Cliente/Proyecto'" type="submit" value="Crear nuevo proyecto">
 	<div class="borde">
 		<table>
 			<thead>

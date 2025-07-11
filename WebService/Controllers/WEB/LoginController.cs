@@ -23,5 +23,10 @@ namespace WebService.Controllers.WEB
         { 
             return View();
         }
+        
+        public ActionResult Restablecer()
+        { 
+            return View();
+        }
     }
 }

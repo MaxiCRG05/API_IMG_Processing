@@ -333,6 +333,7 @@
     <Content Include="Content\IMGS\Cruz3.png" />
     <Content Include="Content\IMGS\save.svg" />
     <Content Include="Content\IMGS\study.svg" />
+    <Content Include="Content\IMGS\Eliminar.svg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -412,6 +413,7 @@
     <Content Include="Content\ObjetoNuevo.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\Usuario.css" />
+    <Content Include="Scripts\proyecto.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -482,6 +484,8 @@
     <Content Include="Views\Login\Recuperar.cshtml" />
     <Content Include="Views\Shared\Global.cshtml" />
     <Content Include="Views\Cliente\Index.cshtml" />
+    <Content Include="Views\Login\Restablecer.cshtml" />
+    <Content Include="Views\Cliente\Proyecto.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
