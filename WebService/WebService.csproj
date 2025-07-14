@@ -266,15 +266,20 @@
     <Compile Include="Controllers\WEB\ProyectosController.cs" />
     <Compile Include="Controllers\WEB\ProyectosObjetosController.cs" />
     <Compile Include="Controllers\WEB\RedesNeuronalesController.cs" />
+    <Compile Include="Controllers\WEB\RestablecerController.cs" />
     <Compile Include="Controllers\WEB\UmbralesController.cs" />
     <Compile Include="Controllers\WEB\UsuariosController.cs" />
     <Compile Include="Data\Context.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202507012031037_InitialCreate.cs" />
-    <Compile Include="Migrations\202507012031037_InitialCreate.Designer.cs">
-      <DependentUpon>202507012031037_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202507142054338_initial.cs" />
+    <Compile Include="Migrations\202507142054338_initial.Designer.cs">
+      <DependentUpon>202507142054338_initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202507142214258_second.cs" />
+    <Compile Include="Migrations\202507142214258_second.Designer.cs">
+      <DependentUpon>202507142214258_second.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Categoria.cs" />
@@ -284,6 +289,7 @@
     <Compile Include="Models\ProyectoObjeto.cs" />
     <Compile Include="Models\Proyecto.cs" />
     <Compile Include="Models\RedNeuronal.cs" />
+    <Compile Include="Models\Restablecer.cs" />
     <Compile Include="Models\Umbral.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -428,11 +434,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Usuarios\Create.cshtml" />
-    <Content Include="Views\Usuarios\Delete.cshtml" />
-    <Content Include="Views\Usuarios\Details.cshtml" />
-    <Content Include="Views\Usuarios\Edit.cshtml" />
-    <Content Include="Views\Usuarios\Index.cshtml" />
     <Content Include="Views\Categorias\Create.cshtml" />
     <Content Include="Views\Categorias\Delete.cshtml" />
     <Content Include="Views\Categorias\Details.cshtml" />
@@ -484,8 +485,13 @@
     <Content Include="Views\Login\Recuperar.cshtml" />
     <Content Include="Views\Shared\Global.cshtml" />
     <Content Include="Views\Cliente\Index.cshtml" />
-    <Content Include="Views\Login\Restablecer.cshtml" />
+    <Content Include="Views\Restablecer\Index.cshtml" />
     <Content Include="Views\Cliente\Proyecto.cshtml" />
+    <Content Include="Views\Usuarios\Create.cshtml" />
+    <Content Include="Views\Usuarios\Delete.cshtml" />
+    <Content Include="Views\Usuarios\Details.cshtml" />
+    <Content Include="Views\Usuarios\Edit.cshtml" />
+    <Content Include="Views\Usuarios\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -518,8 +524,11 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202507012031037_InitialCreate.resx">
-      <DependentUpon>202507012031037_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202507142054338_initial.resx">
+      <DependentUpon>202507142054338_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507142214258_second.resx">
+      <DependentUpon>202507142214258_second.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

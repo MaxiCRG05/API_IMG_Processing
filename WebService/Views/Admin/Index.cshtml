@@ -121,10 +121,10 @@
 <body>
 
 	<div class="header">
-		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Logout'">
+		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
 			<img src="~/Content/IMGS/LogOut.png" />
 		</button>
-		<h1>BIENVENIDO @User.Identity.Name</h1>
+		<h1>BIENVENIDO @Session["Nombre"].ToString().ToUpper()</h1>
 		<p>¿QUÉ DESEA REALIZAR?</p>
 	</div>
 

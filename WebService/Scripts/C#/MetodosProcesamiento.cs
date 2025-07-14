@@ -26,6 +26,16 @@ namespace WebService.Scripts
 
 		private const int repeticiones = 10000;
 
+		public static string GenerarToken()
+		{
+			return Guid.NewGuid().ToString().Replace("-", "");
+		}
+
+		public static bool TokenEsValido(DateTime? expiracion)
+		{
+			return expiracion.HasValue && expiracion.Value > DateTime.Now;
+		}
+
 		public static string Encriptar(string txt)
 		{
 			byte[] sal;
@@ -43,6 +53,22 @@ namespace WebService.Scripts
 			return hashedPassword;
 		}
 
+		public static bool VerificarContraseña(string contraseñaIngresada, string contraseñaEncriptada)
+		{
+			byte[] hashBytes = Convert.FromBase64String(contraseñaEncriptada);
+			byte[] sal = new byte[salTam];
+			Array.Copy(hashBytes, 0, sal, 0, salTam);
+
+			var pbkdf2 = new Rfc2898DeriveBytes(contraseñaIngresada, sal, repeticiones, HashAlgorithmName.SHA256);
+			byte[] hash = pbkdf2.GetBytes(hashTam);
+
+			for (int i = 0; i < hashTam; i++)
+			{
+				if (hashBytes[i + salTam] != hash[i])
+					return false;
+			}
+			return true;
+		}
 
 		public static Bitmap Escala_Grises(Bitmap btm)
 		{

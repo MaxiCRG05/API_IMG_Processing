@@ -16,12 +16,12 @@
 </head>
 <body>
 	<header>
-		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Logout'">
+		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
 			<img src="~/Content/IMGS/LogOut.png" />
 		</button>
 		<div class="titulos">
 			<!-- -->
-			<h1>Bienvenido @User.Identity.Name</h1>
+			<h1>Bienvenido @Session["Nombre"].ToString().ToUpper()</h1>
 			<h2>¿EN QUÉ PROYECTO TRABAJAREMOS HOY?</h2>
 		</div>
 	</header>

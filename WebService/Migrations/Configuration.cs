@@ -10,7 +10,6 @@
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "WebService.Data.Context";
         }
 
         protected override void Seed(WebService.Data.Context context)

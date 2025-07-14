@@ -20,7 +20,7 @@
 		</button>
 		<h1>¡Nuevo usuario!</h1>
 		<h2>Por favor ingresa los siguientes datos para crear tu usuario en la plataforma y empezar a crear objetos.</h2>
-		<form action="@Url.Action("Registrar", "Usuarios")" method="post">
+		<form action="/Login/Registro" method="post">
 			@Html.AntiForgeryToken()
 			<input type="text" name="nombre" id="nombre" placeholder="Nombre">
 			<input type="email" name="correo" id="correo" placeholder="Correo">

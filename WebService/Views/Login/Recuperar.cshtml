@@ -20,10 +20,16 @@
 		</button>
 		<h1>Recuperar contraseña</h1>
 		<h2>Ingrese su correo electrónico para enviar un correo y poder reestablecer su contraseña</h2>
-		<form action="" method="post">
+		<form action="/Login/Recuperar" method="post">
+			@Html.AntiForgeryToken()
 			<input type="email" name="correo" id="correo" placeholder="Correo">
-			<input type="email" name="correo" id="correo" placeholder="Confirmar correo">
 			<button type="submit">Enviar<img src="~/Content/IMGS/enviar.svg" alt="nuevo usuario"></button>
+			@if (ViewBag.Mensaje != null)
+			{
+				<div class="alert alert-info">
+					@ViewBag.Mensaje
+				</div>
+			}
 		</form>
 	</div>
 	<div class="logo">

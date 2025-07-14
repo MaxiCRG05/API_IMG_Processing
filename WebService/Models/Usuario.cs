@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebService.Models
@@ -9,17 +10,19 @@ namespace WebService.Models
 		[Key]
 		public int ID { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "El nombre es obligatorio")]
 		public string Nombre { get; set; }
 
-		[Required]
-		[EmailAddress]
+		[Required(ErrorMessage = "El correo es obligatorio")]
+		[EmailAddress(ErrorMessage = "Formato de correo inválido")]
 		public string Correo { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "La contraseña es obligatoria")]
+		[MinLength(8, ErrorMessage = "Mínimo 8 caracteres")]
 		public string Contraseña { get; set; }
 
-		[Required]
 		public string Rol { get; set; }
+		public string TokenRecuperacion { get; set; }
+		public DateTime? ExpiracionToken { get; set; }
 	}
 }
