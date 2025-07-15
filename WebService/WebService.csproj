@@ -252,6 +252,7 @@
     <Compile Include="Controllers\API\ProyectosController.cs" />
     <Compile Include="Controllers\API\ProyectosObjetosController.cs" />
     <Compile Include="Controllers\API\RedesNeuronalesController.cs" />
+    <Compile Include="Controllers\API\RestablecerController.cs" />
     <Compile Include="Controllers\API\UmbralesController.cs" />
     <Compile Include="Controllers\API\UsuariosController.cs" />
     <Compile Include="Controllers\WEB\AdminController.cs" />
@@ -273,13 +274,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202507142054338_initial.cs" />
-    <Compile Include="Migrations\202507142054338_initial.Designer.cs">
-      <DependentUpon>202507142054338_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202507142214258_second.cs" />
-    <Compile Include="Migrations\202507142214258_second.Designer.cs">
-      <DependentUpon>202507142214258_second.cs</DependentUpon>
+    <Compile Include="Migrations\202507150004042_initial.cs" />
+    <Compile Include="Migrations\202507150004042_initial.Designer.cs">
+      <DependentUpon>202507150004042_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Categoria.cs" />
@@ -492,6 +489,10 @@
     <Content Include="Views\Usuarios\Details.cshtml" />
     <Content Include="Views\Usuarios\Edit.cshtml" />
     <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Restablecer\Create.cshtml" />
+    <Content Include="Views\Restablecer\Delete.cshtml" />
+    <Content Include="Views\Restablecer\Details.cshtml" />
+    <Content Include="Views\Restablecer\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -524,11 +525,8 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202507142054338_initial.resx">
-      <DependentUpon>202507142054338_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202507142214258_second.resx">
-      <DependentUpon>202507142214258_second.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202507150004042_initial.resx">
+      <DependentUpon>202507150004042_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

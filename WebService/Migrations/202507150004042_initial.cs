@@ -97,6 +97,8 @@
                         Correo = c.String(nullable: false),
                         Contraseña = c.String(nullable: false),
                         Rol = c.String(),
+                        TokenRecuperacion = c.String(),
+                        ExpiracionToken = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID);
             
@@ -113,6 +115,17 @@
                 .ForeignKey("dbo.Proyectos", t => t.ProyectoID, cascadeDelete: true)
                 .Index(t => t.ProyectoID)
                 .Index(t => t.ObjetoID);
+            
+            CreateTable(
+                "dbo.Restablecer",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Token = c.String(nullable: false),
+                        NuevaContraseña = c.String(nullable: false),
+                        ConfirmarContraseña = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.Umbrales",
@@ -147,6 +160,7 @@
             DropIndex("dbo.Objetos", new[] { "CategoriasID" });
             DropIndex("dbo.InvariantesHu", new[] { "ObjetoID" });
             DropTable("dbo.Umbrales");
+            DropTable("dbo.Restablecer");
             DropTable("dbo.Proyectos_Objetos");
             DropTable("dbo.Usuarios");
             DropTable("dbo.Proyectos");

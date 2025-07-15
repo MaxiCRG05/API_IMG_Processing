@@ -18,9 +18,10 @@ namespace WebService.Data
 		public DbSet<Umbral> Umbrales { get; set; }
 		public DbSet<Peso> Pesos { get; set; }
 		public DbSet<Categoria> Categorias { get; set; }
+		public DbSet<Restablecer> Restablecer { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 		}
-	}
+    }
 }

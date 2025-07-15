@@ -38,9 +38,7 @@ namespace WebService.Controllers.WEB
 
 				if (MetodosProcesamiento.VerificarContraseña(password, usuario.Contraseña))
 				{
-					Session["UsuarioID"] = usuario.ID;
-					Session["Rol"] = usuario.Rol;
-					Session["Nombre"] = usuario.Nombre;
+					IniciarSesion(usuario);
 
 					if (usuario.Rol == "Admin")
 					{
@@ -83,6 +81,8 @@ namespace WebService.Controllers.WEB
 					db.Usuarios.Add(user);
 					db.SaveChanges();
 
+					IniciarSesion(user);
+
 					return RedirectToAction("Index", "Cliente");
 				}
 			}
@@ -108,7 +108,6 @@ namespace WebService.Controllers.WEB
 					usuario.ExpiracionToken = DateTime.Now.AddHours(1);
 					db.SaveChanges();
 
-					// Enviar correo
 					EnviarCorreoRecuperacion(usuario.Correo, usuario.TokenRecuperacion);
 				}
 
@@ -179,7 +178,7 @@ namespace WebService.Controllers.WEB
 
 				var mail = new MailMessage
 				{
-					From = new MailAddress("jraidersons@gmail.com"),
+					From = new MailAddress(""),
 					Subject = "Restablece tu contraseña",
 					Body = body,
 					IsBodyHtml = true
@@ -235,6 +234,13 @@ namespace WebService.Controllers.WEB
 			Session.Clear();
 			Session.Abandon();
 			return RedirectToAction("Index", "Login");
+		}
+
+		public void IniciarSesion(Usuario usuario)
+		{
+			Session["UsuarioID"] = usuario.ID;
+			Session["Rol"] = usuario.Rol;
+			Session["Nombre"] = usuario.Nombre;
 		}
 	}
 }
