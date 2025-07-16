@@ -128,7 +128,12 @@ namespace WebService.Controllers.WEB
 					return View();
 				}
 
-				return View(new Restablecer { Token = token });
+				var model = new Restablecer
+				{
+					Token = token
+				};
+
+				return View(model);
 			}
 		}
 
@@ -150,6 +155,12 @@ namespace WebService.Controllers.WEB
 					ViewBag.Error = "El enlace es inválido o ha expirado";
 					return View(model);
 				}
+				
+				if (model.NuevaContraseña != model.ConfirmarContraseña)
+				{
+					ModelState.AddModelError("ConfirmarContraseña", "Las contraseñas no coinciden");
+					return View(model);
+				}
 
 				usuario.Contraseña = MetodosProcesamiento.Encriptar(model.NuevaContraseña);
 				usuario.TokenRecuperacion = null;
@@ -162,30 +173,41 @@ namespace WebService.Controllers.WEB
 
 		private void EnviarCorreoRecuperacion(string correo, string token)
 		{
-			var resetUrl = Url.Action("Restablecer", "Login",
-								new { token }, Request.Url.Scheme);
-
-			var body = $@"<h1>Restablecimiento de contraseña</h1>
-                 <p><a href='{resetUrl}'>Haz clic aquí</a> para continuar</p>";
-
-			using (var client = new SmtpClient())
+			try
 			{
-				client.UseDefaultCredentials = false;
-				client.Credentials = new NetworkCredential(
-					ConfigurationManager.AppSettings["SMTP_User"],
-					ConfigurationManager.AppSettings["SMTP_Pass"]
-				);
+				var resetUrl = Url.Action("Restablecer", "Login", new { token }, Request.Url.Scheme);
+				var body = $@"<h1>Restablecimiento de contraseña</h1>
+                     <p><a href='{resetUrl}'>Haz clic aquí</a> para continuar</p>
+                     <p>Si no solicitaste esto, ignora este correo.</p>";
 
-				var mail = new MailMessage
+				var smtpUser = ConfigurationManager.AppSettings["SMTP_User"];
+				var smtpPass = ConfigurationManager.AppSettings["SMTP_Pass"];
+
+				using (var client = new SmtpClient())
 				{
-					From = new MailAddress(""),
-					Subject = "Restablece tu contraseña",
-					Body = body,
-					IsBodyHtml = true
-				};
+					client.Host = "smtp-mail.outlook.com";
+					client.Port = 587;
+					client.EnableSsl = true;
+					client.UseDefaultCredentials = false;
+					client.DeliveryMethod = SmtpDeliveryMethod.Network;
+					client.Credentials = new NetworkCredential(smtpUser, smtpPass);
+					client.Timeout = 10000;
 
-				mail.To.Add(correo);
-				client.Send(mail);
+					var mail = new MailMessage
+					{
+						From = new MailAddress(smtpUser, "Visión Artificial"),
+						Subject = "Restablece tu contraseña",
+						Body = body,
+						IsBodyHtml = true
+					};
+
+					mail.To.Add(correo);
+					client.Send(mail);
+				}
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Trace.TraceError($"Error enviando correo: {ex.Message}");
 			}
 		}
 
@@ -198,21 +220,23 @@ namespace WebService.Controllers.WEB
 
 				using (var mensaje = new MailMessage())
 				{
-					mensaje.From = new MailAddress(smtpUser, "");
-					mensaje.To.Add("");
+					mensaje.From = new MailAddress(smtpUser, "Vision Artificial");
+					mensaje.To.Add("maxicrg.05@gmail.com");
 					mensaje.Subject = "Prueba SMTP - " + DateTime.Now.ToString("HH:mm:ss");
 					mensaje.Body = "<h1>¡Prueba exitosa!</h1><p>Esta es una prueba de configuración SMTP.</p>";
 					mensaje.IsBodyHtml = true;
 
 					using (var smtp = new SmtpClient())
 					{
-						smtp.Host = "smtp.gmail.com";
+						smtp.Host = "smtp-mail.outlook.com";
 						smtp.Port = 587;
 						smtp.EnableSsl = true;
 						smtp.UseDefaultCredentials = false;
 						smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
 						smtp.Credentials = new NetworkCredential(smtpUser, smtpPass);
 
+						smtp.Timeout = 15000;
+						ServicePointManager.ServerCertificateValidationCallback = (s, cert, chain, errors) => true;
 						smtp.Send(mensaje);
 					}
 				}
