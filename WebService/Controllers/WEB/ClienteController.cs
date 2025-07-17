@@ -41,6 +41,7 @@ namespace WebService.Controllers.WEB
 		}
 
 		[HttpPost]
+		[AutorizarRol("Usuario")]
 		[ValidateAntiForgeryToken]
 		public ActionResult Proyecto(Proyecto proyecto)
 		{
@@ -65,6 +66,7 @@ namespace WebService.Controllers.WEB
 		}
 
 		// GET: Cliente/EditarProyecto/5
+		[AutorizarRol("Usuario")]
 		public ActionResult EditarProyecto(int id)
 		{
 			if (Session["UsuarioID"] == null)
@@ -84,6 +86,7 @@ namespace WebService.Controllers.WEB
 		}
 
 		[HttpPost]
+		[AutorizarRol("Usuario")]
 		[ValidateAntiForgeryToken]
 		public ActionResult EditarProyecto(Proyecto proyecto)
 		{
@@ -110,7 +113,54 @@ namespace WebService.Controllers.WEB
 			return View(proyecto);
 		}
 
+		[AutorizarRol("Usuario")]
+		public ActionResult CrearProyecto()
+		{
+			ViewBag.Categorias = db.Categorias.ToList();
+			return View();
+		}
+
 		[HttpPost]
+		[AutorizarRol("Usuario")]
+		[ValidateAntiForgeryToken]
+		public ActionResult CrearProyecto(Proyecto proyecto, int[] categoriasSeleccionadas)
+		{
+			if (Session["UsuarioID"] == null)
+			{
+				return RedirectToAction("Index", "Login");
+			}
+
+			if (ModelState.IsValid)
+			{
+				proyecto.UsuarioID = (int)Session["UsuarioID"];
+				proyecto.FechaCreacion = DateTime.Now;
+				proyecto.FechaModificacion = DateTime.Now;
+
+				if (categoriasSeleccionadas != null)
+				{
+					foreach (var categoriaId in categoriasSeleccionadas)
+					{
+						var categoria = db.Categorias.Find(categoriaId);
+						if (categoria != null)
+						{
+							proyecto.Categorias.Add(categoria);
+						}
+					}
+				}
+
+				db.Proyectos.Add(proyecto);
+				db.SaveChanges();
+
+				TempData["Alerta"] = "Proyecto creado exitosamente!";
+				return RedirectToAction("Index");
+			}
+
+			ViewBag.Categorias = db.Categorias.ToList();
+			return View(proyecto);
+		}
+
+		[HttpPost]
+		[AutorizarRol("Usuario")]
 		[ValidateAntiForgeryToken]
 		public ActionResult EliminarProyecto(int id)
 		{

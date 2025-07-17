@@ -276,6 +276,10 @@
     <Compile Include="Migrations\202507150004042_initial.Designer.cs">
       <DependentUpon>202507150004042_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202507162218332_second.cs" />
+    <Compile Include="Migrations\202507162218332_second.Designer.cs">
+      <DependentUpon>202507162218332_second.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Categoria.cs" />
     <Compile Include="Models\InvariantesHu.cs" />
@@ -487,6 +491,7 @@
     <Content Include="Views\Usuarios\Details.cshtml" />
     <Content Include="Views\Usuarios\Edit.cshtml" />
     <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Cliente\CrearProyecto.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -521,6 +526,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202507150004042_initial.resx">
       <DependentUpon>202507150004042_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507162218332_second.resx">
+      <DependentUpon>202507162218332_second.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -3,13 +3,6 @@
 	Layout = null;
 }
 
-@if (!ViewData.ModelState.IsValid)
-{
-	<div class="alert alert-danger">
-		@Html.ValidationSummary(true, "")
-	</div>
-}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,7 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Visión Artificial</title>
 	<script src="https://unpkg.com/dotlottie/player-component/dist/dotlottie-player.mjs" type="module"></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<style>
 
 		body {
@@ -203,10 +196,75 @@
 			¿No tienes cuenta? <a href="/Login/Registro">Crear un usuario</a>.
 		</div>
 	</div>
+	<script>
+    @if (ViewBag.ErrorType != null)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('@ViewBag.ErrorType' === 'UsuarioInexistente') {
+                usuarioInexistente();
+			}
+			else if ('@ViewBag.ErrorType' === 'CredencialesInvalidas') {
+                loginFallido();
+			}
+        });
+        </text>
+    }
+
+    function usuarioInexistente() {
+        Swal.fire({
+            title: 'Usuario inexistente',
+            text: 'El usuario que intentas iniciar sesión no existe.',
+            icon: 'warning',
+            confirmButtonText: 'Crear usuario'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/Login/Registro';
+            }
+        });
+    }
+
+    function loginFallido() {
+        Swal.fire({
+            title: 'Error',
+            text: 'Correo electrónico o contraseña incorrectos.',
+            icon: 'error',
+            confirmButtonText: 'Intentar de nuevo'
+        });
+	}
+	</script>
+
 </body>
 </html>
 
 <script>
+	import Swal from 'sweetalert2';
+
+	
+
+	function loginFallido() {
+		Swal.fire({
+			title: 'Error',
+			text: 'Correo electrónico o contraseña incorrectos.',
+			icon: 'error',
+			confirmButtonText: 'Intentar de nuevo'
+		})
+	}
+
+	function usuarioInexistente() {
+		Swal.fire({
+			title: 'Usuario inexistente',
+			text: 'El usuario que intentas iniciar sesión no existe.',
+			icon: 'warning',
+			confirmButtonText: 'Crear usuario'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				window.location.href = '/Login/Registro';
+			}
+		});
+	}
+
+
 	let inputCorreo = document.getElementById("email");
 	let inputPass = document.getElementById("password");
 	let lblEmail = document.getElementById("lblEmail");
@@ -234,7 +292,4 @@
 		window.open(authUrl, '_blank', 'width=500,height=600');
 	}
 
-	function desplazar() {
-
-	}
 </script>

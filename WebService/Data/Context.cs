@@ -22,6 +22,17 @@ namespace WebService.Data
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
+			modelBuilder.Entity<Proyecto>()
+			.HasMany(p => p.Categorias)
+			.WithMany()
+			.Map(m =>
+			{
+				m.ToTable("ProyectoCategorias");
+				m.MapLeftKey("ProyectoID");
+				m.MapRightKey("CategoriaID");
+			});
 		}
+
+
     }
 }

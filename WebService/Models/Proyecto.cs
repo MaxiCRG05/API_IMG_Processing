@@ -23,5 +23,7 @@ namespace WebService.Models
 		[Required]
 		[ForeignKey("UsuarioID")]
 		public Usuario Usuarios { get; set; }
+
+		public virtual ICollection<Categoria> Categorias { get; set; } = new HashSet<Categoria>();
 	}
 }

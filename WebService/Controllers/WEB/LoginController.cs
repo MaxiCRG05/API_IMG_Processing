@@ -33,6 +33,7 @@ namespace WebService.Controllers.WEB
 				if (usuario == null)
 				{
 					ModelState.AddModelError("", "Usuario no encontrado");
+					ViewBag.ErrorType = "UsuarioInexistente";
 					return View("Index");
 				}
 
@@ -41,7 +42,7 @@ namespace WebService.Controllers.WEB
 					IniciarSesion(usuario);
 
 					if (usuario.Rol == "Admin")
-					{
+					{ 
 						return RedirectToAction("Index", "Admin");
 					}
 					else
@@ -50,7 +51,8 @@ namespace WebService.Controllers.WEB
 					}
 				}
 
-				ModelState.AddModelError("", "Contraseña incorrecta");
+				ModelState.AddModelError("", "CredencialesInvalidas");
+				ViewBag.ErrorType = "CredencialesInvalidas";
 				return View("Index");
 			}
 		}
@@ -185,7 +187,7 @@ namespace WebService.Controllers.WEB
 
 				using (var client = new SmtpClient())
 				{
-					client.Host = "smtp-mail.outlook.com";
+					client.Host = "smtp.office365.com";
 					client.Port = 587;
 					client.EnableSsl = true;
 					client.UseDefaultCredentials = false;
@@ -211,7 +213,7 @@ namespace WebService.Controllers.WEB
 			}
 		}
 
-		public ActionResult ProbarCorreo()
+		public ActionResult ProbarCorreo(string correo)
 		{
 			try
 			{
@@ -220,15 +222,15 @@ namespace WebService.Controllers.WEB
 
 				using (var mensaje = new MailMessage())
 				{
-					mensaje.From = new MailAddress(smtpUser, "Vision Artificial");
-					mensaje.To.Add("maxicrg.05@gmail.com");
+					mensaje.From = new MailAddress(smtpUser);
+					mensaje.To.Add(correo);
 					mensaje.Subject = "Prueba SMTP - " + DateTime.Now.ToString("HH:mm:ss");
 					mensaje.Body = "<h1>¡Prueba exitosa!</h1><p>Esta es una prueba de configuración SMTP.</p>";
 					mensaje.IsBodyHtml = true;
 
-					using (var smtp = new SmtpClient())
+					using (var smtp = new SmtpClient("smtp.office365.com"))
 					{
-						smtp.Host = "smtp-mail.outlook.com";
+						smtp.Host = "smtp.office365.com";
 						smtp.Port = 587;
 						smtp.EnableSsl = true;
 						smtp.UseDefaultCredentials = false;
