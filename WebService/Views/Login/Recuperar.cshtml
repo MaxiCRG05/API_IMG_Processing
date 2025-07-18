@@ -1,7 +1,6 @@
-﻿
-@{
+﻿@{
 	ViewBag.Title = "Recuperar";
-	Layout = "~/Views/Shared/Global.cshtml";
+	Layout = null;
 }
 
 <!DOCTYPE html>
@@ -10,30 +9,66 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_left_alt" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link href="~/Content/Login.css" rel="stylesheet" />
 	<link href="~/Content/Usuario.css" rel="stylesheet" />
 	<title>Recuperar</title>
 </head>
 <body>
-	<div class="contenedor-formulario">
-		<button class="return-btn" title="Regresar" onclick="location.href='/Login'">
-			<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
-		</button>
+	<button class="return-btn" title="Regresar" onclick="location.href='/Login'">
+		<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+	</button>
+	<div class="login-container">
 		<h1>Recuperar contraseña</h1>
 		<h2>Ingrese su correo electrónico para enviar un correo y poder reestablecer su contraseña</h2>
 		<form action="/Login/Recuperar" method="post">
 			@Html.AntiForgeryToken()
 			<input type="email" name="correo" id="correo" placeholder="Correo">
-			<button type="submit">Enviar<img src="~/Content/IMGS/enviar.svg" alt="nuevo usuario"></button>
-			@if (ViewBag.Mensaje != null)
-			{
-				<div class="alert alert-info">
-					@ViewBag.Mensaje
-				</div>
-			}
+			<button type="submit" class="login-btn">Enviar<img src="~/Content/IMGS/enviar.svg" alt="nuevo usuario"></button>
 		</form>
 	</div>
-	<div class="logo">
-		<img src="../imagenes/pera_binarizada.png" alt="pera">
-	</div>
+	<script>
+		@if(ViewBag.ErrorType != null)
+		{
+			<text>
+				document.addEventListener('DOMContentLoaded', function() {
+					if ('@ViewBag.ErrorType' === 'Enviado'){
+						enviado();
+					}
+					else{
+						usuarioInexistente();
+					}
+				});
+			</text>
+		}
+
+		function enviado() {
+			Swal.fire({
+				title: 'Correo enviado',
+				text: 'Correo enviado exitosamente',
+				icon: 'success',
+				confirmButtonText: 'Aceptar',
+				timer: 5000
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = '/Login';
+				}
+			});
+		}
+
+		function usuarioInexistente() {
+			Swal.fire({
+				title: 'Usuario inexistente',
+				text: 'El usuario que intentas iniciar sesión no existe.',
+				icon: 'warning',
+				confirmButtonText: 'Crear usuario',
+				timer: 5000
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = '/Login/Registro';
+				}
+			});
+		}
+	</script>
 </body>
 </html>

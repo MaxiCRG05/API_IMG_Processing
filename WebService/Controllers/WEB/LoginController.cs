@@ -14,18 +14,19 @@ using WebService.Scripts;
 
 namespace WebService.Controllers.WEB
 {
-    public class LoginController : Controller
-    {
-        // GET: Login
-        public ActionResult Index()
-        {
-            return View();
-        }
+	public class LoginController : Controller
+	{
+		// GET: Login
+		public ActionResult Index()
+		{
+			return View();
+		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Index(string email, string password)
 		{
+
 			using (var db = new Context())
 			{
 				var usuario = db.Usuarios.FirstOrDefault(u => u.Correo == email);
@@ -58,15 +59,15 @@ namespace WebService.Controllers.WEB
 		}
 
 		public ActionResult Registro()
-        { 
-            return View();
-        }
+		{ 
+			return View();
+		}
 
-        [HttpPost]
+		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Registro(Usuario user)
 		{
-            user.Rol = "Usuario";
+			user.Rol = "Usuario";
 
 			if (ModelState.IsValid)
 			{
@@ -75,10 +76,11 @@ namespace WebService.Controllers.WEB
 					if (db.Usuarios.Any(u => u.Correo == user.Correo))
 					{
 						ModelState.AddModelError("Correo", "El correo ya está registrado.");
+						ViewBag.ErrorType = "CorreoExistente";
 						return View(user);
 					}
 
-                    user.Contraseña = MetodosProcesamiento.Encriptar(user.Contraseña);
+					user.Contraseña = MetodosProcesamiento.Encriptar(user.Contraseña);
 
 					db.Usuarios.Add(user);
 					db.SaveChanges();
@@ -92,9 +94,9 @@ namespace WebService.Controllers.WEB
 		}
 
 		public ActionResult Recuperar()
-        { 
-            return View();
-        }
+		{ 
+			return View();
+		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -102,6 +104,15 @@ namespace WebService.Controllers.WEB
 		{
 			using (var db = new Context())
 			{
+				var expirados = db.Usuarios.Where(u => u.ExpiracionToken < DateTime.Now).ToList();
+
+				foreach (var exp in expirados)
+				{
+					exp.TokenRecuperacion = null;
+					exp.ExpiracionToken = null;
+				}
+				db.SaveChanges();
+
 				var usuario = db.Usuarios.FirstOrDefault(u => u.Correo == correo);
 
 				if (usuario != null)
@@ -111,9 +122,13 @@ namespace WebService.Controllers.WEB
 					db.SaveChanges();
 
 					EnviarCorreoRecuperacion(usuario.Correo, usuario.TokenRecuperacion);
+					ViewBag.ErrorType = "Enviado";
+				}
+				else
+				{
+					ViewBag.ErrorType = "UsuarioInexistente";
 				}
 
-				ViewBag.Mensaje = "Si el correo existe en nuestro sistema, recibirás un enlace para restablecer tu contraseña.";
 				return View();
 			}
 		}
@@ -154,13 +169,14 @@ namespace WebService.Controllers.WEB
 
 				if (usuario == null || !MetodosProcesamiento.TokenEsValido(usuario.ExpiracionToken))
 				{
-					ViewBag.Error = "El enlace es inválido o ha expirado";
+					ViewBag.ErrorType = "Error";
 					return View(model);
 				}
 				
 				if (model.NuevaContraseña != model.ConfirmarContraseña)
 				{
 					ModelState.AddModelError("ConfirmarContraseña", "Las contraseñas no coinciden");
+					ViewBag.ErrorType = "Diferentes";
 					return View(model);
 				}
 
@@ -169,6 +185,7 @@ namespace WebService.Controllers.WEB
 				usuario.ExpiracionToken = null;
 				db.SaveChanges();
 
+				ViewBag.ErrorType = "ExitoContraseña";
 				return RedirectToAction("Index", new { mensaje = "Contraseña actualizada correctamente" });
 			}
 		}
@@ -179,8 +196,8 @@ namespace WebService.Controllers.WEB
 			{
 				var resetUrl = Url.Action("Restablecer", "Login", new { token }, Request.Url.Scheme);
 				var body = $@"<h1>Restablecimiento de contraseña</h1>
-                     <p><a href='{resetUrl}'>Haz clic aquí</a> para continuar</p>
-                     <p>Si no solicitaste esto, ignora este correo.</p>";
+					 <p><a href='{resetUrl}'>Haz clic aquí</a> para continuar</p>
+					 <p>Si no solicitaste esto, ignora este correo.</p>";
 
 				var smtpUser = ConfigurationManager.AppSettings["SMTP_User"];
 				var smtpPass = ConfigurationManager.AppSettings["SMTP_Pass"];
@@ -210,6 +227,7 @@ namespace WebService.Controllers.WEB
 			catch (Exception ex)
 			{
 				System.Diagnostics.Trace.TraceError($"Error enviando correo: {ex.Message}");
+
 			}
 		}
 

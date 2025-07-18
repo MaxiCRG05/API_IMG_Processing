@@ -1,7 +1,6 @@
-﻿
-@{
+﻿@{
 	ViewBag.Title = "Registro";
-	Layout = "~/Views/Shared/Global.cshtml";
+	Layout = null;
 }
 
 <!DOCTYPE html>
@@ -10,14 +9,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_left_alt" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link href="~/Content/Login.css" rel="stylesheet" />
 	<link href="~/Content/Usuario.css" rel="stylesheet" />
 	<title>Registro</title>
 </head>
 <body>
-	<div class="contenedor-formulario">
-		<button class="return-btn" title="Regresar" onclick="location.href='/Login'">
-			<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
-		</button>
+	<button class="return-btn" title="Regresar" onclick="location.href='/Login'">
+		<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+	</button>
+	<div class="login-container">
 		<h1>¡Nuevo usuario!</h1>
 		<h2>Por favor ingresa los siguientes datos para crear tu usuario en la plataforma y empezar a crear objetos.</h2>
 		<form action="/Login/Registro" method="post">
@@ -25,12 +26,46 @@
 			<input type="text" name="nombre" id="nombre" placeholder="Nombre">
 			<input type="email" name="correo" id="correo" placeholder="Correo">
 			<input type="password" name="contraseña" id="contraseña" placeholder="Contraseña">
-			<button type="submit">Registrar<img src="~/Content/IMGS/persona.svg" alt="nuevo usuario"></button>
+			<button type="submit" class="login-btn">Registrar<img src="~/Content/IMGS/persona.svg" alt="nuevo usuario"></button>
 		</form>
-		<p>¿Ya eres usuario? <a href="/Login">Iniciar sesión</a></p>
+		<div class="signup-link">
+			¿Ya eres usuario? <a href="/Login">Iniciar sesión</a>
+		</div>
 	</div>
-	<div class="logo">
-		<img src="../imagenes/pera_binarizada.png" alt="pera">
-	</div>
+	<script>
+		@if(ViewBag.ErrorType != null)
+		{
+			<text>
+				document.addEventListener('DOMContentLoaded', function() {
+					if ('@ViewBag.ErrorType' === 'CorreoExistente') {
+						correoExistente();
+					}
+					else {
+						errorRegistro();
+					}
+				});
+			</text>
+		}
+
+		function correoExistente() {
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: 'El correo electrónico ya está registrado.',
+				timer: 3000,
+				confirmButtonText: 'Aceptar'
+			});
+		}
+
+		function errorRegistro() {
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: 'Ocurrió un error al registrar el usuario. Por favor, inténtalo de nuevo.',
+				timer: 3000,
+				confirmButtonText: 'Aceptar'
+			});
+		}
+	</script>
 </body>
 </html>

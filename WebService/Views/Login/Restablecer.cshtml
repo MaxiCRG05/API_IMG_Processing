@@ -2,7 +2,7 @@
 
 @{
 	ViewBag.Title = "Restablecer";
-	Layout = "~/Views/Shared/Global.cshtml";
+	Layout = null;
 }
 
 <!DOCTYPE html>
@@ -10,11 +10,13 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link rel="stylesheet" href="~/Content/Login.css">
 	<link rel="stylesheet" href="~/Content/Usuario.css">
 	<title>Restablecer Contraseña</title>
 </head>
 <body>
-	<div class="contenedor-formulario">
+	<div class="login-container">
 		<h1>Restablecer contraseña</h1>
 		<h2>Por favor ingresa los siguientes datos para restablecer su contraseña</h2>
 
@@ -50,19 +52,35 @@
 				@Html.ValidationMessageFor(model => model.ConfirmarContraseña, "", new { @class = "text-danger" })
 			</div>
 
-			<button type="submit" class="btn btn-primary">
+			<button type="submit" class="login-btn">
 				Guardar <img src="~/Content/IMGS/save.svg" alt="guardar">
 			</button>
 		}
-	</div>
-	<div class="logo">
-		<img src="" alt="logo">
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-
+	<script>
+		@if (ViewBag.ErrorType != null)
+		{
+			<text>
+				document.addEventListener('DOMContentLoaded', function() {
+					if ('@ViewBag.ErrorType' === 'Error') {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'El token de restablecimiento es inválido o ha expirado.',
+							timer: 5000,
+							confirmButtonText: 'Aceptar'
+						}).then(() => {
+							window.location.href = '/Login/Recuperar';
+						});
+					}
+				});
+			</text>
+		}
+	</script>
 	<style>
 		.text-danger {
 			color: #dc3545;
