@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.25">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_left_alt" />
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<link href="~/Content/Login.css" rel="stylesheet" />
@@ -35,11 +35,28 @@
 					if ('@ViewBag.ErrorType' === 'Enviado'){
 						enviado();
 					}
+					else if ('@ViewBag.ErrorType' === 'Error') {
+						error();
+					}
 					else{
 						usuarioInexistente();
 					}
 				});
 			</text>
+		}
+
+		function error() {
+			Swal.fire({
+				title: 'Error',
+				text: 'Ocurrió un error al enviar el correo. Por favor, inténtalo de nuevo.',
+				icon: 'error',
+				confirmButtonText: 'Aceptar',
+				timer: 5000
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = '/Login/Recuperar';
+				}
+			});
 		}
 
 		function enviado() {

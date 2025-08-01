@@ -7,7 +7,7 @@
 	<title>@ViewBag.Title - Mi aplicación ASP.NET</title>
 	@Styles.Render("~/Content/css")
 	@Scripts.Render("~/bundles/modernizr")
-	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<link href="https://fonts.google.com/specimen/Inter%display=swap" rel="stylesheet">
 	<link href="https://fonts.google.com/specimen/Oswald&display=swap" rel="stylesheet">
 	<link href="https://fonts.google.com/specimen/Koulen&display=swap" rel="stylesheet">
@@ -33,20 +33,12 @@
 				transition: 0.5s ease-in;
 			}
 
-				.header h1:hover {
-					color: #0a00ff;
-				}
-
 			.header p {
 				margin-top: 10px;
 				font-size: 20px;
 				text-transform: uppercase;
 				transition: 0.4s ease-in;
 			}
-
-				.header p:hover {
-					color: #0a00ff;
-				}
 		.return-btn {
 			position: absolute;
 			top: 20px;
@@ -76,7 +68,7 @@
 		}
 
 			.logout-btn:hover {
-				background-color: #333;
+				background-color: #002456;
 			}
 	</style>
 

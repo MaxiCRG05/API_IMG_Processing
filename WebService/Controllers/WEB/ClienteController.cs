@@ -17,6 +17,9 @@ namespace WebService.Controllers.WEB
 		[AutorizarRol("Usuario")]
 		public ActionResult Index()
 		{
+			if (Session["Rol"].ToString() == "Admin")
+				return RedirectToAction("Index", "Admin");
+
 			if (Session["UsuarioID"] == null || Session["Nombre"] == null)
 			{
 				return RedirectToAction("Index", "Login");

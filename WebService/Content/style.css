@@ -1,21 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Koulen&display=swap');
 
-:root {
-    --primario: #82a0bc;
-    --secundario: #A7CCED;
-    --terciario: #304D6D;
-    --blanco: #ffffff;
-    --hover: #92aac0;
-    --texto: #000000;
-    --gradiente: linear-gradient(to right, var(--secundario) 10%, var(--terciario) 65%); /* Gradient for the top section */
-}
-
 body {
     margin: 0;
     padding: 0;
-    background-color: var(--secundario);
-    display: flex;
-    flex-direction: column;
     align-items: center;
     min-height: 100vh;
     color: var(--terciario);
@@ -37,7 +24,7 @@ header {
 
 h1 {
     font-size: 48px;
-    font-weight:400;
+    font-weight: 400;
     margin-right: auto;
     margin-left: 20px;
     text-align: center;
@@ -51,55 +38,12 @@ h2 {
 }
 
 .titulos {
-    size: 1000px;
     text-align: center;
 }
 
 .logout {
     display: flex;
     justify-content: end;
-}
-
-h1 {
-    margin: 0;
-    flex-grow: 1;
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 20;
-    color: var(--blanco);
-    font-size: 32px;
-    cursor: pointer;
-    background-color: var(--primario);
-    border-radius: 1000px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s ease;
-    width: 80px;
-}
-
-.material-symbols-outlined:hover {
-    background-color: var(--hover);
-}
-
-body > *:not(header) {
-    max-width: 1000px;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: var(--blanco);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
 }
 
 input[type="submit"] {
@@ -114,7 +58,6 @@ input[type="submit"] {
     transition: background-color 0.3s ease;
     margin-top: 30px;
     margin-bottom: 30px;
-    display: block;
     margin-left: auto;
     margin-right: auto; 
 }
@@ -129,7 +72,6 @@ input[type="submit"]:hover {
     border-radius: 8px;
     overflow: hidden;
     width: 100%;
-    margin-left: 60px;
 }
 
 .borde::before {

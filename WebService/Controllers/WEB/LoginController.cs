@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using MimeKit;
+using MailKit;
+using MailKit.Net.Smtp;
 using System.Configuration;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Net.Mail;
-using System.Net.Sockets;
-using System.Web;
 using System.Web.Mvc;
 using WebService.Data;
 using WebService.Models;
 using WebService.Scripts;
+using System.Web.UI.WebControls.WebParts;
 
 namespace WebService.Controllers.WEB
 {
@@ -19,6 +18,8 @@ namespace WebService.Controllers.WEB
 		// GET: Login
 		public ActionResult Index()
 		{
+			if (TempData["ErrorType"] != null)
+				ViewBag.ErrorType = TempData["ErrorType"];
 			return View();
 		}
 
@@ -59,7 +60,8 @@ namespace WebService.Controllers.WEB
 		}
 
 		public ActionResult Registro()
-		{ 
+		{
+			ViewBag.Success = null;
 			return View();
 		}
 
@@ -86,10 +88,11 @@ namespace WebService.Controllers.WEB
 					db.SaveChanges();
 
 					IniciarSesion(user);
-
-					return RedirectToAction("Index", "Cliente");
+					ViewBag.Success = true;
+					return View();
 				}
 			}
+			ViewBag.ErrorType = "ErrorGeneral";
 			return View(user);
 		}
 
@@ -121,8 +124,8 @@ namespace WebService.Controllers.WEB
 					usuario.ExpiracionToken = DateTime.Now.AddHours(1);
 					db.SaveChanges();
 
-					EnviarCorreoRecuperacion(usuario.Correo, usuario.TokenRecuperacion);
-					ViewBag.ErrorType = "Enviado";
+					EnviarCorreoRecuperacion(usuario.Nombre, usuario.Correo, usuario.TokenRecuperacion);
+					
 				}
 				else
 				{
@@ -185,93 +188,46 @@ namespace WebService.Controllers.WEB
 				usuario.ExpiracionToken = null;
 				db.SaveChanges();
 
-				ViewBag.ErrorType = "ExitoContraseña";
-				return RedirectToAction("Index", new { mensaje = "Contraseña actualizada correctamente" });
+				TempData["ErrorType"] = "ExitoContraseña";
+				return RedirectToAction("Index");
 			}
 		}
 
-		private void EnviarCorreoRecuperacion(string correo, string token)
+		private void EnviarCorreoRecuperacion(string usuario, string correo, string token)
 		{
 			try
 			{
 				var resetUrl = Url.Action("Restablecer", "Login", new { token }, Request.Url.Scheme);
-				var body = $@"<h1>Restablecimiento de contraseña</h1>
-					 <p><a href='{resetUrl}'>Haz clic aquí</a> para continuar</p>
-					 <p>Si no solicitaste esto, ignora este correo.</p>";
+				var email = new MimeMessage();
 
-				var smtpUser = ConfigurationManager.AppSettings["SMTP_User"];
-				var smtpPass = ConfigurationManager.AppSettings["SMTP_Pass"];
-
-				using (var client = new SmtpClient())
+				email.From.Add(new MailboxAddress("Visión Artificial", ""));
+				email.To.Add(new MailboxAddress(usuario, correo));
+				email.Subject = "Restablecimiento de contraseña";
+				email.Body = new TextPart()
 				{
-					client.Host = "smtp.office365.com";
-					client.Port = 587;
-					client.EnableSsl = true;
-					client.UseDefaultCredentials = false;
-					client.DeliveryMethod = SmtpDeliveryMethod.Network;
-					client.Credentials = new NetworkCredential(smtpUser, smtpPass);
-					client.Timeout = 10000;
+					Text = $@"
+					 <h1>Restablecimiento de contraseña</h1>
+					 <p>Hola {usuario},</p>
+					 <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
+					 <p><a href='{resetUrl}'>Restablecer contraseña</a></p>
+					 <p>Si no solicitaste esto, ignora este correo.</p>"
+				};
 
-					var mail = new MailMessage
-					{
-						From = new MailAddress(smtpUser, "Visión Artificial"),
-						Subject = "Restablece tu contraseña",
-						Body = body,
-						IsBodyHtml = true
-					};
-
-					mail.To.Add(correo);
-					client.Send(mail);
+				using (var smtp = new SmtpClient())
+				{
+					smtp.Connect("smtp.gmail.com", 465, false);
+					smtp.Authenticate("", "");
+					smtp.Send(email);
+					smtp.Disconnect(true);
 				}
+				ViewBag.ErrorType = "Enviado";
 			}
 			catch (Exception ex)
 			{
 				System.Diagnostics.Trace.TraceError($"Error enviando correo: {ex.Message}");
-
+				ViewBag.ErrorType = "Error";
 			}
 		}
-
-		public ActionResult ProbarCorreo(string correo)
-		{
-			try
-			{
-				var smtpUser = ConfigurationManager.AppSettings["SMTP_User"];
-				var smtpPass = ConfigurationManager.AppSettings["SMTP_Pass"];
-
-				using (var mensaje = new MailMessage())
-				{
-					mensaje.From = new MailAddress(smtpUser);
-					mensaje.To.Add(correo);
-					mensaje.Subject = "Prueba SMTP - " + DateTime.Now.ToString("HH:mm:ss");
-					mensaje.Body = "<h1>¡Prueba exitosa!</h1><p>Esta es una prueba de configuración SMTP.</p>";
-					mensaje.IsBodyHtml = true;
-
-					using (var smtp = new SmtpClient("smtp.office365.com"))
-					{
-						smtp.Host = "smtp.office365.com";
-						smtp.Port = 587;
-						smtp.EnableSsl = true;
-						smtp.UseDefaultCredentials = false;
-						smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-						smtp.Credentials = new NetworkCredential(smtpUser, smtpPass);
-
-						smtp.Timeout = 15000;
-						ServicePointManager.ServerCertificateValidationCallback = (s, cert, chain, errors) => true;
-						smtp.Send(mensaje);
-					}
-				}
-				return Content("¡Correo enviado correctamente!");
-			}
-			catch (SmtpException ex)
-			{
-				return Content($"Error SMTP: {ex.StatusCode}\n{ex.Message}\nDetalles: {ex.InnerException?.Message}");
-			}
-			catch (Exception ex)
-			{
-				return Content($"Error general: {ex.Message}\n{ex.StackTrace}");
-			}
-		}
-
 
 		public ActionResult Logout()
 		{

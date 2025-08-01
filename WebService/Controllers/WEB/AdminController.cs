@@ -25,6 +25,13 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Admin")]
+		[HttpPost]
+		public ActionResult Agregar(string txt)
+		{
+			return View();
+		}
+
+		[AutorizarRol("Admin")]
 		public ActionResult Modificar()
 		{
 			return View();
@@ -47,7 +54,7 @@ namespace WebService.Controllers.WEB
 
 			protected override bool AuthorizeCore(HttpContextBase httpContext)
 			{
-				var usuario = httpContext.Session["Rol"] as string;
+				var usuario = httpContext.Session["Rol"].ToString();
 				return usuario != null && _rolesPermitidos.Contains(usuario);
 			}
 		}
