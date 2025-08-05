@@ -8,26 +8,10 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="~/Content/Layout.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<title>Agregar Objeto</title>
 	<style>
-		body {
-			margin: 0;
-			background-color: #ffffff;
-			font-family: 'Inter', sans-serif;
-		}
-
-		.header {
-			background: linear-gradient(to right, #8ab3db, #2f4668);
-			color: white;
-			padding: 30px 0;
-			text-align: center;
-			font-size: 28px;
-			font-weight: bold;
-			letter-spacing: 1px;
-		}
-
-		
-
 		.container {
 			display: flex;
 			justify-content: space-between;
@@ -51,7 +35,7 @@
 				transition: 0.3s ease-in-out;
 			}
 
-			.form-section select{
+			.form-section select {
 				text-align: center;
 			}
 
@@ -76,11 +60,30 @@
 				}
 
 		.preview-box {
-			width: 50%;
-			border: 2px solid #2f4668;
-			border-radius: 10px;
-			height: 500px;
-		}
+            flex-grow: 1;
+            border: 2px dashed #2f4668;
+            border-radius: 16px;
+            background-color: #f0f5fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+            min-height: 400px;
+        }
+        
+        .preview-box:hover {
+            border-color: #4a8fd6;
+            box-shadow: inset 0 0 15px rgba(74, 143, 214, 0.2);
+        }
+        
+        #ImgObjeto {
+            border-radius: 10px;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
 	</style>
 </head>
 <body>
@@ -95,23 +98,29 @@
 	<div class="container">
 		<div class="form-section">
 			<form method="post">
+				<label for="NombreObjeto">
+					Nombre del objeto<br/>
+					<input type="text" id="NombreObjeto" placeholder="Ej. Lapiz">
+				</label>
 				<select id="Categoria" name="Categoria">
 					<option disabled selected>Seleccione la categoría</option>
-					<option>Oficina</option>
-					<option>Papelería</option>
+					@foreach (var categoria in ViewBag.Categorias)
+					{
+						<option value="@categoria.Nombre">@categoria.Nombre</option>
+					}
 				</select>
 
-				<button type="button" id="NuevaCategoria" onclick="">
+				<button type="button" id="NuevaCategoria" onclick="agregarCategoria()">
 					Nueva categoría
 					<img src="~/Content/IMGS/Cruz2.png" alt="guardar" width="20" />
 				</button>
 
-				<button type="button" id="InvariantesHu" onclick="">
+				<button type="button" id="InvariantesHu" onclick="subirInvariantes()">
 					Subir invariantes de Hu
 					<img src="~/Content/IMGS/Fx.png" alt="f(x)" width="20" />
 				</button>
 
-				<button type="button" id="Imagen" onclick="">
+				<button type="button" id="Imagen" onclick="subirImagen()">
 					Subir imagen
 					<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
 				</button>
@@ -124,8 +133,117 @@
 		</div>
 
 		<div class="preview-box">
-			<img src="" id="imgObjeto"/>
+			<img src="" class="ImgObjeto" id="ImgObjeto"/>
 		</div>
 	</div>
 </body>
 </html>
+
+<script>
+
+	// Manejar la selección de imagen
+	document.getElementById('fileImagen').addEventListener('change', function (e) {
+		if (this.files && this.files[0]) {
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				document.getElementById('ImgObjeto').src = e.target.result;
+			}
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
+
+	// Manejar la selección de archivo Hu
+	document.getElementById('fileHu').addEventListener('change', function (e) {
+		if (this.files && this.files[0]) {
+			document.getElementById('InvariantesHu').innerText = "Archivo cargado";
+		}
+	});
+
+	async function agregarCategoria() {
+        const { value: nombre } = await Swal.fire({
+            title: 'Nueva Categoría',
+            input: 'text',
+            inputLabel: 'Nombre de la categoría:',
+            inputPlaceholder: 'Ej. Electrónicos',
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Crear",
+            inputValidator: (value) => {
+                if (!value.trim()) return '¡El nombre es obligatorio!';
+                if (value.length > 50) return '¡Máximo 50 caracteres!';
+            }
+        });
+
+        if (nombre) {
+            const response = await fetch('@Url.Action("AgregarCategoria", "Admin")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `nombreCategoria=${encodeURIComponent(nombre)}`
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Actualizar dropdown
+                const select = document.getElementById("Categoria");
+                const option = document.createElement("option");
+                option.value = data.id;
+                option.text = data.nombre;
+                select.add(option);
+                select.value = data.id;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Categoría creada!',
+                    text: `"${nombre}" fue agregada correctamente`
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Error al crear categoría'
+                });
+            }
+        }
+    }
+
+	async function subirInvariantes() {
+		var invariantes = document.getElementById("InvariantesHu");
+
+		const { value: file } = await Swal.fire({
+			title: "Selecciona un archivo Hu",
+			input: "file",
+			inputAttributes: {
+				"accept": "text/*",
+				"aria-label": "Sube tus invariantes"
+			}
+		});
+		if (file) {
+			const reader = new FileReader();
+			invariantes.innerText = "Ya se han cargado";
+			invariantes.disabled = true;
+		}
+	}
+
+	async function subirImagen() {
+		var imagen = document.getElementById("ImgObjeto");
+
+		const { value: file } = await Swal.fire({
+			title: "Selecciona una imagen",
+			input: "file",
+			inputAttributes: {
+				"accept": "image/*",
+				"aria-label": "Carga tu imagen"
+			}
+		});
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imagen.src = e.target.result
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+</script>
