@@ -7,26 +7,25 @@ using System.Web;
 using System.Web.Mvc;
 using WebService.Data;
 using WebService.Models;
+using WebService.Scripts;
 
 namespace WebService.Controllers.WEB
 {
-    public class AdminController : Controller
+	public class AdminController : Controller
 	{
 		private Context db = new Context();
 
 		// GET: Admin
 		public ActionResult Index()
 		{
-			if (Session["UsuarioID"] == null || Session["Rol"].ToString() != "Admin")
-			{
-				return RedirectToAction("Index", "Login");
-			}
+			Validar();
 			return View();
 		}
 
 		[AutorizarRol("Admin")]
 		public ActionResult Agregar()
 		{
+			Validar();
 			var categorias = db.Categorias.ToList();
 			ViewBag.Categorias = categorias;
 			return View();
@@ -35,11 +34,8 @@ namespace WebService.Controllers.WEB
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AutorizarRol("Admin")]
-		public ActionResult Agregar(
-	string NombreObjeto,
-	int CategoriaID,
-	HttpPostedFileBase imagen,
-	HttpPostedFileBase archivoHu)
+		public ActionResult Agregar(string NombreObjeto, int CategoriaID, 
+			HttpPostedFileBase archivoImagen, HttpPostedFileBase archivoHu)
 		{
 			try
 			{
@@ -50,25 +46,23 @@ namespace WebService.Controllers.WEB
 					return View();
 				}
 
-				if (imagen == null || imagen.ContentLength == 0)
+				if (Imagen == null || Imagen.ContentLength == 0)
 				{
-					ModelState.AddModelError("", "Debe subir una imagen del objeto");
+					ModelState.AddModelError("", "Debe subir una Imagen del objeto");
 					ViewBag.Categorias = db.Categorias.ToList();
 					return View();
 				}
 
-				// Crear nuevo objeto
 				var nuevoObjeto = new Objeto
 				{
 					Nombre = NombreObjeto,
 					CategoriasID = CategoriaID,
-					Imagen = ConvertToBytes(imagen)
+					Imagen = ConvertToBytes(Imagen)
 				};
 
 				db.Objetos.Add(nuevoObjeto);
 				db.SaveChanges();
 
-				// Procesar invariantes Hu si se subieron
 				if (archivoHu != null && archivoHu.ContentLength > 0)
 				{
 					GuardarInvariantesHu(nuevoObjeto.ID, archivoHu);
@@ -98,7 +92,7 @@ namespace WebService.Controllers.WEB
 			using (var reader = new StreamReader(archivoHu.InputStream))
 			{
 				string content = reader.ReadToEnd();
-				var valores = content.Split(',').Select(double.Parse).ToArray();
+				var valores = content.Split('\n').Select(double.Parse).ToArray();
 
 				if (valores.Length != 7) return;
 
@@ -122,12 +116,14 @@ namespace WebService.Controllers.WEB
 		[AutorizarRol("Admin")]
 		public ActionResult Modificar()
 		{
+			Validar();
 			return View();
 		}
 
 		[AutorizarRol("Admin")]
 		public ActionResult Eliminar()
 		{
+			Validar();
 			return View();
 		}
 
@@ -173,21 +169,14 @@ namespace WebService.Controllers.WEB
 			if (disposing) db.Dispose();
 			base.Dispose(disposing);
 		}
-	}
 
-	public class AutorizarRol : AuthorizeAttribute
-	{
-		private readonly string[] _rolesPermitidos;
-
-		public AutorizarRol(params string[] roles)
+		private ActionResult Validar()
 		{
-			_rolesPermitidos = roles;
-		}
-
-		protected override bool AuthorizeCore(HttpContextBase httpContext)
-		{
-			var usuario = httpContext.Session["Rol"].ToString();
-			return usuario != null && _rolesPermitidos.Contains(usuario);
+			if (Session["UsuarioID"] == null || Session["Rol"].ToString() != "Admin")
+			{
+				return RedirectToAction("Index", "Login");
+			}
+			return null;
 		}
 	}
 }

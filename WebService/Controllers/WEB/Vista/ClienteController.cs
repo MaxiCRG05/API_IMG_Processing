@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using WebService.Data;
 using WebService.Models;
+using WebService.Scripts;
 
 namespace WebService.Controllers.WEB
 {
@@ -180,22 +181,6 @@ namespace WebService.Controllers.WEB
 			}
 
 			return RedirectToAction("Index");
-		}
-
-		public class AutorizarRol : AuthorizeAttribute
-		{
-			private readonly string[] _rolesPermitidos;
-
-			public AutorizarRol(params string[] roles)
-			{
-				_rolesPermitidos = roles;
-			}
-
-			protected override bool AuthorizeCore(HttpContextBase httpContext)
-			{
-				var usuario = httpContext.Session["Rol"] as string;
-				return usuario != null && _rolesPermitidos.Contains(usuario);
-			}
 		}
 	}
 }

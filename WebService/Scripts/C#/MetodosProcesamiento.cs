@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Web;
+using System.Web.Mvc;
 
 namespace WebService.Scripts
 {
@@ -640,6 +641,22 @@ namespace WebService.Scripts
 			}
 
 			return threshold;
+		}
+	}
+
+	public class AutorizarRol : AuthorizeAttribute
+	{
+		private readonly string[] _rolesPermitidos;
+
+		public AutorizarRol(params string[] roles)
+		{
+			_rolesPermitidos = roles;
+		}
+
+		protected override bool AuthorizeCore(HttpContextBase httpContext)
+		{
+			var usuario = httpContext.Session["Rol"].ToString();
+			return usuario != null && _rolesPermitidos.Contains(usuario);
 		}
 	}
 }
