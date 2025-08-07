@@ -43,13 +43,15 @@ namespace WebService.Controllers.WEB
 				{
 					ModelState.AddModelError("", "El nombre del objeto es obligatorio");
 					ViewBag.Categorias = db.Categorias.ToList();
+					TempData["Error"] = "Error";
 					return View();
 				}
 
-				if (Imagen == null || Imagen.ContentLength == 0)
+				if (archivoImagen == null || archivoImagen.ContentLength == 0)
 				{
 					ModelState.AddModelError("", "Debe subir una Imagen del objeto");
 					ViewBag.Categorias = db.Categorias.ToList();
+					TempData["Error"] = "Error";
 					return View();
 				}
 
@@ -57,7 +59,7 @@ namespace WebService.Controllers.WEB
 				{
 					Nombre = NombreObjeto,
 					CategoriasID = CategoriaID,
-					Imagen = ConvertToBytes(Imagen)
+					Imagen = ConvertToBytes(archivoImagen)
 				};
 
 				db.Objetos.Add(nuevoObjeto);
@@ -68,12 +70,13 @@ namespace WebService.Controllers.WEB
 					GuardarInvariantesHu(nuevoObjeto.ID, archivoHu);
 				}
 
-				TempData["SuccessMessage"] = "Objeto agregado exitosamente!";
+				TempData["Success"] = "Exito";
 				return RedirectToAction("Agregar");
 			}
 			catch (Exception ex)
 			{
 				ModelState.AddModelError("", "Error: " + ex.Message);
+				TempData["Error"] = "Error";
 				ViewBag.Categorias = db.Categorias.ToList();
 				return View();
 			}
@@ -117,6 +120,8 @@ namespace WebService.Controllers.WEB
 		public ActionResult Modificar()
 		{
 			Validar();
+			var objetos = db.Objetos.ToList();
+			ViewBag.Objetos = objetos;
 			return View();
 		}
 

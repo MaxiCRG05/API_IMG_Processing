@@ -108,11 +108,12 @@
 		<div class="container">
 			<div class="form-section">
 				<form method="post">
-					<select id="ObjetoSeleccionado" name="ObjetoSeleccionado">
-						<option disabled selected>Seleccionar objeto</option>
-						<option>Objeto 1</option>
-						<option>Objeto 2</option>
-						<option>Objeto 3</option>
+					<select id="Objetos" name="ObjetosID">
+						<option disabled selected>Seleccione la categoría</option>
+						@foreach (var objeto in ViewBag.Objetos)
+						{
+							<option value="@objeto.ID">@objeto.Nombre</option>
+						}
 					</select>
 
 					<button type="button" id="SubirImagen">

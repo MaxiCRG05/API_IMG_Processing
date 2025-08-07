@@ -1,5 +1,5 @@
 ﻿@{
-	ViewBag.Title = "Agregar";
+	ViewBag.Title = "Agregar Objeto";
 	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
 }
 
@@ -10,7 +10,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="~/Content/Layout.css" rel="stylesheet" />
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<title>Agregar Objeto</title>
 	<style>
 		.container {
 			display: flex;
@@ -97,16 +96,16 @@
 
 	<div class="container">
 		<div class="form-section">
-			<form method="post" enctype="multipart/form-data">
+			<form action="/Admin/Agregar" method="post" enctype="multipart/form-data">
 				@Html.AntiForgeryToken()
-				<input type="file" id="archivoImagen" name="imagen" accept="image/*" style="display:none">
-				<input type="file" id="archivoHu" name="archivoHu" accept=".hu" style="display:none">
+				<input type="file" id="archivoImagen" name="archivoImagen" accept="image/*" style="display:none" required>
+				<input type="file" id="archivoHu" name="archivoHu" accept=".hu" style="display:none" required>
 
 				<label for="NombreObjeto">
 					Nombre del objeto<br />
-					<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Lapiz">
+					<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Lapiz" required>
 				</label>
-				<select id="Categoria" name="CategoriaID">
+				<select id="Categoria" name="CategoriaID" required>
 					<option disabled selected>Seleccione la categoría</option>
 					@foreach (var categoria in ViewBag.Categorias)
 					{
@@ -119,12 +118,12 @@
 					<img src="~/Content/IMGS/Cruz2.png" alt="guardar" width="20" />
 				</button>
 
-				<button type="button" id="InvariantesHu" onclick="document.getElementById('fileHu').click()">
+				<button type="button" id="InvariantesHu" onclick="document.getElementById('archivoHu').click()">
 					Subir invariantes de Hu
 					<img src="~/Content/IMGS/Fx.png" alt="f(x)" width="20" />
 				</button>
 
-				<button type="button" id="BtnImagen" onclick="document.getElementById('fileImagen').click()">
+				<button type="button" id="BtnImagen" onclick="document.getElementById('archivoImagen').click()">
 					Subir imagen
 					<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
 				</button>
@@ -135,7 +134,6 @@
 				</button>
 			</form>
 		</div>
-
 		<div class="preview-box">
 			<img src="" class="ImgObjeto" id="ImgObjeto"/>
 		</div>
@@ -147,17 +145,20 @@
 	document.getElementById('archivoImagen').addEventListener('change', function (e) {
 		if (this.files[0]) {
 			const reader = new FileReader();
-			reader.onload = function (e) {
-				document.getElementById('ImgObjeto').src = e.target.result;
+			reader.onload = function (ex) {
+				document.getElementById('ImgObjeto').src = ex.target.result;
 			};
 			reader.readAsDataURL(this.files[0]);
-			document.getElementById('BtnImagen').innerHTML = "Imagen cargada";
+
+			const fileName = e.target.value.split('\\').pop();
+			document.getElementById('BtnImagen').innerHTML = "Imagen cargada: \"" + fileName + "\"";
 		}
 	});
 
 	document.getElementById('archivoHu').addEventListener('change', function (e) {
 		if (this.files && this.files[0]) {
-			document.getElementById('InvariantesHu').innerText = "Archivo cargado";
+			const fileName = e.target.value.split('\\').pop();
+			document.getElementById('InvariantesHu').innerText = "Archivo cargado: \"" + fileName + "\"";
 		}
 	});
 

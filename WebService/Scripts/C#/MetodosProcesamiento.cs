@@ -655,8 +655,14 @@ namespace WebService.Scripts
 
 		protected override bool AuthorizeCore(HttpContextBase httpContext)
 		{
-			var usuario = httpContext.Session["Rol"].ToString();
-			return usuario != null && _rolesPermitidos.Contains(usuario);
+			// Verificar si la sesión existe y contiene la clave "Rol"
+			if (httpContext.Session?["Rol"] == null)
+			{
+				return false;
+			}
+
+			var rol = httpContext.Session["Rol"].ToString();
+			return _rolesPermitidos.Contains(rol);
 		}
 	}
 }
