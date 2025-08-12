@@ -129,7 +129,110 @@ namespace WebService.Controllers.WEB
 		public ActionResult Eliminar()
 		{
 			Validar();
+			var objetos = db.Objetos.ToList();
+			var categorias = db.Categorias.ToList();
+
+			ViewBag.Objetos = objetos;
+			ViewBag.Categorias = categorias;
+			
 			return View();
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[AutorizarRol("Admin")]
+		public ActionResult Eliminar(int? ObjetosID, int? CategoriasID, bool BorrarCat = false)
+		{
+			try
+			{
+				if (ObjetosID.HasValue && BorrarCat)
+				{
+					var objeto = db.Objetos.Find(ObjetosID.Value);
+					if (objeto == null)
+					{
+						TempData["Error"] = "Objeto no encontrado";
+						return RedirectToAction("Eliminar");
+					}
+
+					var hu = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objeto.ID);
+					if (hu != null)
+					{
+						db.InvariantesHu.Remove(hu);
+					}
+
+					db.Objetos.Remove(objeto);
+					db.SaveChanges();
+
+					TempData["Success"] = "Objeto eliminado correctamente";
+					return RedirectToAction("Eliminar");
+				}
+
+				if (CategoriasID.HasValue && !ObjetosID.HasValue)
+				{
+					var categoria = db.Categorias.Find(CategoriasID.Value);
+					if (categoria == null)
+					{
+						TempData["Error"] = "Categoría no encontrada";
+						return RedirectToAction("Eliminar");
+					}
+
+					if (db.Objetos.Any(o => o.CategoriasID == categoria.ID))
+					{
+						TempData["Error"] = "No se puede eliminar la categoría porque tiene objetos asociados";
+						return RedirectToAction("Eliminar");
+					}
+
+					db.Categorias.Remove(categoria);
+					db.SaveChanges();
+
+					TempData["Success"] = "Categoría eliminada correctamente";
+					return RedirectToAction("Eliminar");
+				}
+
+				if (ObjetosID.HasValue && CategoriasID.HasValue && !BorrarCat)
+				{
+					var objeto = db.Objetos.Find(ObjetosID.Value);
+					if (objeto == null)
+					{
+						TempData["Error"] = "Objeto no encontrado";
+						return RedirectToAction("Eliminar");
+					}
+
+					var categoria = db.Categorias.Find(CategoriasID.Value);
+					if (categoria == null)
+					{
+						TempData["Error"] = "Categoría no encontrada";
+						return RedirectToAction("Eliminar");
+					}
+
+					var hu = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objeto.ID);
+					if (hu != null)
+					{
+						db.InvariantesHu.Remove(hu);
+					}
+					db.Objetos.Remove(objeto);
+
+					if (db.Objetos.Any(o => o.CategoriasID == categoria.ID && o.ID != objeto.ID))
+					{
+						TempData["Error"] = "No se puede eliminar la categoría porque tiene otros objetos asociados";
+						return RedirectToAction("Eliminar");
+					}
+
+					db.Categorias.Remove(categoria);
+					db.SaveChanges();
+
+					TempData["Success"] = "Objeto y categoría eliminados correctamente";
+					return RedirectToAction("Eliminar");
+				}
+
+				TempData["Error"] = "Selección inválida";
+				return RedirectToAction("Eliminar");
+			}
+			catch (Exception ex)
+			{
+				TempData["Error"] = "Error: " + ex.Message;
+				return RedirectToAction("Eliminar");
+			}
 		}
 
 		[HttpPost]

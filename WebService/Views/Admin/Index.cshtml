@@ -8,6 +8,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="~/Content/Layout.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<title>Bienvenido</title>
 	<style>
 		body {
@@ -36,6 +38,7 @@
 			transition: all 0.3s ease-in-out;
 			border: none;
 		}
+
 			.card::before {
 				content: "";
 				position: absolute;
@@ -66,14 +69,14 @@
 				.card .icon:hover {
 					margin-bottom: 20px;
 				}
-				
+
 				.card .icon img {
 					transition: transform 0.5s ease;
 				}
 
-				.card:hover .icon img {
-					animation: rotate360 0.5s ease-in-out;
-				}
+			.card:hover .icon img {
+				animation: rotate360 0.5s ease-in-out;
+			}
 
 			.card h2 {
 				margin-bottom: 30px;
@@ -100,7 +103,7 @@
 
 				.card a:hover {
 					background-color: #244f8f;
-					transform:scale(1.05)
+					transform: scale(1.05)
 				}
 
 		@@keyframes rotate360 {
