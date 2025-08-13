@@ -16,8 +16,11 @@ namespace WebService.Controllers.WEB
 		private Context db = new Context();
 
 		// GET: Admin
+		[AutorizarRol("Admin")]
 		public ActionResult Index()
 		{
+			TempData["Success"] = null;
+			TempData["Error"] = null;
 			Validar();
 			return View();
 		}
@@ -70,13 +73,12 @@ namespace WebService.Controllers.WEB
 					GuardarInvariantesHu(nuevoObjeto.ID, archivoHu);
 				}
 
-				TempData["Success"] = "Exito";
+				TempData["Success"] = "Objeto creado correctamente";
 				return RedirectToAction("Agregar");
 			}
 			catch (Exception ex)
 			{
-				ModelState.AddModelError("", "Error: " + ex.Message);
-				TempData["Error"] = "Error";
+				TempData["Error"] = "Error al crear el objeto: " + ex.Message;
 				ViewBag.Categorias = db.Categorias.ToList();
 				return View();
 			}
@@ -145,29 +147,36 @@ namespace WebService.Controllers.WEB
 		{
 			try
 			{
-				if (ObjetosID.HasValue && BorrarCat)
+				if (ObjetosID.HasValue && CategoriasID.HasValue && !BorrarCat)
 				{
 					var objeto = db.Objetos.Find(ObjetosID.Value);
-					if (objeto == null)
+					var categoria = db.Categorias.Find(CategoriasID.Value);
+
+					if (objeto == null || categoria == null)
 					{
-						TempData["Error"] = "Objeto no encontrado";
+						TempData["Error"] = "Objeto o categoría no encontrados";
 						return RedirectToAction("Eliminar");
 					}
 
 					var hu = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objeto.ID);
-					if (hu != null)
-					{
-						db.InvariantesHu.Remove(hu);
-					}
+					if (hu != null) db.InvariantesHu.Remove(hu);
 
 					db.Objetos.Remove(objeto);
+
+					if (db.Objetos.Any(o => o.CategoriasID == categoria.ID && o.ID != objeto.ID))
+					{
+						TempData["Error"] = "La categoría tiene otros objetos asociados";
+						return RedirectToAction("Eliminar");
+					}
+
+					db.Categorias.Remove(categoria);
 					db.SaveChanges();
 
-					TempData["Success"] = "Objeto eliminado correctamente";
+					TempData["Success"] = "Objeto y categoría eliminados correctamente";
 					return RedirectToAction("Eliminar");
 				}
 
-				if (CategoriasID.HasValue && !ObjetosID.HasValue)
+				if (!ObjetosID.HasValue && CategoriasID.HasValue)
 				{
 					var categoria = db.Categorias.Find(CategoriasID.Value);
 					if (categoria == null)
@@ -178,7 +187,7 @@ namespace WebService.Controllers.WEB
 
 					if (db.Objetos.Any(o => o.CategoriasID == categoria.ID))
 					{
-						TempData["Error"] = "No se puede eliminar la categoría porque tiene objetos asociados";
+						TempData["Error"] = "La categoría tiene objetos asociados";
 						return RedirectToAction("Eliminar");
 					}
 
@@ -189,7 +198,7 @@ namespace WebService.Controllers.WEB
 					return RedirectToAction("Eliminar");
 				}
 
-				if (ObjetosID.HasValue && CategoriasID.HasValue && !BorrarCat)
+				if (ObjetosID.HasValue && !BorrarCat)
 				{
 					var objeto = db.Objetos.Find(ObjetosID.Value);
 					if (objeto == null)
@@ -198,32 +207,17 @@ namespace WebService.Controllers.WEB
 						return RedirectToAction("Eliminar");
 					}
 
-					var categoria = db.Categorias.Find(CategoriasID.Value);
-					if (categoria == null)
-					{
-						TempData["Error"] = "Categoría no encontrada";
-						return RedirectToAction("Eliminar");
-					}
-
 					var hu = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objeto.ID);
-					if (hu != null)
-					{
-						db.InvariantesHu.Remove(hu);
-					}
+					if (hu != null) db.InvariantesHu.Remove(hu);
+
 					db.Objetos.Remove(objeto);
-
-					if (db.Objetos.Any(o => o.CategoriasID == categoria.ID && o.ID != objeto.ID))
-					{
-						TempData["Error"] = "No se puede eliminar la categoría porque tiene otros objetos asociados";
-						return RedirectToAction("Eliminar");
-					}
-
-					db.Categorias.Remove(categoria);
 					db.SaveChanges();
 
-					TempData["Success"] = "Objeto y categoría eliminados correctamente";
+					TempData["Success"] = "Objeto eliminado correctamente";
 					return RedirectToAction("Eliminar");
 				}
+
+				
 
 				TempData["Error"] = "Selección inválida";
 				return RedirectToAction("Eliminar");

@@ -351,6 +351,7 @@
     <Content Include="Content\IMGS\save.svg" />
     <Content Include="Content\IMGS\study.svg" />
     <Content Include="Content\IMGS\Eliminar.svg" />
+    <Content Include="Content\LayoutAdmin.css" />
     <Content Include="Content\Login.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

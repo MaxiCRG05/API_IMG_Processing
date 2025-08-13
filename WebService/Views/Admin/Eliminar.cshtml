@@ -5,117 +5,38 @@
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="~/Content/Layout.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<title>@ViewBag.Title</title>
-	<style>
-		body {
-			margin: 0;
-			background-color: #ffffff;
-			font-family: 'Inter', sans-serif;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-
-		.header {
-			background: linear-gradient(to right, #8ab3db, #2f4668);
-			color: white;
-			padding: 30px 0;
-			text-align: center;
-			font-size: 28px;
-			font-weight: bold;
-			letter-spacing: 1px;
-			width: 100%;
-		}
-
-		.return-btn {
-			position: absolute;
-			top: 20px;
-			left: 20px;
-			background-color: #82A0BC;
-			border: none;
-			border-radius: 40px;
-			padding: 13px 25px 13px 25px;
-			cursor: pointer;
-			transition: background-color 0.3s ease;
-		}
-
-			.return-btn:hover {
-				background-color: #5a768f;
-			}
-
-		.form-container {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			width: 100%;
-			margin-top: 50px;
-		}
-
-		.form-section {
-			width: 400px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-
-			.form-section select,
-			.form-section button {
-				width: 100%;
-				min-width: 400px;
-				padding: 12px;
-				margin: 30px 0px 10px 0px;
-				border-radius: 20px;
-				border: 2px solid #aac0d4;
-				font-size: 16px;
-				transition: 0.3s ease-in-out;
-			}
-
-			.form-section select {
-				text-align: center;
-			}
-
-			.form-section button {
-				background-color: #8daac8;
-				color: white;
-				border: none;
-				font-weight: bold;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				margin-top: 50px;
-			}
-
-				.form-section button:hover {
-					background-color: #304D6D;
-					border-color: yellow;
-					border: 2px;
-				}
-
-				.form-section button img {
-					margin-left: 8px;
-				}
-
-		.checkbox-container {
-			display: flex;
-			align-items: center;
-		}
-
-			.checkbox-container input[type="checkbox"] {
-				margin-right: 10px;
-			}
-
-		button .submit {
-			margin-top: 50%;
-		}
-	</style>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
 	<body>
+		@if (TempData["Success"] != null)
+		{
+			<script>
+			Swal.fire({
+				icon: 'success',
+				title: '¡Éxito!',
+				text: '@TempData["Success"]',
+				timer: 3000,
+				timerProgressBar: true,
+				showConfirmButton: false
+			});
+			</script>
+		}
 
+		@if (TempData["Error"] != null)
+		{
+			<script>
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: '@TempData["Error"]',
+				timer: 5000,
+				timerProgressBar: true,
+				showConfirmButton: true
+			});
+			</script>
+		}
 		<div class="header">
 			<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
 				<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
@@ -126,6 +47,7 @@
 		<div class="form-container">
 			<div class="form-section">
 				<form method="post">
+					@Html.AntiForgeryToken()
 					<select id="Objetos" name="ObjetosID">
 						<option disabled selected>Seleccione los objetos</option>
 						@foreach (var objeto in ViewBag.Objetos)
@@ -185,83 +107,51 @@
 		});
 	}
 
-	function borrarObjeto() {
-		mostrarConfirmacion('objeto').then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire(
-					'¡Objeto borrado!',
-					'El objeto ha sido eliminado correctamente.',
-					'success'
-				);
-			}
-		});
-	}
-
-	function borrarCategoría() {
-		mostrarConfirmacion('categoria').then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire(
-					'¡Categoría borrada!',
-					'La categoría ha sido eliminada correctamente.',
-					'success'
-				);
-			}
-		});
-	}
-
-	function borrarObjetoCategoria() {
-		mostrarConfirmacion('ambos').then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire(
-					'¡Borrado completado!',
-					'El objeto y la categoría han sido eliminados correctamente.',
-					'success'
-				);
-			}
-		});
-	}
-
-	function manejarEnvio(event) {
-		event.preventDefault();
-
-		const objetoSeleccionado = document.getElementById('Objetos').value;
-		const categoriaSeleccionada = document.getElementById('Categorias').value;
-		const borrarCat = document.getElementById('BorrarCat').checked;
-
-		if (!objetoSeleccionado || !categoriaSeleccionada) {
-			Swal.fire('Error', 'Debes seleccionar un objeto o una categoría', 'error');
-			return;
-		}
-		if (!objetoSeleccionado && categoriaSeleccionada) {
-			borrarCategoría();
-		}
-		if (borrarCat) {
-			borrarObjeto();
-		} else {
-			if (!categoriaSeleccionada) {
-				Swal.fire('Error', 'Debes seleccionar una categoría', 'error');
-				return;
-			}
-
-			borrarObjetoCategoria();
-		}
-	}
-
 	document.addEventListener('DOMContentLoaded', function () {
 		const checkBorrar = document.getElementById("BorrarCat");
 		const comboCategorias = document.getElementById("Categorias");
 		const form = document.querySelector('form');
 
-		function actualizarEstadoCombo() {
-			comboCategorias.disabled = checkBorrar.checked;
-			if (checkBorrar.checked) {
+		comboCategorias.disabled = checkBorrar.checked;
+
+		checkBorrar.addEventListener('change', function () {
+			comboCategorias.disabled = this.checked;
+			if (this.checked) {
 				comboCategorias.selectedIndex = 0;
 			}
-		}
+		});
 
-		actualizarEstadoCombo();
+		form.addEventListener('submit', function (event) {
+			event.preventDefault();
 
-		checkBorrar.addEventListener('change', actualizarEstadoCombo);
-		form.addEventListener('submit', manejarEnvio);
+			const objetoSeleccionado = document.getElementById('Objetos').value;
+			const categoriaSeleccionada = document.getElementById('Categorias').value;
+			const borrarCat = document.getElementById('BorrarCat').checked;
+
+			if (!objetoSeleccionado && categoriaSeleccionada) {
+				mostrarConfirmacion('categoria').then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+			}
+			else if (objetoSeleccionado && borrarCat) {
+				mostrarConfirmacion('objeto').then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+			}
+			else if (objetoSeleccionado && categoriaSeleccionada && !borrarCat) {
+				mostrarConfirmacion('ambos').then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+			}
+			else {
+				Swal.fire('Error', 'Selección inválida. Verifica tus opciones.', 'error');
+			}
+		});
 	});
 </script>
