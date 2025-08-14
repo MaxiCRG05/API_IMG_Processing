@@ -19,9 +19,9 @@ namespace WebService.Controllers.WEB
 		[AutorizarRol("Admin")]
 		public ActionResult Index()
 		{
+			Validar();
 			TempData["Success"] = null;
 			TempData["Error"] = null;
-			Validar();
 			return View();
 		}
 
@@ -62,7 +62,7 @@ namespace WebService.Controllers.WEB
 				{
 					Nombre = NombreObjeto,
 					CategoriasID = CategoriaID,
-					Imagen = ConvertToBytes(archivoImagen)
+					Imagen = MetodosProcesamiento.ConvertirABytes(archivoImagen)
 				};
 
 				db.Objetos.Add(nuevoObjeto);
@@ -81,14 +81,6 @@ namespace WebService.Controllers.WEB
 				TempData["Error"] = "Error al crear el objeto: " + ex.Message;
 				ViewBag.Categorias = db.Categorias.ToList();
 				return View();
-			}
-		}
-
-		private byte[] ConvertToBytes(HttpPostedFileBase file)
-		{
-			using (BinaryReader reader = new BinaryReader(file.InputStream))
-			{
-				return reader.ReadBytes(file.ContentLength);
 			}
 		}
 
@@ -125,6 +117,45 @@ namespace WebService.Controllers.WEB
 			var objetos = db.Objetos.ToList();
 			ViewBag.Objetos = objetos;
 			return View();
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[AutorizarRol("Admin")]
+		public ActionResult Modificar(int ObjetosID, string NombreObjeto, HttpPostedFileBase archivoImagen, HttpPostedFileBase archivoHu)
+		{
+			try
+			{
+				var objeto = db.Objetos.Find(ObjetosID);
+				if (objeto == null)
+				{
+					TempData["Error"] = "Objeto no encontrado";
+					return RedirectToAction("Modificar");
+				}
+
+				objeto.Nombre = NombreObjeto;
+
+				if (archivoImagen != null && archivoImagen.ContentLength > 0)
+				{
+					objeto.Imagen = MetodosProcesamiento.ConvertirABytes(archivoImagen);
+				}
+
+				db.Entry(objeto).State = EntityState.Modified;
+				db.SaveChanges();
+
+				if (archivoHu != null && archivoHu.ContentLength > 0)
+				{
+					ActualizarInvariantesHu(objeto.ID, archivoHu);
+				}
+
+				TempData["Success"] = "Objeto modificado correctamente";
+				return RedirectToAction("Modificar");
+			}
+			catch (Exception ex)
+			{
+				TempData["Error"] = "Error al modificar el objeto: " + ex.Message;
+				return RedirectToAction("Modificar");
+			}
 		}
 
 		[AutorizarRol("Admin")]
@@ -263,13 +294,59 @@ namespace WebService.Controllers.WEB
 					message = ex.Message
 				});
 			}
-
-
 		}
-		protected override void Dispose(bool disposing)
+
+		private void ActualizarInvariantesHu(int objetoId, HttpPostedFileBase archivoHu)
 		{
-			if (disposing) db.Dispose();
-			base.Dispose(disposing);
+			using (var reader = new StreamReader(archivoHu.InputStream))
+			{
+				string content = reader.ReadToEnd();
+				var valores = content.Split(',').Select(double.Parse).ToArray();
+
+				if (valores.Length != 7) return;
+
+				var invariantes = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objetoId);
+				if (invariantes != null)
+				{
+					invariantes.Hu1 = valores[0];
+					invariantes.Hu2 = valores[1];
+					invariantes.Hu3 = valores[2];
+					invariantes.Hu4 = valores[3];
+					invariantes.Hu5 = valores[4];
+					invariantes.Hu6 = valores[5];
+					invariantes.Hu7 = valores[6];
+					db.Entry(invariantes).State = EntityState.Modified;
+				}
+				else
+				{
+					db.InvariantesHu.Add(new InvariantesHu
+					{
+						ObjetoID = objetoId,
+						Hu1 = valores[0],
+						Hu2 = valores[1],
+						Hu3 = valores[2],
+						Hu4 = valores[3],
+						Hu5 = valores[4],
+						Hu6 = valores[5],
+						Hu7 = valores[6]
+					});
+				}
+				db.SaveChanges();
+			}
+		}
+
+		[AutorizarRol("Admin")]
+		public JsonResult ObtenerObjeto(int objetoId)
+		{
+			var objeto = db.Objetos.Find(objetoId);
+			if (objeto == null) return Json(null);
+
+			return Json(new
+			{
+				Nombre = objeto.Nombre,
+				ImagenBase64 = objeto.Imagen != null ?
+					Convert.ToBase64String(objeto.Imagen) : null
+			}, JsonRequestBehavior.AllowGet);
 		}
 
 		private ActionResult Validar()

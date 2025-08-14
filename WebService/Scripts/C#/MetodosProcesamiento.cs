@@ -642,6 +642,14 @@ namespace WebService.Scripts
 
 			return threshold;
 		}
+
+		public static byte[] ConvertirABytes(HttpPostedFileBase file)
+		{
+			using (BinaryReader reader = new BinaryReader(file.InputStream))
+			{
+				return reader.ReadBytes(file.ContentLength);
+			}
+		}
 	}
 
 	public class AutorizarRol : AuthorizeAttribute
@@ -655,7 +663,6 @@ namespace WebService.Scripts
 
 		protected override bool AuthorizeCore(HttpContextBase httpContext)
 		{
-			// Verificar si la sesión existe y contiene la clave "Rol"
 			if (httpContext.Session?["Rol"] == null)
 			{
 				return false;
