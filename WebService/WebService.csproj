@@ -283,13 +283,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202507150004042_initial.cs" />
-    <Compile Include="Migrations\202507150004042_initial.Designer.cs">
-      <DependentUpon>202507150004042_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202507162218332_second.cs" />
-    <Compile Include="Migrations\202507162218332_second.Designer.cs">
-      <DependentUpon>202507162218332_second.cs</DependentUpon>
+    <Compile Include="Migrations\202508142143286_initial.cs" />
+    <Compile Include="Migrations\202508142143286_initial.Designer.cs">
+      <DependentUpon>202508142143286_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Categoria.cs" />
@@ -308,14 +304,16 @@
   <ItemGroup>
     <Content Include="Content\IMGS\borrar.svg" />
     <Content Include="Content\IMGS\cerrar.svg" />
+    <Content Include="Content\IMGS\Cruz.svg" />
+    <Content Include="Content\IMGS\Eliminar.svg" />
     <Content Include="Content\IMGS\enviar.svg" />
     <Content Include="Content\IMGS\funtion.svg" />
     <Content Include="Content\IMGS\image.svg" />
-    <Content Include="Content\IMGS\Lapiz.png" />
-    <Content Include="Content\IMGS\Cruz.png" />
+    <Content Include="Content\IMGS\Lapiz.svg" />
     <Content Include="Content\IMGS\LogOut.png" />
     <Content Include="Content\IMGS\Fx.png" />
     <Content Include="Content\IMGS\FlechaAbajo.png" />
+    <Content Include="Content\IMGS\Lupa.svg" />
     <Content Include="Content\IMGS\modificar.svg" />
     <Content Include="Content\IMGS\nombre.svg" />
     <Content Include="Content\IMGS\opciones.svg" />
@@ -333,7 +331,6 @@
     <Content Include="Content\IMGS\Cruz3.png" />
     <Content Include="Content\IMGS\save.svg" />
     <Content Include="Content\IMGS\study.svg" />
-    <Content Include="Content\IMGS\Eliminar.svg" />
     <Content Include="Content\LayoutAdmin.css" />
     <Content Include="Content\Login.css" />
     <Content Include="favicon.ico" />
@@ -453,7 +450,6 @@
     <Content Include="Views\ProyectosObjetos\Edit.cshtml" />
     <Content Include="Views\ProyectosObjetos\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\Shared\GlobalAdmin.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\Agregar.cshtml" />
     <Content Include="Views\Admin\Modificar.cshtml" />
@@ -477,13 +473,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="Views\Shared\GlobalAdmin.cshtml" />
+    <Content Include="Views\Admin\Consultar.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202507150004042_initial.resx">
-      <DependentUpon>202507150004042_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202507162218332_second.resx">
-      <DependentUpon>202507162218332_second.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202508142143286_initial.resx">
+      <DependentUpon>202508142143286_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

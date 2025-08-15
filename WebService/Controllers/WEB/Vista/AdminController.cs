@@ -13,15 +13,23 @@ namespace WebService.Controllers.WEB
 {
 	public class AdminController : Controller
 	{
-		private Context db = new Context();
+		private readonly Context db = new Context();
 
 		// GET: Admin
 		[AutorizarRol("Admin")]
 		public ActionResult Index()
 		{
 			Validar();
-			TempData["Success"] = null;
-			TempData["Error"] = null;
+			ResetearTempData();
+			return View();
+		}
+
+		[AutorizarRol("Admin")]
+		public ActionResult Consultar()
+		{
+			Validar();
+			ViewBag.Objetos = db.Objetos.Include(o => o.Categorias).ToList();
+			ViewBag.InvariantesHu = db.InvariantesHu.ToList();
 			return View();
 		}
 
@@ -29,23 +37,21 @@ namespace WebService.Controllers.WEB
 		public ActionResult Agregar()
 		{
 			Validar();
-			var categorias = db.Categorias.ToList();
-			ViewBag.Categorias = categorias;
+			ViewBag.Categorias = ObtenerCategorias();
 			return View();
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AutorizarRol("Admin")]
-		public ActionResult Agregar(string NombreObjeto, int CategoriaID, 
-			HttpPostedFileBase archivoImagen, HttpPostedFileBase archivoHu)
+		public ActionResult Agregar(string NombreObjeto, int CategoriaID, HttpPostedFileBase archivoImagen, HttpPostedFileBase archivoHu)
 		{
 			try
 			{
 				if (string.IsNullOrWhiteSpace(NombreObjeto))
 				{
 					ModelState.AddModelError("", "El nombre del objeto es obligatorio");
-					ViewBag.Categorias = db.Categorias.ToList();
+					ViewBag.Categorias = ObtenerCategorias();
 					TempData["Error"] = "Error";
 					return View();
 				}
@@ -53,7 +59,7 @@ namespace WebService.Controllers.WEB
 				if (archivoImagen == null || archivoImagen.ContentLength == 0)
 				{
 					ModelState.AddModelError("", "Debe subir una Imagen del objeto");
-					ViewBag.Categorias = db.Categorias.ToList();
+					ViewBag.Categorias = ObtenerCategorias();
 					TempData["Error"] = "Error";
 					return View();
 				}
@@ -79,7 +85,7 @@ namespace WebService.Controllers.WEB
 			catch (Exception ex)
 			{
 				TempData["Error"] = "Error al crear el objeto: " + ex.Message;
-				ViewBag.Categorias = db.Categorias.ToList();
+				ViewBag.Categorias = ObtenerCategorias();
 				return View();
 			}
 		}
@@ -89,33 +95,35 @@ namespace WebService.Controllers.WEB
 			using (var reader = new StreamReader(archivoHu.InputStream))
 			{
 				string content = reader.ReadToEnd();
-				var valores = content.Split('\n').Select(double.Parse).ToArray();
+				var lineas = content.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-				if (valores.Length != 7) return;
-
-				var invariantes = new InvariantesHu
+				foreach (var linea in lineas)
 				{
-					ObjetoID = objetoId,
-					Hu1 = valores[0],
-					Hu2 = valores[1],
-					Hu3 = valores[2],
-					Hu4 = valores[3],
-					Hu5 = valores[4],
-					Hu6 = valores[5],
-					Hu7 = valores[6]
-				};
+					var valores = linea.Trim().Split(',');
+					if (valores.Length != 7) continue; 
 
-				db.InvariantesHu.Add(invariantes);
-				db.SaveChanges();
+					db.InvariantesHu.Add(new InvariantesHu
+					{
+						ObjetoID = objetoId,
+						Hu1 = double.Parse(valores[0]),
+						Hu2 = double.Parse(valores[1]),
+						Hu3 = double.Parse(valores[2]),
+						Hu4 = double.Parse(valores[3]),
+						Hu5 = double.Parse(valores[4]),
+						Hu6 = double.Parse(valores[5]),
+						Hu7 = double.Parse(valores[6])
+					});
+				}
+				db.SaveChanges(); 
 			}
 		}
 
 		[AutorizarRol("Admin")]
-		public ActionResult Modificar()
+		public ActionResult Modificar(int ObjetoID = 0, int CategoriaID = 0)
 		{
 			Validar();
-			var objetos = db.Objetos.ToList();
-			ViewBag.Objetos = objetos;
+			ViewBag.Objetos = ObtenerObjetos();
+			ViewBag.Categorias = ObtenerCategorias();
 			return View();
 		}
 
@@ -162,12 +170,8 @@ namespace WebService.Controllers.WEB
 		public ActionResult Eliminar()
 		{
 			Validar();
-			var objetos = db.Objetos.ToList();
-			var categorias = db.Categorias.ToList();
-
-			ViewBag.Objetos = objetos;
-			ViewBag.Categorias = categorias;
-			
+			ViewBag.Objetos = ObtenerObjetos();
+			ViewBag.Categorias = ObtenerCategorias();
 			return View();
 		}
 
@@ -189,8 +193,8 @@ namespace WebService.Controllers.WEB
 						return RedirectToAction("Eliminar");
 					}
 
-					var hu = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objeto.ID);
-					if (hu != null) db.InvariantesHu.Remove(hu);
+					var hus = db.InvariantesHu.Where(h => h.ObjetoID == objeto.ID).ToList();
+					db.InvariantesHu.RemoveRange(hus);
 
 					db.Objetos.Remove(objeto);
 
@@ -298,37 +302,29 @@ namespace WebService.Controllers.WEB
 
 		private void ActualizarInvariantesHu(int objetoId, HttpPostedFileBase archivoHu)
 		{
+			var existentes = db.InvariantesHu.Where(h => h.ObjetoID == objetoId).ToList();
+			db.InvariantesHu.RemoveRange(existentes);
+
 			using (var reader = new StreamReader(archivoHu.InputStream))
 			{
 				string content = reader.ReadToEnd();
-				var valores = content.Split(',').Select(double.Parse).ToArray();
+				var lineas = content.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-				if (valores.Length != 7) return;
+				foreach (var linea in lineas)
+				{
+					var valores = linea.Trim().Split(',');
+					if (valores.Length != 7) continue;
 
-				var invariantes = db.InvariantesHu.FirstOrDefault(h => h.ObjetoID == objetoId);
-				if (invariantes != null)
-				{
-					invariantes.Hu1 = valores[0];
-					invariantes.Hu2 = valores[1];
-					invariantes.Hu3 = valores[2];
-					invariantes.Hu4 = valores[3];
-					invariantes.Hu5 = valores[4];
-					invariantes.Hu6 = valores[5];
-					invariantes.Hu7 = valores[6];
-					db.Entry(invariantes).State = EntityState.Modified;
-				}
-				else
-				{
 					db.InvariantesHu.Add(new InvariantesHu
 					{
 						ObjetoID = objetoId,
-						Hu1 = valores[0],
-						Hu2 = valores[1],
-						Hu3 = valores[2],
-						Hu4 = valores[3],
-						Hu5 = valores[4],
-						Hu6 = valores[5],
-						Hu7 = valores[6]
+						Hu1 = double.Parse(valores[0]),
+						Hu2 = double.Parse(valores[1]),
+						Hu3 = double.Parse(valores[2]),
+						Hu4 = double.Parse(valores[3]),
+						Hu5 = double.Parse(valores[4]),
+						Hu6 = double.Parse(valores[5]),
+						Hu7 = double.Parse(valores[6])
 					});
 				}
 				db.SaveChanges();
@@ -343,7 +339,7 @@ namespace WebService.Controllers.WEB
 
 			return Json(new
 			{
-				Nombre = objeto.Nombre,
+				objeto.Nombre,
 				ImagenBase64 = objeto.Imagen != null ?
 					Convert.ToBase64String(objeto.Imagen) : null
 			}, JsonRequestBehavior.AllowGet);
@@ -356,6 +352,22 @@ namespace WebService.Controllers.WEB
 				return RedirectToAction("Index", "Login");
 			}
 			return null;
+		}
+
+		private void ResetearTempData()
+		{
+			TempData["Success"] = null;
+			TempData["Error"] = null;
+		}
+
+		private List<Categoria> ObtenerCategorias()
+		{
+			return db.Categorias.ToList();
+		}
+
+		private List<Objeto> ObtenerObjetos()
+		{
+			return db.Objetos.ToList();
 		}
 	}
 }

@@ -188,42 +188,4 @@
 			}
 		}
 	}
-
-	async function subirInvariantes() {
-		var invariantes = document.getElementById("InvariantesHu");
-
-		const { value: file } = await Swal.fire({
-			title: "Selecciona un archivo Hu (.hu)",
-			input: "file",
-			inputAttributes: {
-				"accept": "*",
-				"aria-label": "Sube tus invariantes"
-			}
-		});
-		if (file) {
-			const reader = new FileReader();
-			invariantes.innerText = "Ya se han cargado";
-			invariantes.disabled = true;
-		}
-	}
-
-	async function subirImagen() {
-		var imagen = document.getElementById("ImgObjeto");
-
-		const { value: file } = await Swal.fire({
-			title: "Selecciona una imagen",
-			input: "file",
-			inputAttributes: {
-				"accept": "image/*",
-				"aria-label": "Carga tu imagen"
-			}
-		});
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				imagen.src = e.target.result
-			};
-			reader.readAsDataURL(file);
-		}
-	}
 </script>

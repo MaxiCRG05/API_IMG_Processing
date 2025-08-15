@@ -1,0 +1,46 @@
+﻿@{
+	ViewBag.Title = "Consultar objetos";
+	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		<div class="header">
+			<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+				<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+			</button>
+			<h1>CONSULTAR OBJETOS</h1>
+		</div>
+		<div class="container">
+			@if (ViewBag.Objetos != null)
+			{
+				<text>
+					<table>
+						<thead>
+
+						</thead>
+						<tbody>
+							@foreach (var objeto in ViewBag.Objetos)
+							{
+								<text>
+									<tr>@objeto.Nombre</tr>
+								</text>
+							}
+						</tbody>
+					</table>
+				</text>
+			}
+			else
+			{
+				<text>
+					<h2>Aún no hay objetos registrados</h2>
+				</text>
+			}
+		</div>
+	</body>
+</html>

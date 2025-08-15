@@ -60,6 +60,13 @@
 						Nombre del objeto<br />
 						<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Lapiz" required>
 					</label>
+					<select id="Categoria" name="CategoriaID" required>
+						<option disabled selected>Seleccione la categoría</option>
+						@foreach (var categoria in ViewBag.Categorias)
+						{
+							<option value="@categoria.ID">@categoria.Nombre</option>
+						}
+					</select>
 					<button type="button" id="BtnImagen" onclick="document.getElementById('archivoImagen').click()">
 						Subir imagen
 						<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
@@ -114,42 +121,4 @@
 				}
 			});
 	});
-
-	async function subirInvariantes() {
-		var invariantes = document.getElementById("InvariantesHu");
-
-		const { value: file } = await Swal.fire({
-			title: "Selecciona un archivo Hu (.hu)",
-			input: "file",
-			inputAttributes: {
-				"accept": "*",
-				"aria-label": "Sube tus invariantes"
-			}
-		});
-		if (file) {
-			const reader = new FileReader();
-			invariantes.innerText = "Ya se han cargado";
-			invariantes.disabled = true;
-		}
-	}
-
-	async function subirImagen() {
-		var imagen = document.getElementById("ImgObjeto");
-
-		const { value: file } = await Swal.fire({
-			title: "Selecciona una imagen",
-			input: "file",
-			inputAttributes: {
-				"accept": "image/*",
-				"aria-label": "Carga tu imagen"
-			}
-		});
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				imagen.src = e.target.result
-			};
-			reader.readAsDataURL(file);
-		}
-	}
 </script>
