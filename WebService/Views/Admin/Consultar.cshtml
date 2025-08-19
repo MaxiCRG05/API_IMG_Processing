@@ -5,42 +5,297 @@
 
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	</head>
-	<body>
-		<div class="header">
-			<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
-				<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
-			</button>
-			<h1>CONSULTAR OBJETOS</h1>
-		</div>
-		<div class="container">
-			@if (ViewBag.Objetos != null)
-			{
-				<text>
-					<table>
-						<thead>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
 
-						</thead>
-						<tbody>
-							@foreach (var objeto in ViewBag.Objetos)
-							{
-								<text>
-									<tr>@objeto.Nombre</tr>
-								</text>
-							}
-						</tbody>
-					</table>
-				</text>
+		.container {
+			max-width: 1200px;
+			margin: 2rem auto;
+			padding: 0 1rem;
+		}
+
+		.filtro-container {
+			background: white;
+			padding: 1.5rem;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+			margin-bottom: 2rem;
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 15px;
+		}
+
+			.filtro-container label {
+				font-weight: 600;
+				color: #444;
 			}
-			else
-			{
-				<text>
-					<h2>Aún no hay objetos registrados</h2>
-				</text>
+
+			.filtro-container select {
+				padding: 8px 12px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				background: white;
+				font-size: 1rem;
 			}
+
+			.filtro-container button {
+				background: #4CAF50;
+				color: white;
+				border: none;
+				padding: 8px 16px;
+				border-radius: 4px;
+				cursor: pointer;
+				font-weight: 600;
+				transition: background 0.3s;
+			}
+
+				.filtro-container button:hover {
+					background: #45a049;
+				}
+
+		.tabla-container {
+			background: white;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+			overflow-x: auto;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		thead {
+			background: linear-gradient(135deg, #2c3e50, #4a6491);
+			color: white;
+		}
+
+		th {
+			padding: 1rem;
+			text-align: left;
+			font-weight: 600;
+			border-bottom: 2px solid #1a2530;
+		}
+
+		td {
+			padding: 1rem;
+			border-bottom: 1px solid #eee;
+		}
+
+		tbody tr:hover {
+			background-color: #f9f9f9;
+		}
+
+		.imagen-container {
+			width: 80px;
+			height: 80px;
+			border-radius: 4px;
+			overflow: hidden;
+			background: #f0f0f0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+			.imagen-container img {
+				max-width: 100%;
+				max-height: 100%;
+				object-fit: cover;
+			}
+
+		.btn {
+			padding: 8px 12px;
+			border-radius: 4px;
+			text-decoration: none;
+			font-weight: 500;
+			display: inline-block;
+			transition: all 0.3s;
+			border: none;
+			cursor: pointer;
+			font-size: 0.9rem;
+		}
+
+		.btn-descargar {
+			background: #2196F3;
+			color: white;
+		}
+
+			.btn-descargar:hover {
+				background: #0b7dda;
+				transform: translateY(-2px);
+				box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			}
+
+		.btn-modificar {
+			background: #FF9800;
+			color: white;
+		}
+
+			.btn-modificar:hover {
+				background: #e68a00;
+				transform: translateY(-2px);
+				box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+			}
+
+		.sin-objetos {
+			text-align: center;
+			padding: 3rem;
+			color: #777;
+		}
+
+			.sin-objetos h2 {
+				font-weight: 400;
+				margin-bottom: 1rem;
+			}
+
+		.categoria-tag {
+			background: #e0f7fa;
+			color: #0097a7;
+			padding: 4px 8px;
+			border-radius: 20px;
+			font-size: 0.85rem;
+			display: inline-block;
+		}
+
+		.sin-hu {
+			color: #f44336;
+			font-style: italic;
+		}
+
+		@@media (max-width: 768px) {
+			th, td {
+				padding: 0.75rem;
+				font-size: 0.9rem;
+			}
+
+			.filtro-container {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+
+			.header h1 {
+				font-size: 1.5rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+			<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+		</button>
+		<h1>CONSULTAR OBJETOS</h1>
+	</div>
+
+	<div class="container">
+		<div class="filtro-container">
+			<label for="categoria">FILTRAR POR CATEGORÍA:</label>
+			<select id="categoria" onchange="filtrarObjetos()">
+				<option value="0">Todas las categorías</option>
+				@if (ViewBag.Categorias != null)
+				{
+					foreach (var categoria in ViewBag.Categorias)
+					{
+						<option value="@categoria.ID"
+								@(ViewBag.CategoriaSeleccionada != null && ViewBag.CategoriaSeleccionada == categoria.ID ? "selected" : "")>
+							@categoria.Nombre
+						</option>
+					}
+				}
+			</select>
+			<button onclick="filtrarObjetos()">Aplicar filtro</button>
 		</div>
-	</body>
+
+		@if (ViewBag.Objetos != null && ViewBag.Objetos.Count > 0)
+		{
+			<div class="tabla-container">
+				<table>
+					<thead>
+						<tr>
+							<th>IMAGEN</th>
+							<th>NOMBRE</th>
+							<th>CATEGORÍA</th>
+							<th>ARCHIVO HU</th>
+							<th>MODIFICAR</th>
+						</tr>
+					</thead>
+					<tbody id="tabla-objetos">
+						@foreach (var objeto in ViewBag.Objetos)
+						{
+							<tr data-categoria="@objeto.CategoriasID">
+								<td>
+									<div class="imagen-container">
+										@if (objeto.Imagen != null)
+										{
+											<img src="data:image;base64,@Convert.ToBase64String(objeto.Imagen)" alt="@objeto.Nombre" />
+										}
+										else
+										{
+											<span>Sin imagen</span>
+										}
+									</div>
+								</td>
+								<td>@objeto.Nombre</td>
+								<td>
+									@if (objeto.Categorias != null)
+									{
+										<span class="categoria-tag">@objeto.Categorias.Nombre</span>
+									}
+									else
+									{
+										<span class="categoria-tag">Sin categoría</span>
+									}
+								</td>
+								<td>
+									@Html.ActionLink("Descargar .hu", "DescargarHu", "Admin",
+										new { id = objeto.ID },
+										new { @class = "btn btn-descargar", title = "Descargar invariantes Hu" })
+								</td>
+								<td>
+									<button class="btn btn-modificar" onclick="location.href='@Url.Action("Modificar", "Admin", new { ObjetoID = objeto.ID })'">Modificar</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+		else
+		{
+			<div class="sin-objetos">
+				<h2>Aún no hay objetos registrados</h2>
+				<p>Comienza agregando un nuevo objeto desde la página de administración</p>
+			</div>
+		}
+	</div>
+
+	<script>
+        function filtrarObjetos() {
+            const categoriaId = document.getElementById('categoria').value;
+            const filas = document.querySelectorAll('#tabla-objetos tr');
+
+            filas.forEach(fila => {
+                if (categoriaId === "0" || fila.getAttribute('data-categoria') === categoriaId) {
+                    fila.style.display = '';
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (ViewBag.CategoriaSeleccionada != null)
+            {
+                <text>
+                document.getElementById('categoria').value = '@ViewBag.CategoriaSeleccionada';
+                filtrarObjetos();
+                </text>
+            }
+        });
+	</script>
+</body>
 </html>

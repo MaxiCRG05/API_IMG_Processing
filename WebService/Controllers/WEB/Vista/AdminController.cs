@@ -25,11 +25,14 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Admin")]
-		public ActionResult Consultar()
+		public ActionResult Consultar(int? categoriaId)
 		{
 			Validar();
-			ViewBag.Objetos = db.Objetos.Include(o => o.Categorias).ToList();
-			ViewBag.InvariantesHu = db.InvariantesHu.ToList();
+			
+			ViewBag.Categorias = ObtenerCategorias();
+			ViewBag.Objetos = ObtenerObjetos();
+			ViewBag.InvariantesHu = ObtenerInvariantesHu();
+
 			return View();
 		}
 
@@ -119,7 +122,7 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Admin")]
-		public ActionResult Modificar(int ObjetoID = 0, int CategoriaID = 0)
+		public ActionResult Modificar(int ObjetoID, int CategoriaID)
 		{
 			Validar();
 			ViewBag.Objetos = ObtenerObjetos();
@@ -368,6 +371,26 @@ namespace WebService.Controllers.WEB
 		private List<Objeto> ObtenerObjetos()
 		{
 			return db.Objetos.ToList();
+		}
+
+		private List<InvariantesHu> ObtenerInvariantesHu()
+		{
+			return db.InvariantesHu.ToList();
+		}
+
+		[AutorizarRol("Admin")]
+		public ActionResult DescargarHu(int id)
+		{
+			using (var db = new Context())
+			{
+				var archivo = MetodosProcesamiento.CrearArchivoHu(id, db);
+				if (archivo == null)
+				{
+					TempData["Error"] = "No se encontraron invariantes de Hu";
+					return RedirectToAction("Consultar");
+				}
+				return archivo;
+			}
 		}
 	}
 }

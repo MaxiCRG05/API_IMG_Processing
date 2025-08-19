@@ -22,9 +22,7 @@ namespace WebService.Controllers.WEB
 				return RedirectToAction("Index", "Admin");
 
 			if (Session["UsuarioID"] == null || Session["Nombre"] == null)
-			{
 				return RedirectToAction("Index", "Login");
-			}
 
 			int usuarioId = (int)Session["UsuarioID"];
 

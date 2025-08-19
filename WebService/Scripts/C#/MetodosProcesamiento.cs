@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
+using WebService.Data;
+using WebService.Models;
 
 namespace WebService.Scripts
 {
@@ -649,6 +651,49 @@ namespace WebService.Scripts
 			{
 				return reader.ReadBytes(file.ContentLength);
 			}
+		}
+
+		public static FileContentResult CrearArchivoHu(int objetoId, Context db)
+		{
+			var objeto = db.Objetos.Find(objetoId);
+			var invariantes = db.InvariantesHu
+				.Where(h => h.ObjetoID == objetoId)
+				.ToList();
+
+			if (objeto == null || invariantes.Count == 0)
+				return null;
+
+			var contenido = new System.Text.StringBuilder();
+
+			foreach (var inv in invariantes)
+			{
+				contenido.AppendLine(
+					$"{inv.Hu1}," +
+					$"{inv.Hu2}," +
+					$"{inv.Hu3}," +
+					$"{inv.Hu4}," +
+					$"{inv.Hu5}," +
+					$"{inv.Hu6}," +
+					$"{inv.Hu7}"
+				);
+			}
+
+			var bytes = System.Text.Encoding.UTF8.GetBytes(contenido.ToString());
+			var nombreArchivo = $"{SanitizarNombreArchivo(objeto.Nombre)}.hu";
+
+			return new FileContentResult(bytes, "text/plain")
+			{
+				FileDownloadName = nombreArchivo
+			};
+		}
+
+		private static string SanitizarNombreArchivo(string nombre)
+		{
+			var invalidos = Path.GetInvalidFileNameChars();
+			return new string(nombre
+				.Replace(" ", "_")
+				.Where(c => !invalidos.Contains(c))
+				.ToArray());
 		}
 	}
 
