@@ -25,7 +25,7 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Admin")]
-		public ActionResult Consultar(int? categoriaId)
+		public ActionResult Consultar()
 		{
 			Validar();
 			
@@ -122,18 +122,38 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Admin")]
-		public ActionResult Modificar(int ObjetoID, int CategoriaID)
+		public ActionResult Modificar(int ObjetoID = 0)
 		{
 			Validar();
 			ViewBag.Objetos = ObtenerObjetos();
 			ViewBag.Categorias = ObtenerCategorias();
+
+			if (ObjetoID != 0)
+			{
+				var objeto = db.Objetos
+					.Include(o => o.Categorias)
+					.FirstOrDefault(o => o.ID == ObjetoID);
+
+				if (objeto != null)
+				{
+					ViewBag.ObjetoSeleccionado = new
+					{
+						objeto.ID,
+						objeto.Nombre,
+						CategoriaID = objeto.CategoriasID,
+						ImagenBase64 = objeto.Imagen != null ?
+							Convert.ToBase64String(objeto.Imagen) : null
+					};
+				}
+			}
+
 			return View();
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AutorizarRol("Admin")]
-		public ActionResult Modificar(int ObjetosID, string NombreObjeto, HttpPostedFileBase archivoImagen, HttpPostedFileBase archivoHu)
+		public ActionResult Modificar(int ObjetosID, string NombreObjeto, int CategoriaID, HttpPostedFileBase archivoImagen, HttpPostedFileBase archivoHu)
 		{
 			try
 			{
@@ -145,6 +165,7 @@ namespace WebService.Controllers.WEB
 				}
 
 				objeto.Nombre = NombreObjeto;
+				objeto.CategoriasID = CategoriaID;
 
 				if (archivoImagen != null && archivoImagen.ContentLength > 0)
 				{
@@ -370,7 +391,7 @@ namespace WebService.Controllers.WEB
 
 		private List<Objeto> ObtenerObjetos()
 		{
-			return db.Objetos.ToList();
+			return db.Objetos.ToList();   
 		}
 
 		private List<InvariantesHu> ObtenerInvariantesHu()
