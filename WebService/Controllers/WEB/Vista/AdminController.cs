@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Google.Cloud.Firestore.V1;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -130,19 +132,16 @@ namespace WebService.Controllers.WEB
 
 			if (ObjetoID != 0)
 			{
-				var objeto = db.Objetos
-					.Include(o => o.Categorias)
-					.FirstOrDefault(o => o.ID == ObjetoID);
+				var objeto = db.Objetos.FirstOrDefault(o => o.ID == ObjetoID);
 
 				if (objeto != null)
 				{
-					ViewBag.ObjetoSeleccionado = new
+					ViewBag.Objeto = new Objeto
 					{
-						objeto.ID,
-						objeto.Nombre,
-						CategoriaID = objeto.CategoriasID,
-						ImagenBase64 = objeto.Imagen != null ?
-							Convert.ToBase64String(objeto.Imagen) : null
+						ID = objeto.ID,
+						Nombre = objeto.Nombre,
+						CategoriasID = objeto.CategoriasID,
+						Imagen = objeto.Imagen
 					};
 				}
 			}
@@ -364,8 +363,10 @@ namespace WebService.Controllers.WEB
 			return Json(new
 			{
 				objeto.Nombre,
+				objeto.CategoriasID,
 				ImagenBase64 = objeto.Imagen != null ?
-					Convert.ToBase64String(objeto.Imagen) : null
+					Convert.ToBase64String(objeto.Imagen) : null,
+				TipoImagen = "image/png" 
 			}, JsonRequestBehavior.AllowGet);
 		}
 

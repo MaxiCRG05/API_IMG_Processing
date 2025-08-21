@@ -9,6 +9,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
+		body{
+			text-align: center;
+		}
 
 		.container {
 			max-width: 1200px;
@@ -125,7 +128,7 @@
 		}
 
 			.btn-descargar:hover {
-				background: #0b7dda;
+				background: #00579d;
 				transform: translateY(-2px);
 				box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 			}
@@ -136,7 +139,7 @@
 		}
 
 			.btn-modificar:hover {
-				background: #e68a00;
+				background: #b16e0a;
 				transform: translateY(-2px);
 				box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 			}
@@ -274,6 +277,40 @@
 	</div>
 
 	<script>
+		function generarColorDesdeId(id) {
+			const hue = (id * 137.508) % 360;
+			return `hsl(${hue}, 70%, 80%)`;
+		}
+
+		function colorearFilasPorCategoria() {
+			const filas = document.querySelectorAll('#tabla-objetos tr');
+			const categoriasUsadas = new Set();
+
+			filas.forEach(fila => {
+				const categoriaId = fila.getAttribute('data-categoria');
+				if (categoriaId) categoriasUsadas.add(categoriaId);
+			});
+
+			const coloresPorCategoria = {};
+			categoriasUsadas.forEach(categoriaId => {
+				coloresPorCategoria[categoriaId] = generarColorDesdeId(parseInt(categoriaId));
+			});
+
+			filas.forEach(fila => {
+				const categoriaId = fila.getAttribute('data-categoria');
+				if (categoriaId && coloresPorCategoria[categoriaId]) {
+					const color = coloresPorCategoria[categoriaId];
+					fila.style.backgroundColor = color;
+
+					const etiquetaCategoria = fila.querySelector('.categoria-tag');
+					if (etiquetaCategoria) {
+						etiquetaCategoria.style.backgroundColor = color;
+						etiquetaCategoria.style.color = '#000'; 
+					}
+				}
+			});
+		}
+
         function filtrarObjetos() {
             const categoriaId = document.getElementById('categoria').value;
             const filas = document.querySelectorAll('#tabla-objetos tr');
@@ -292,9 +329,10 @@
             {
                 <text>
                 document.getElementById('categoria').value = '@ViewBag.CategoriaSeleccionada';
-                filtrarObjetos();
+					filtrarObjetos();
                 </text>
             }
+			colorearFilasPorCategoria();
         });
 	</script>
 </body>

@@ -1,18 +1,19 @@
 ﻿@{
 	ViewBag.Title = "Modificar Objeto";
 	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
+	bool HayObjeto = ViewBag.Objeto != null;
 }
 
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	</head>
-	<body>
-		@if (TempData["Success"] != null)
-		{
-			<script>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	@if (TempData["Success"] != null)
+	{
+		<script>
 			Swal.fire({
 				icon: 'success',
 				title: '¡Éxito!',
@@ -21,12 +22,12 @@
 				timerProgressBar: true,
 				showConfirmButton: false
 			});
-			</script>
-		}
+		</script>
+	}
 
-		@if (TempData["Error"] != null)
-		{
-			<script>
+	@if (TempData["Error"] != null)
+	{
+		<script>
 			Swal.fire({
 				icon: 'error',
 				title: 'Error',
@@ -35,57 +36,79 @@
 				timerProgressBar: true,
 				showConfirmButton: true
 			});
-			</script>
-		}
-		<div class="header">
-			<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
-				<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
-			</button>
-			<h1>MODIFICAR OBJETO</h1>
+		</script>
+	}
+	<div class="header">
+		<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+			<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+		</button>
+		<h1>MODIFICAR OBJETO</h1>
+	</div>
+	<div class="container">
+		<div class="form-section">
+			<form method="post" enctype="multipart/form-data">
+				@Html.AntiForgeryToken()
+				<input type="hidden" id="ObjetoID" name="ObjetosID" value="@(ViewBag.Objeto?.ID ?? 0)" />
+				<input type="file" id="archivoImagen" name="archivoImagen" accept="image/*" style="display:none">
+				<input type="file" id="archivoHu" name="archivoHu" accept=".hu" style="display:none">
+
+				<select id="Objetos" name="ObjetosID" required>
+					<option disabled @(ViewBag.Objeto == null ? "selected" : "")>Seleccione el objeto</option>
+					@foreach (var obj in ViewBag.Objetos)
+					{
+						<option value="@obj.ID"
+								@(ViewBag.Objeto != null && obj.ID == ViewBag.Objeto.ID ? "selected" : "")>
+							@obj.Nombre
+						</option>
+					}
+				</select>
+
+				<label for="NombreObjeto">
+					Nombre del objeto<br />
+					<input type="text" id="NombreObjeto" name="NombreObjeto"
+						   placeholder="Ej. Lapiz" value="@(ViewBag.Objeto?.Nombre)" required>
+				</label>
+
+				<select id="Categoria" name="CategoriaID" required>
+					<option disabled selected>Seleccione la categoría</option>
+					@foreach (var categoria in ViewBag.Categorias)
+					{
+						<option value="@categoria.ID"
+								@(ViewBag.Objeto != null && categoria.ID == ViewBag.Objeto.CategoriasID ? "selected" : "")>
+							@categoria.Nombre
+						</option>
+					}
+				</select>
+
+				<button type="button" id="BtnImagen" onclick="document.getElementById('archivoImagen').click()">
+					Subir imagen
+					<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
+				</button>
+
+				<button type="button" id="InvariantesHu" onclick="document.getElementById('archivoHu').click()">
+					Subir invariantes de Hu
+					<img src="~/Content/IMGS/Fx.png" alt="f(x)" width="20" />
+				</button>
+
+				<button type="submit" id="GuardarModificado">
+					Guardar objeto
+					<img src="~/Content/IMGS/Save.png" alt="guardar" width="20" />
+				</button>
+			</form>
 		</div>
-		<div class="container">
-			<div class="form-section">
-				<form method="post" enctype="multipart/form-data">
-					@Html.AntiForgeryToken()
-					<input type="file" id="archivoImagen" name="archivoImagen" accept="image/*" style="display:none">
-					<input type="file" id="archivoHu" name="archivoHu" accept=".hu" style="display:none">
-					<select id="Objetos" name="ObjetosID" required>
-						<option disabled selected>Seleccione el objeto</option>
-						@foreach (var objeto in ViewBag.Objetos)
-						{
-							<option value="@objeto.ID">@objeto.Nombre</option>
-						}
-					</select>
-					<label for="NombreObjeto">
-						Nombre del objeto<br />
-						<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Lapiz" required>
-					</label>
-					<select id="Categoria" name="CategoriaID" required>
-						<option disabled selected>Seleccione la categoría</option>
-						@foreach (var categoria in ViewBag.Categorias)
-						{
-							<option value="@categoria.ID">@categoria.Nombre</option>
-						}
-					</select>
-					<button type="button" id="BtnImagen" onclick="document.getElementById('archivoImagen').click()">
-						Subir imagen
-						<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
-					</button>
-					<button type="button" id="InvariantesHu" onclick="document.getElementById('archivoHu').click()">
-						Subir invariantes de Hu
-						<img src="~/Content/IMGS/Fx.png" alt="f(x)" width="20" />
-					</button>
-					<button type="submit" id="GuardarModificado">
-						Guardar objeto
-						<img src="~/Content/IMGS/Save.png" alt="guardar" width="20" />
-					</button>
-				</form>
-			</div>
-			<div class="preview-box">
+		<div class="preview-box">
+			@if (HayObjeto && ViewBag.Objeto.Imagen != null)
+			{
+				<img src="data:image/png;base64,@Convert.ToBase64String(ViewBag.Objeto.Imagen)"
+					 class="ImgObjeto" id="ImgObjeto" />
+			}
+			else
+			{
 				<img src="" class="ImgObjeto" id="ImgObjeto" />
-			</div>
+			}
 		</div>
-	</body>
+	</div>
+</body>
 </html>
 <script>
 	document.getElementById('archivoImagen').addEventListener('change', function (e) {
@@ -97,28 +120,43 @@
 			reader.readAsDataURL(this.files[0]);
 
 			const fileName = e.target.value.split('\\').pop();
-			document.getElementById('BtnImagen').innerHTML = "Imagen cargada: \"" + fileName + "\"";
+			document.getElementById('BtnImagen').innerHTML = "Imagen cargada: \"" + fileName + "\" <img src='/Content/IMGS/Img.png' alt='imagen' width='20' />";
 		}
 	});
 
 	document.getElementById('archivoHu').addEventListener('change', function (e) {
 		if (this.files && this.files[0]) {
 			const fileName = e.target.value.split('\\').pop();
-			document.getElementById('InvariantesHu').innerText = "Archivo cargado: \"" + fileName + "\"";
+			document.getElementById('InvariantesHu').innerHTML = "Archivo cargado: \"" + fileName + "\" <img src='/Content/IMGS/Fx.png' alt='f(x)' width='20' />";
 		}
 	});
 
+
 	document.getElementById('Objetos').addEventListener('change', function () {
 		const objetoId = this.value;
+		document.getElementById('ObjetoID').value = objetoId;
+
 		fetch(`/Admin/ObtenerObjeto?objetoId=${objetoId}`)
 			.then(response => response.json())
 			.then(data => {
 				document.getElementById('NombreObjeto').value = data.Nombre;
+
+				const categoriaSelect = document.getElementById('Categoria');
+				for (let i = 0; i < categoriaSelect.options.length; i++) {
+					if (categoriaSelect.options[i].value == data.CategoriasID) {
+						categoriaSelect.selectedIndex = i;
+						break;
+					}
+				}
+
 				if (data.ImagenBase64) {
-					document.getElementById('ImgObjeto').src = `data:image/png;base64,${data.ImagenBase64}`;
+					document.getElementById('ImgObjeto').src = `data:${data.TipoImagen};base64,${data.ImagenBase64}`;
 				} else {
 					document.getElementById('ImgObjeto').src = "";
 				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
 			});
 	});
 </script>

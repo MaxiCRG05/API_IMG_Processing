@@ -653,6 +653,14 @@ namespace WebService.Scripts
 			}
 		}
 
+		public static Bitmap BytesAImagen(byte[] imageBytes)
+		{
+			using (MemoryStream ms = new MemoryStream(imageBytes))
+			{
+				return new Bitmap(ms);
+			}
+		}
+
 		public static FileContentResult CrearArchivoHu(int objetoId, Context db)
 		{
 			var objeto = db.Objetos.Find(objetoId);
