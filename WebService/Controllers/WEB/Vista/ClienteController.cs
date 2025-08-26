@@ -12,7 +12,7 @@ namespace WebService.Controllers.WEB
 {
     public class ClienteController : Controller
     {
-		Context db = new Context();
+		readonly Context db = new Context();
 
 		// GET: Cliente
 		[AutorizarRol("Usuario")]
@@ -32,6 +32,7 @@ namespace WebService.Controllers.WEB
 				.ToList();
 
 			ViewBag.NombreUsuario = Session["Nombre"].ToString().ToUpper();
+			ViewBag.Proyectos = db.Proyectos.ToList();
 
 			return View(proyectos);
 		}
@@ -115,50 +116,39 @@ namespace WebService.Controllers.WEB
 			return View(proyecto);
 		}
 
-		[AutorizarRol("Usuario")]
-		public ActionResult CrearProyecto()
-		{
-			ViewBag.Categorias = db.Categorias.ToList();
-			return View();
-		}
-
 		[HttpPost]
 		[AutorizarRol("Usuario")]
-		[ValidateAntiForgeryToken]
-		public ActionResult CrearProyecto(Proyecto proyecto, int[] categoriasSeleccionadas)
+		public JsonResult CrearProyecto(string nombreProyecto)
 		{
-			if (Session["UsuarioID"] == null)
+			try
 			{
-				return RedirectToAction("Index", "Login");
-			}
-
-			if (ModelState.IsValid)
-			{
-				proyecto.UsuarioID = (int)Session["UsuarioID"];
-				proyecto.FechaCreacion = DateTime.Now;
-				proyecto.FechaModificacion = DateTime.Now;
-
-				if (categoriasSeleccionadas != null)
+				if (Session["UsuarioID"] == null)
 				{
-					foreach (var categoriaId in categoriasSeleccionadas)
-					{
-						var categoria = db.Categorias.Find(categoriaId);
-						if (categoria != null)
-						{
-							proyecto.Categorias.Add(categoria);
-						}
-					}
+					return Json(new { success = false, message = "Sesión expirada" });
 				}
+
+				if (string.IsNullOrEmpty(nombreProyecto) || nombreProyecto.Length < 3)
+				{
+					return Json(new { success = false, message = "El nombre debe tener al menos 3 caracteres" });
+				}
+
+				var proyecto = new Proyecto
+				{
+					UsuarioID = (int)Session["UsuarioID"],
+					Nombre = nombreProyecto,
+					FechaCreacion = DateTime.Now,
+					FechaModificacion = DateTime.Now
+				};
 
 				db.Proyectos.Add(proyecto);
 				db.SaveChanges();
 
-				TempData["Alerta"] = "Proyecto creado exitosamente!";
-				return RedirectToAction("Index");
+				return Json(new { success = true, id = proyecto.ID, nombre = proyecto.Nombre });
 			}
-
-			ViewBag.Categorias = db.Categorias.ToList();
-			return View(proyecto);
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Error al crear el proyecto: " + ex.Message });
+			}
 		}
 
 		[HttpPost]

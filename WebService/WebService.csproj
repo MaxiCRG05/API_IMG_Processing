@@ -331,7 +331,9 @@
     <Content Include="Content\IMGS\Cruz3.png" />
     <Content Include="Content\IMGS\save.svg" />
     <Content Include="Content\IMGS\study.svg" />
+    <Content Include="Content\Layout.css" />
     <Content Include="Content\LayoutAdmin.css" />
+    <Content Include="Content\LayoutCliente.css" />
     <Content Include="Content\Login.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

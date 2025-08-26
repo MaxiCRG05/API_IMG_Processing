@@ -1,24 +1,20 @@
 ﻿<!DOCTYPE html>
 <html>
-
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - Visión Artificial</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<link href="~/Content/Layout.css" rel="stylesheet" />
+	<link href="~/Content/LayoutCliente.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link href="https://fonts.google.com/specimen/Inter%display=swap" rel="stylesheet">
+	<link href="https://fonts.google.com/specimen/Oswald&display=swap" rel="stylesheet">
+	<link href="https://fonts.google.com/specimen/Koulen&display=swap" rel="stylesheet">
+</head>
 <body>
 	@RenderBody()
-	<style>
-		.logout-btn {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-			background-color: #82A0BC;
-			border: none;
-			border-radius: 30%;
-			padding: 13px 20px 13px 24px;
-			cursor: pointer;
-			transition: background-color 0.5s ease-in-out;
-		}
-
-			.logout-btn:hover {
-				background-color: #333;
-			}
-	</style>
 </body>
 </html>

@@ -1,65 +1,165 @@
 ﻿@{
-	ViewBag.Title = "Index";
+	ViewBag.Title = "Inicio";
 	Layout = "~/Views/Shared/Global.cshtml";
 }
 
 @Html.AntiForgeryToken()
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="~/Content/style.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<title>Inicio</title>
-</head>
-<body>
-	<header>
-		<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
-			<img src="~/Content/IMGS/LogOut.png" />
-		</button>
-		<div class="titulos">
-			<!-- -->
-			<h1>Bienvenido @Session["Nombre"].ToString().ToUpper()</h1>
-			<h2>¿EN QUÉ PROYECTO TRABAJAREMOS HOY?</h2>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		@if (TempData["Success"] != null)
+		{
+			<script>
+				Swal.fire({
+					icon: 'success',
+					title: '¡Éxito!',
+					text: '@TempData["Success"]',
+					timer: 3000,
+					timerProgressBar: true,
+					showConfirmButton: false
+				});
+			</script>
+		}
+
+		@if (TempData["Error"] != null)
+		{
+			<script>
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: '@TempData["Error"]',
+					timer: 5000,
+					timerProgressBar: true,
+					showConfirmButton: true
+				});
+			</script>
+		}
+		<header>
+			<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
+				<img src="~/Content/IMGS/LogOut.png" />
+			</button>
+			<div class="header">
+				<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
+					<img src="~/Content/IMGS/LogOut.png" />
+				</button>
+				<h1>BIENVENIDO @Session["Nombre"].ToString().ToUpper()</h1>
+				<p>¿EN QUÉ PROYECTO TRABAJAREMOS HOY?</p>
+			</div>
+		</header>
+		<div class="btn">
+			<input onclick="crearProyecto()" type="submit" value="Crear nuevo proyecto">
 		</div>
-	</header>
-	<input onclick="crearProyecto()" type="submit" value="Crear nuevo proyecto">
-	<div class="borde">
-		<table>
-			<thead>
-				<tr>
-					<th>Proyecto</th>
-					<th class="modificacion">Fecha de modificación</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><a href="#">escritorio</a></td>
-					<td>252531</td>
-				</tr>
-				<tr>
-					<td><a href="#">lapices</a></td>
-					<td>254125</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	
-</body>
+		<div class="container">
+			@if (ViewBag.Proyectos != null && ViewBag.Proyectos.Count > 0)
+			{
+				<text>
+					<div class="tabla-container" id="tablaConProyectos" style="display: block;">
+						<table>
+							<thead>
+								<tr>
+									<th>PROYECTO</th>
+									<th>FECHA CREACIÓN</th>
+									<th>FECHA MODIFICACIÓN</th>
+								</tr>
+							</thead>
+							<tbody id="tabla-objetos">
+								@foreach (var proyecto in Model)
+								{
+									<tr onclick="seleccionarProyecto(@proyecto.ID, '@proyecto.Nombre')">
+										<td><strong>@proyecto.Nombre</strong></td>
+										<td>@proyecto.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
+										<td>@proyecto.FechaModificacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</text>
+			}
+			else
+			{
+				<text>
+					<div class="sin-objetos" id="sinProyectos" style="display: block;">
+						<h2>Aún no hay proyectos registrados</h2>
+						<p>Comienza agregando un nuevo proyecto desde esta misma página.</p>
+					</div>
+				</text>
+			}
+		</div>
+	</body>
 </html>
 
 <script>
 
 	function crearProyecto() {
-		Swal.fire({
+		const { value: nombre } = Swal.fire({
 			title: 'Crea tu proyecto',
 			input: "text",
 			inputLabel: "Ingresa el nombre para tu proyecto:",
 			inputPlaceholder: 'Nombre del proyecto',
 			showCancelButton: true,
 			cancelButtonText: "Cancelar",
-			confirmButtonText: "Crear"
+			confirmButtonText: "Crear",
+			confirmButtonColor: '#82a0bc',
+			cancelButtonColor: '#d33',
+			background: '#fff',
+			color: '#304D6D',
+			inputAttributes: {
+				maxlength: 50,
+				autocapitalize: 'off',
+				autocorrect: 'off'
+			},
+			preConfirm: (nombreProyecto) => {
+				if (!nombreProyecto) {
+					Swal.showValidationMessage('Por favor ingresa un nombre para el proyecto');
+					return false;
+				}
+				if (nombreProyecto.length < 3) {
+					Swal.showValidationMessage('El nombre debe tener al menos 3 caracteres');
+					return false;
+				}
+				return nombreProyecto;
+			}
+	});
+
+	if (nombre) {
+		const response = await fetch('@Url.Action("CrearProyecto", "Admin")', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: `nombreProyecto=${encodeURIComponent(nombre)}`
 		});
+
+		const data = await response.json();
+
+		if (data.success) {
+			const select = document.getElementById("Categoria");
+			const option = document.createElement("option");
+			option.value = data.id;
+			option.text = data.nombre;
+			select.add(option);
+			select.value = data.id;
+
+			Swal.fire({
+				icon: 'success',
+				title: '¡Proyecto creado!',
+				text: `"${nombre}" fue creado correctamente`
+			});
+		} else {
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: data.message || 'Error al crear el proyecto'
+			});
+		}
 	}
+
+	function seleccionarProyecto(proyectoId, proyectoNombre) {
+        window.location.href = '@Url.Action("Proyecto", "Cliente")' + '?id=' + proyectoId;
+    }
 </script>
