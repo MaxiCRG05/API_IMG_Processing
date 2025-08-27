@@ -97,8 +97,11 @@ C:\Users\Equipo 15\source\repos\WebApplication1\bin\es\System.Web.Http.WebHost.r
 C:\Users\Equipo 15\source\repos\WebApplication1\obj\Debug\WebService.csproj.Up2Date
 C:\Users\Equipo 15\source\repos\WebApplication1\obj\Debug\WebService.dll
 C:\Users\Equipo 15\source\repos\WebApplication1\obj\Debug\WebService.pdb
+<<<<<<< HEAD
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.csproj.AssemblyReference.cache
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\obj\Debug\WebService.csproj.CoreCompileInputs.cache
+=======
+>>>>>>> e78631e8824beb9e9029824846090827edfb8d85
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\grpc_csharp_ext.x86.dll
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\grpc_csharp_ext.x64.dll
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\libgrpc_csharp_ext.x64.so

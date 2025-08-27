@@ -1,4 +1,3 @@
-﻿using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -182,6 +181,7 @@ namespace WebService.Controllers.WEB
 				var fullErrorMessage = string.Join("; ", errorMessages);
 				return Json(new { success = false, message = "Error de validación: " + fullErrorMessage });
 			}
+
 			catch (Exception ex)
 			{
 				return Json(new { success = false, message = "Error al crear el proyecto: " + ex.Message });
