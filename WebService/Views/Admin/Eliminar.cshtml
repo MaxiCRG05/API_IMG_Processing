@@ -1,0 +1,157 @@
+﻿@{
+	ViewBag.Title = "Eliminar Objeto Y/O Categoría";
+	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		@if (TempData["Success"] != null)
+		{
+			<script>
+			Swal.fire({
+				icon: 'success',
+				title: '¡Éxito!',
+				text: '@TempData["Success"]',
+				timer: 3000,
+				timerProgressBar: true,
+				showConfirmButton: false
+			});
+			</script>
+		}
+
+		@if (TempData["Error"] != null)
+		{
+			<script>
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: '@TempData["Error"]',
+				timer: 5000,
+				timerProgressBar: true,
+				showConfirmButton: true
+			});
+			</script>
+		}
+		<div class="header">
+			<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+				<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+			</button>
+			<h1>ELIMINAR OBJETO</h1>
+		</div>
+
+		<div class="form-container">
+			<div class="form-section">
+				<form method="post">
+					@Html.AntiForgeryToken()
+					<select id="Objetos" name="ObjetosID">
+						<option disabled selected>Seleccione los objetos</option>
+						@foreach (var objeto in ViewBag.Objetos)
+						{
+							<option value="@objeto.ID">@objeto.Nombre</option>
+						}
+					</select>
+
+					<select id="Categorias" name="CategoriasID">
+						<option disabled selected>Seleccione la categoría</option>
+						@foreach (var categoria in ViewBag.Categorias)
+						{
+							<option value="@categoria.ID">@categoria.Nombre</option>
+						}
+					</select>
+
+					<div class="checkbox-container">
+						<input type="checkbox" id="BorrarCat" name="BorrarCat">
+						<label for="BorrarCat">No quiero eliminar ninguna categoría</label>
+					</div>
+
+					<button type="submit" id="Eliminar" class="submit">
+						Eliminar
+						<img src="~/Content/IMGS/Trash.png" alt="Borrar" width="20" />
+					</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+	function mostrarConfirmacion(tipo) {
+		let mensaje = "";
+
+		switch (tipo) {
+			case 'objeto':
+				mensaje = "¿Estás seguro de eliminar este objeto?";
+				break;
+			case 'categoria':
+				mensaje = "¿Estás seguro de eliminar esta categoría?";
+				break;
+			case 'ambos':
+				mensaje = "¿Estás seguro de eliminar el objeto y la categoría?";
+				break;
+		}
+
+		return Swal.fire({
+			title: 'Confirmar eliminación',
+			text: mensaje,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Sí, eliminar!',
+			cancelButtonText: 'Cancelar'
+		});
+	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		const checkBorrar = document.getElementById("BorrarCat");
+		const comboCategorias = document.getElementById("Categorias");
+		const form = document.querySelector('form');
+
+		comboCategorias.disabled = checkBorrar.checked;
+
+		checkBorrar.addEventListener('change', function () {
+			comboCategorias.disabled = this.checked;
+			if (this.checked) {
+				comboCategorias.selectedIndex = 0;
+			}
+		});
+
+		form.addEventListener('submit', function (event) {
+			event.preventDefault();
+
+			const objetoSeleccionado = document.getElementById('Objetos').value;
+			const categoriaSeleccionada = document.getElementById('Categorias').value;
+			const borrarCat = document.getElementById('BorrarCat').checked;
+
+			if (!objetoSeleccionado && categoriaSeleccionada) {
+				mostrarConfirmacion('categoria').then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+			}
+			else if (objetoSeleccionado && borrarCat) {
+				mostrarConfirmacion('objeto').then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+			}
+			else if (objetoSeleccionado && categoriaSeleccionada && !borrarCat) {
+				mostrarConfirmacion('ambos').then((result) => {
+					if (result.isConfirmed) {
+						form.submit();
+					}
+				});
+			}
+			else {
+				Swal.fire('Error', 'Selección inválida. Verifica tus opciones.', 'error');
+			}
+		});
+	});
+</script>

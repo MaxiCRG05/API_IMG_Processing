@@ -1,0 +1,322 @@
+﻿@{
+	ViewBag.Title = "Inicio";
+	Layout = "~/Views/Shared/Global.cshtml";
+}
+
+@Html.AntiForgeryToken()
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		@if (TempData["Success"] != null)
+		{
+			<script>
+				Swal.fire({
+					icon: 'success',
+					title: '¡Éxito!',
+					text: '@TempData["Success"]',
+					timer: 3000,
+					timerProgressBar: true,
+					showConfirmButton: false
+				});
+			</script>
+		}
+
+		@if (TempData["Error"] != null)
+		{
+			<script>
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: '@TempData["Error"]',
+					timer: 5000,
+					timerProgressBar: true,
+					showConfirmButton: true
+				});
+			</script>
+		}
+		<header>
+			<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
+				<img src="~/Content/IMGS/LogOut.png" />
+			</button>
+			<div class="header">
+				<button class="logout-btn" title="Cerrar sesión" onclick="location.href='/Login/Logout'">
+					<img src="~/Content/IMGS/LogOut.png" />
+				</button>
+				<h1>BIENVENIDO @Session["Nombre"].ToString().ToUpper()</h1>
+				<p>¿EN QUÉ PROYECTO TRABAJAREMOS HOY?</p>
+			</div>
+		</header>
+		<div class="btn">
+			<input onclick="mostrarModalProyecto()" type="submit" value="Crear nuevo proyecto">
+		</div>
+		<div class="container">
+			@if (ViewBag.Proyectos != null && ViewBag.Proyectos.Count > 0)
+			{
+				<text>
+					<div class="tabla-container" id="tablaConProyectos" style="display: block;">
+						<table>
+							<thead>
+								<tr>
+									<th>PROYECTO</th>
+									<th>FECHA CREACIÓN</th>
+									<th>FECHA MODIFICACIÓN</th>
+								</tr>
+							</thead>
+							<tbody id="tabla-objetos">
+								@foreach (var proyecto in Model)
+								{
+									<tr onclick="a.href.location('Proyecto', 'Cliente')">
+										<td><strong>@proyecto.Nombre</strong></td>
+										<td>@proyecto.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
+										<td>@proyecto.FechaModificacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</text>
+			}
+			else
+			{
+				<text>
+					<div class="sin-objetos" id="sinProyectos" style="display: block;">
+						<h2>Aún no hay proyectos registrados</h2>
+						<p>Comienza agregando un nuevo proyecto desde esta misma página.</p>
+					</div>
+				</text>
+			}
+		</div>
+
+		<div id="modalProyecto" class="modal-overlay">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title">NUEVO PROYECTO</h1>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Nombre del proyecto</label>
+					<input type="text" id="nombreProyecto" class="form-input" placeholder="Ej. Objetos de escritorio">
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Seleccione las categorías para el proyecto</label>
+					<div class="dropdown-container">
+						<div class="dropdown-header" onclick="toggleDropdown()">
+							<span id="dropdownText">Seleccionar categorías</span>
+							<span class="dropdown-arrow" id="dropdownArrow">▼</span>
+						</div>
+						<div class="dropdown-options" id="dropdownOptions">
+							@foreach (var categoria in ViewBag.Categorias)
+							{
+								<text>
+									<div class="dropdown-option" onclick="toggleOption(this, @categoria.ID, '@categoria.Nombre')">
+										<span>@categoria.Nombre</span>
+										<div class="option-checkbox" id="checkbox-@categoria.ID"></div>
+									</div>
+								</text>
+							}
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-buttons">
+					<button class="modal-btn btn-primary" onclick="crearProyecto()">Crear</button>
+					<button class="modal-btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+	let categoriasSeleccionadas = [];
+
+	function mostrarModalProyecto() {
+		const modal = document.getElementById('modalProyecto');
+		modal.style.display = 'block';
+		modal.classList.add('show');
+		document.body.style.overflow = 'hidden';
+	}
+
+	function cerrarModal() {
+		const modal = document.getElementById('modalProyecto');
+		modal.classList.remove('show');
+		setTimeout(() => {
+			modal.style.display = 'none';
+		}, 300);
+		document.body.style.overflow = 'auto';
+		document.getElementById('nombreProyecto').value = '';
+	}
+
+	function toggleDropdown() {
+		const options = document.getElementById('dropdownOptions');
+		const arrow = document.getElementById('dropdownArrow');
+
+		if (options.classList.contains('show')) {
+			options.classList.remove('show');
+			arrow.classList.remove('rotated');
+			setTimeout(() => {
+				options.style.display = 'none';
+			}, 300);
+		} else {
+			options.style.display = 'block';
+			setTimeout(() => {
+				options.classList.add('show');
+			}, 10);
+			arrow.classList.add('rotated');
+		}
+	}
+
+	function toggleOption(element, categoriaId, categoriaNombre) {
+		const checkbox = document.getElementById(`checkbox-${categoriaId}`);
+
+		if (checkbox.classList.contains('checked')) {
+			checkbox.classList.remove('checked');
+			element.classList.remove('selected');
+			categoriasSeleccionadas = categoriasSeleccionadas.filter(cat => cat.id !== categoriaId);
+		} else {
+			checkbox.classList.add('checked');
+			element.classList.add('selected');
+			categoriasSeleccionadas.push({ id: categoriaId, name: categoriaNombre });
+		}
+
+		actualizarTextoDropdown();
+	}
+
+	function actualizarTextoDropdown() {
+		const dropdownText = document.getElementById('dropdownText');
+		if (categoriasSeleccionadas.length === 0) {
+			dropdownText.textContent = 'Seleccionar categorías';
+		} else if (categoriasSeleccionadas.length === 1) {
+			dropdownText.textContent = categoriasSeleccionadas[0].name;
+		} else {
+			dropdownText.textContent = `${categoriasSeleccionadas.length} categorías seleccionadas`;
+		}
+	}
+
+	function crearProyecto() {
+		const nombre = document.getElementById('nombreProyecto').value.trim();
+
+		if (!nombre) {
+			alertAdvertencia('¡El nombre del proyecto es obligatorio!');
+			return;
+		}
+
+		if (categoriasSeleccionadas.length === 0) {
+			alertAdvertencia('¡Debe seleccionar al menos una categoría!');
+			return;
+		}
+
+		const data = {
+			nombreProyecto: nombre,
+			categoriaIds: categoriasSeleccionadas.map(cat => cat.id)
+		};
+
+		fetch('/Cliente/CrearProyecto', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+			},
+			body: JSON.stringify(data)
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					alertExito(`Proyecto "${nombre}" creado exitosamente`, 2000)
+						.then(() => {
+							window.location.reload();
+						});
+				} else {
+					alertError(data.message);
+				}
+			})
+			.catch(error => {
+				alertError('No se pudo conectar con el servidor');
+			});
+	}
+
+	function toggleTabla() {
+		const tabla = document.getElementById('tablaConProyectos');
+		const sinProyectos = document.getElementById('sinProyectos');
+
+		if (tabla.style.display === 'block') {
+			tabla.style.display = 'none';
+			sinProyectos.style.display = 'block';
+		} else {
+			tabla.style.display = 'block';
+			sinProyectos.style.display = 'none';
+		}
+	}
+
+	document.addEventListener('click', function (event) {
+		const dropdown = document.querySelector('.dropdown-container');
+		const options = document.getElementById('dropdownOptions');
+
+		if (!dropdown.contains(event.target)) {
+			options.classList.remove('show');
+			document.getElementById('dropdownArrow').classList.remove('rotated');
+			setTimeout(() => {
+				options.style.display = 'none';
+			}, 300);
+		}
+	});
+
+	document.getElementById('modalProyecto').addEventListener('click', function (event) {
+		if (event.target === this) {
+			cerrarModal();
+		}
+	});
+
+	document.addEventListener('DOMContentLoaded', function () {
+		actualizarTextoDropdown();
+	});
+
+	function alertExito(mensaje, timer = 3000) {
+		return Swal.fire({
+			icon: 'success',
+			title: '¡Éxito!',
+			text: mensaje,
+			timer: timer,
+			timerProgressBar: true,
+			showConfirmButton: false
+		});
+	}
+
+	function alertError(mensaje, timer = 5000) {
+		return Swal.fire({
+			icon: 'error',
+			title: 'Error',
+			text: mensaje,
+			timer: timer,
+			timerProgressBar: true,
+			showConfirmButton: true
+		});
+	}
+
+	function alertAdvertencia(mensaje, timer = 3000) {
+		return Swal.fire({
+			icon: 'warning',
+			title: 'Advertencia',
+			text: mensaje,
+			timer: timer,
+			timerProgressBar: true,
+			showConfirmButton: false
+		});
+	}
+
+	function alertConfirmacion(mensaje) {
+		return Swal.fire({
+			icon: 'question',
+			title: 'Confirmación',
+			text: mensaje,
+			showCancelButton: true,
+			confirmButtonText: 'Sí',
+			cancelButtonText: 'No'
+		});
+	}
+</script>

@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Koulen&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--terciario);
+}
+
+header {
+    font-family: "Koulen", sans-serif;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: var(--gradiente);
+    height: 217px;
+    color: var(--blanco);
+    box-sizing: border-box;
+    border-bottom-left-radius: 80%;
+    border-bottom-right-radius: 80%;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 400;
+    margin-right: auto;
+    margin-left: 20px;
+    text-align: center;
+    height: 75px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.titulos {
+    text-align: center;
+}
+
+.logout {
+    display: flex;
+    justify-content: end;
+}
+
+input[type="submit"] {
+    background-color: var(--primario);
+    color: var(--blanco);
+    border: none;
+    padding: 12px 55px;
+    border-radius: 4px;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+input[type="submit"]:hover {
+    background-color: var(--hover);
+}
+
+.borde {
+    position: relative;
+    padding: 3px;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.borde::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background: var(--gradiente);
+    border-radius: inherit;
+}
+
+table {
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    color: var(--texto);
+    font-family: "inter", sans-serif;
+    background-color: var(--blanco);
+    width: 100%;
+}
+
+thead {
+    background: var(--gradiente);
+    color: var(--blanco);
+    font-family: "Koulen", sans-serif;
+    font-size: 24px;
+}
+
+tr {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+tr:hover {
+    background-color: var(--secundario);
+}
+
+th {
+    padding: 15px;
+    text-align: left;
+    font-size: 0.9em;
+    font-weight: 400;
+}
+
+th:first-child {
+    text-align: left;
+}
+
+th:last-child {
+    text-align: right;
+}
+
+.modificacion {
+    text-align: right;
+}
+
+td {
+    padding: 15px;
+    font-size: 0.95em;
+}
+
+td:first-child {
+    text-align: left;
+}
+
+td:last-child {
+    text-align: right;
+}
+
+.derecha {
+    text-align: right;
+}
+
+a {
+    color: var(--texto);
+    text-decoration: none;
+}

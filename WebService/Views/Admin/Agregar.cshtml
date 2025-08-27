@@ -1,0 +1,191 @@
+﻿@{
+	ViewBag.Title = "Agregar Objeto";
+	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		@if (TempData["Success"] != null)
+		{
+			<script>
+			Swal.fire({
+				icon: 'success',
+				title: '¡Éxito!',
+				text: '@TempData["Success"]',
+				timer: 3000,
+				timerProgressBar: true,
+				showConfirmButton: false
+			});
+			</script>
+		}
+
+		@if (TempData["Error"] != null)
+		{
+			<script>
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: '@TempData["Error"]',
+				timer: 5000,
+				timerProgressBar: true,
+				showConfirmButton: true
+			});
+			</script>
+		}
+		<div class="header">
+			<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+				<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+			</button>
+			<h1>AGREGAR OBJETO</h1>
+		</div>
+
+		<div class="container">
+			<div class="form-section">
+				<form action="/Admin/Agregar" method="post" enctype="multipart/form-data">
+					@Html.AntiForgeryToken()
+					<input type="file" id="archivoImagen" name="archivoImagen" accept="image/*" style="display:none" required>
+					<input type="file" id="archivoHu" name="archivoHu" accept=".hu" style="display:none" required>
+
+					<label for="NombreObjeto">
+						Nombre del objeto<br />
+						<input type="text" id="NombreObjeto" name="NombreObjeto" placeholder="Ej. Lapiz" required>
+					</label>
+					<select id="Categoria" name="CategoriaID" required>
+						<option disabled selected>Seleccione la categoría</option>
+						@foreach (var categoria in ViewBag.Categorias)
+						{
+							<option value="@categoria.ID">@categoria.Nombre</option>
+						}
+					</select>
+
+					<button type="button" id="NuevaCategoria" onclick="agregarCategoria()">
+						Nueva categoría
+						<img src="~/Content/IMGS/Cruz2.png" alt="guardar" width="20" />
+					</button>
+
+					<button type="button" id="InvariantesHu" onclick="document.getElementById('archivoHu').click()">
+						Subir invariantes de Hu
+						<img src="~/Content/IMGS/Fx.png" alt="f(x)" width="20" />
+					</button>
+
+					<button type="button" id="BtnImagen" onclick="document.getElementById('archivoImagen').click()">
+						Subir imagen
+						<img src="~/Content/IMGS/Img.png" alt="imagen" width="20" />
+					</button>
+
+					<button type="submit" id="Guardar">
+						Guardar objeto
+						<img src="~/Content/IMGS/Save.png" alt="guardar" width="20" />
+					</button>
+				</form>
+			</div>
+			<div class="preview-box">
+				<img src="" class="ImgObjeto" id="ImgObjeto" />
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+	document.getElementById('archivoImagen').addEventListener('change', function (e) {
+		if (this.files[0]) {
+			const reader = new FileReader();
+			reader.onload = function (ex) {
+				document.getElementById('ImgObjeto').src = ex.target.result;
+			};
+			reader.readAsDataURL(this.files[0]);
+
+			const fileName = e.target.value.split('\\').pop();
+			document.getElementById('BtnImagen').innerHTML = "Imagen cargada: \"" + fileName + "\"";
+		}
+	});
+
+	document.getElementById('archivoHu').addEventListener('change', function (e) {
+		if (this.files && this.files[0]) {
+			const fileName = e.target.value.split('\\').pop();
+			document.getElementById('InvariantesHu').innerText = "Archivo cargado: \"" + fileName + "\"";
+		}
+	});
+
+	document.addEventListener('DOMContentLoaded', function() {
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '@TempData["Success"]',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            }).then(() => {
+                resetForm();
+            });
+            </text>
+        }
+    });
+
+	function resetForm() {
+		document.getElementById('NombreObjeto').value = '';
+		document.getElementById('Categoria').selectedIndex = 0;
+		document.getElementById('archivoImagen').value = '';
+		document.getElementById('archivoHu').value = '';
+		document.getElementById('ImgObjeto').src = '';
+		document.getElementById('BtnImagen').innerHTML = 'Subir imagen <img src="/Content/IMGS/Img.png" alt="imagen" width="20">';
+		document.getElementById('InvariantesHu').innerHTML = 'Subir invariantes de Hu <img src="/Content/IMGS/Fx.png" alt="f(x)" width="20">';
+	}
+
+	async function agregarCategoria() {
+		const { value: nombre } = await Swal.fire({
+			title: 'Nueva Categoría',
+			input: 'text',
+			inputLabel: 'Nombre de la categoría:',
+			inputPlaceholder: 'Ej. Electrónicos',
+			showCancelButton: true,
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "Crear",
+			inputValidator: (value) => {
+				if (!value.trim()) return '¡El nombre es obligatorio!';
+				if (value.length > 50) return '¡Máximo 50 caracteres!';
+			}
+		});
+
+		if (nombre) {
+			const response = await fetch('@Url.Action("AgregarCategoria", "Admin")', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: `nombreCategoria=${encodeURIComponent(nombre)}`
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				const select = document.getElementById("Categoria");
+				const option = document.createElement("option");
+				option.value = data.id;
+				option.text = data.nombre;
+				select.add(option);
+				select.value = data.id;
+
+				Swal.fire({
+					icon: 'success',
+					title: '¡Categoría creada!',
+					text: `"${nombre}" fue agregada correctamente`
+				});
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: data.message || 'Error al crear categoría'
+				});
+			}
+		}
+	}
+</script>
