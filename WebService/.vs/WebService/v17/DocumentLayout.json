@@ -1,9 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\",
+  "WorkspaceRootPath": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\controllers\\web\\vista\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\downloads\\api_img_processing-fd3f068bea9efc491aacd040716230415f38d6b1\\webservice\\web.release.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:web.release.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\downloads\\api_img_processing-fd3f068bea9efc491aacd040716230415f38d6b1\\webservice\\web.debug.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:web.debug.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\downloads\\api_img_processing-fd3f068bea9efc491aacd040716230415f38d6b1\\webservice\\content\\layoutcliente.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:content\\layoutcliente.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\views\\cliente\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:views\\cliente\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\views\\cliente\\proyecto.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:views\\cliente\\proyecto.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\controllers\\web\\vista\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:controllers\\web\\vista\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -23,15 +43,77 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ClienteController.cs",
-              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\WEB\\Vista\\ClienteController.cs",
-              "RelativeDocumentMoniker": "Controllers\\WEB\\Vista\\ClienteController.cs",
-              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\WEB\\Vista\\ClienteController.cs",
-              "RelativeToolTip": "Controllers\\WEB\\Vista\\ClienteController.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAIAwwC4AAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-27T23:06:37.305Z",
+              "Title": "Web.Release.config",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Web.Release.config",
+              "RelativeDocumentMoniker": "Web.Release.config",
+              "ToolTip": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Web.Release.config",
+              "RelativeToolTip": "Web.Release.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-08-28T00:50:16.037Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Web.Debug.config",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Web.Debug.config",
+              "RelativeDocumentMoniker": "Web.Debug.config",
+              "ToolTip": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Web.Debug.config",
+              "RelativeToolTip": "Web.Debug.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-08-28T00:50:14.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LayoutCliente.css",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Content\\LayoutCliente.css",
+              "RelativeDocumentMoniker": "Content\\LayoutCliente.css",
+              "ToolTip": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Content\\LayoutCliente.css",
+              "RelativeToolTip": "Content\\LayoutCliente.css",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAkwNUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-08-27T01:11:04.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Proyecto.cshtml",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Views\\Cliente\\Proyecto.cshtml",
+              "RelativeDocumentMoniker": "Views\\Cliente\\Proyecto.cshtml",
+              "ToolTip": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Views\\Cliente\\Proyecto.cshtml",
+              "RelativeToolTip": "Views\\Cliente\\Proyecto.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-27T01:05:35.706Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Views\\Cliente\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Cliente\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Views\\Cliente\\Index.cshtml",
+              "RelativeToolTip": "Views\\Cliente\\Index.cshtml",
+              "ViewState": "AgIAADkAAAAAAAAAAAAgwEcAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-25T20:14:10.782Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ClienteController.cs",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Controllers\\WEB\\Vista\\ClienteController.cs",
+              "RelativeDocumentMoniker": "Controllers\\WEB\\Vista\\ClienteController.cs",
+              "ToolTip": "C:\\Users\\Equipo 15\\Downloads\\API_IMG_Processing-fd3f068bea9efc491aacd040716230415f38d6b1\\WebService\\Controllers\\WEB\\Vista\\ClienteController.cs",
+              "RelativeToolTip": "Controllers\\WEB\\Vista\\ClienteController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAgwCsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-25T20:15:11.885Z"
             }
           ]
         }
