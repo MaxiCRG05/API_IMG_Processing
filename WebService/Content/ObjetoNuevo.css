@@ -10,19 +10,6 @@ body {
 	color: var(--terciario);
 }
 
-header {
-	position: relative;
-	font-family: "Koulen", sans-serif;
-	width: 100%;
-	padding: 15px 30px;
-	background: var(--gradiente);
-	height: 130px;
-	color: var(--blanco);
-	box-sizing: border-box;
-	border-bottom-left-radius: 80%;
-	border-bottom-right-radius: 80%;
-}
-
 header h1 {
 	position: absolute;
 	width: 100%;

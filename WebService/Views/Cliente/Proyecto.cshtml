@@ -27,7 +27,7 @@
 		<article>
 			<button type="submit" onclick="location.href = '/IA/Crear'">Crear red neuronal<img src="~/Content/IMGS/red.svg" alt=""></button>
 			<div class="opciones">
-				<div class="etiqueta">Selecciona alguna opción<img src="~/Content/IMGS/opciones.svg" alt="opciones" class="flecha"></div>
+				<div class="etiqueta">Selecciona objetos para entrenar la IA<img src="~/Content/IMGS/opciones.svg" alt="opciones" class="flecha"></div>
 				<div class="select-options">
 					<label class="opcion">
 						<img src="~/Content/IMGS/pera_binarizada.png" alt="imagen" class="objeto">
@@ -41,8 +41,9 @@
 			<button type="submit">Subir imagen<img src="~/Content/IMGS/image.svg" alt="imagen"></button>
 			<button type="submit">Reconocer objetos<img src="~/Content/IMGS/reconocer.svg" alt="Reconocer"></button>
 		</article>
-		<aside>
-		</aside>
+		<div class="preview-box">
+			<img src="" class="ImgObjeto" id="ImgObjeto" />
+		</div>
 	</section>
 	<script src="~/Scripts/proyecto.js"></script>
 	<div id="menuLateral" class="menu-lateral oculto">
