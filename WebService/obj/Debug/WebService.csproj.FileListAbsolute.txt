@@ -248,7 +248,6 @@ C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\Grpc.Net.C
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\Grpc.Net.Common.xml
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\MailKit.pdb
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\MailKit.xml
-C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\MailKit.dll.config
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\Microsoft.Bcl.AsyncInterfaces.xml
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\Microsoft.Extensions.DependencyInjection.Abstractions.xml
 C:\Users\Equipo 15\source\repos\Procesamiento_Imgs_API\WebService\bin\Microsoft.Extensions.Logging.Abstractions.xml

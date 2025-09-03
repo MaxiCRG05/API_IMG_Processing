@@ -40,9 +40,23 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Usuario")]
-        public ActionResult Proyecto(int proyectoID)
-        {
-			return View();
+		public ActionResult Proyecto(int proyectoID)
+		{
+			if (Session["UsuarioID"] == null)
+			{
+				return RedirectToAction("Index", "Login");
+			}
+
+			int usuarioId = (int)Session["UsuarioID"];
+			var proyecto = db.Proyectos
+				.FirstOrDefault(p => p.ID == proyectoID && p.UsuarioID == usuarioId);
+
+			if (proyecto == null)
+			{
+				return HttpNotFound();
+			}
+
+			return View(proyecto); 
 		}
 
 		[HttpPost]

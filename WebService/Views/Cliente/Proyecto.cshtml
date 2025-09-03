@@ -1,4 +1,6 @@
-﻿@{
+﻿@model WebService.Models.Proyecto
+
+@{
 	ViewBag.Title = "Proyecto";
 	Layout = "~/Views/Shared/Global.cshtml";
 }
@@ -18,7 +20,7 @@
 			<span class="material-symbols-outlined">dehaze</span>
 		</div>
 		<div class="titulos">
-			<h1>@Session["NombreProyecto"].ToString().ToUpper()</h1>
+			<h1>@Model.Nombre.ToUpper()</h1>
 		</div>
 	</header>
 	<section>

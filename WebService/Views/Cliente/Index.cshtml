@@ -69,7 +69,7 @@
 							<tbody id="tabla-objetos">
 								@foreach (var proyecto in Model)
 								{
-									<tr onclick="a.href.location('Proyecto', 'Cliente')">
+									<tr class="fila-proyecto" data-proyecto-id="@proyecto.ID">
 										<td><strong>@proyecto.Nombre</strong></td>
 										<td>@proyecto.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
 										<td>@proyecto.FechaModificacion.ToString("dd/MM/yyyy HH:mm:ss")</td>
@@ -319,4 +319,14 @@
 			cancelButtonText: 'No'
 		});
 	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		const filas = document.querySelectorAll('.fila-proyecto');
+		filas.forEach(fila => {
+			fila.addEventListener('click', function () {
+				const proyectoId = this.getAttribute('data-proyecto-id');
+				window.location.href = '/Cliente/Proyecto?proyectoID=' + proyectoId;
+			});
+		});
+	});
 </script>
