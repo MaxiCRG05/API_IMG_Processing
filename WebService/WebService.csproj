@@ -332,13 +332,13 @@
     <Content Include="Content\IMGS\Cruz3.png" />
     <Content Include="Content\IMGS\save.svg" />
     <Content Include="Content\IMGS\study.svg" />
-    <Content Include="Content\Layout.css" />
-    <Content Include="Content\LayoutAdmin.css" />
-    <Content Include="Content\LayoutCliente.css" />
-    <Content Include="Content\Login.css" />
+    <Content Include="Content\CSS\Layout.css" />
+    <Content Include="Content\CSS\LayoutAdmin.css" />
+    <Content Include="Content\CSS\LayoutCliente.css" />
+    <Content Include="Content\CSS\Login.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\CSS\Site.css" />
     <Content Include="protos\google\type\timeofday.proto" />
     <Content Include="protos\google\type\quaternion.proto" />
     <Content Include="protos\google\type\postal_address.proto" />
@@ -397,10 +397,10 @@
     <Content Include="protos\google\api\annotations.proto" />
     <Content Include="Content\IMGS\Tache.png" />
     <Content Include="Content\IMGS\Trash.png" />
-    <Content Include="Content\ObjetoNuevo.css" />
-    <Content Include="Content\style.css" />
-    <Content Include="Content\Usuario.css" />
-    <Content Include="Scripts\proyecto.js" />
+    <Content Include="Content\CSS\ObjetoNuevo.css" />
+    <Content Include="Content\CSS\style.css" />
+    <Content Include="Content\CSS\Usuario.css" />
+    <Content Include="Scripts\Proyecto.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

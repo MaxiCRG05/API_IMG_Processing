@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     const dropdownEtiqueta = document.querySelector('.opciones .etiqueta');
     const selectOptionsContainer = document.querySelector('.opciones .select-options');
     const opcionesWrapper = document.querySelector('.opciones');

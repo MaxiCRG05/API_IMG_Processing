@@ -3,25 +3,38 @@
 body {
 	margin: 0;
 	padding: 0;
-	background-color: var(--blanco); 
+	background-color: var(--blanco);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	color: var(--terciario);
 }
 
-header h1 {
-	position: absolute;
+header {
+	position: relative;
+	font-family: "Koulen", sans-serif;
 	width: 100%;
-	z-index: 1;
-	font-size: 48px;
-	font-weight:400;
-	margin-right: auto;
-	margin-left: 20px;
-	text-align: center;
-	height: 75px;
-	top: -5px;
+	padding: 15px 30px;
+	background: var(--gradiente);
+	height: 130px;
+	color: var(--blanco);
+	box-sizing: border-box;
+	border-bottom-left-radius: 80%;
+	border-bottom-right-radius: 80%;
 }
+
+	header h1 {
+		position: absolute;
+		width: 100%;
+		z-index: 1;
+		font-size: 48px;
+		font-weight: 400;
+		margin-right: auto;
+		margin-left: 20px;
+		text-align: center;
+		height: 75px;
+		top: -5px;
+	}
 
 .retroceder {
 	position: absolute;
@@ -29,11 +42,7 @@ header h1 {
 }
 
 .material-symbols-outlined {
-	font-variation-settings:
-		'FILL' 0,
-		'wght' 400,
-		'GRAD' 0,
-		'opsz' 20;
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
 	color: var(--blanco);
 	font-size: 32px;
 	cursor: pointer;
@@ -48,9 +57,9 @@ header h1 {
 	z-index: 3;
 }
 
-.material-symbols-outlined:hover {
-	background-color: var(--hover);
-}
+	.material-symbols-outlined:hover {
+		background-color: var(--hover);
+	}
 
 section {
 	margin-top: 40px;
@@ -89,10 +98,10 @@ button {
 	cursor: pointer;
 }
 
-button:hover {
-	background-color: #92aac0;
-	transition: 0.3s ease;
-}
+	button:hover {
+		background-color: #92aac0;
+		transition: 0.3s ease;
+	}
 
 img {
 	margin-left: 10px;
@@ -100,7 +109,7 @@ img {
 	height: 30px;
 }
 
-.opciones {    
+.opciones {
 	margin-top: 50px;
 	border: 3px solid var(--primario);
 	border-radius: 12px;
@@ -159,17 +168,17 @@ label {
 	text-align: center;
 }
 
-.opcion input {
-	position: absolute;
-	opacity: 0;
-	cursor: pointer;
-	height: 0;
-	width: 0;
-}
+	.opcion input {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+		height: 0;
+		width: 0;
+	}
 
-.opcion:hover {
-	background-color: var(--secundario);
-}
+	.opcion:hover {
+		background-color: var(--secundario);
+	}
 
 .marcado {
 	position: absolute;
@@ -183,7 +192,7 @@ label {
 }
 
 .objeto {
-	position:absolute;
+	position: absolute;
 	width: 80px;
 	height: 80px;
 	left: 30px;
@@ -191,34 +200,34 @@ label {
 }
 
 .opcion:hover input ~ .marcado {
-  background-color: var(--blanco);
+	background-color: var(--blanco);
 }
 
 .opcion input:checked ~ .marcado {
-  background-color: var(--primario);
+	background-color: var(--primario);
 	border: none;
 }
 
 .marcado:after {
-  content: "";
-  position: absolute;
-  display: none;
+	content: "";
+	position: absolute;
+	display: none;
 }
 
 .opcion input:checked ~ .marcado:after {
-  display: block;
+	display: block;
 }
 
 .opcion .marcado:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid var(--blanco);
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+	left: 9px;
+	top: 5px;
+	width: 5px;
+	height: 10px;
+	border: solid var(--blanco);
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
 }
 
 /*Diseño de menú oculto*/
@@ -258,25 +267,25 @@ label {
 	margin-top: 10px;
 }
 
-.menu-lista li {
-	display: flex;
-	align-items: center;
-	padding: 10px;
-	cursor: pointer;
-	transition: background 0.2s;
-}
+	.menu-lista li {
+		display: flex;
+		align-items: center;
+		padding: 10px;
+		cursor: pointer;
+		transition: background 0.2s;
+	}
 
-.menu-lista li:hover {
-	background-color: var(--secundario);
-	border: 0 0 0 3px solid var(--secundario);
-	border-left-color: var(--terciario);
-}
+		.menu-lista li:hover {
+			background-color: var(--secundario);
+			border: 0 0 0 3px solid var(--secundario);
+			border-left-color: var(--terciario);
+		}
 
-.menu-lista li img {
-	width: 30px;
-	height: 30px;
-	margin-right: 10px;
-}
+		.menu-lista li img {
+			width: 30px;
+			height: 30px;
+			margin-right: 10px;
+		}
 
 /* Submenú */
 .submenu {

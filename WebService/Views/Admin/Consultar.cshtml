@@ -2,233 +2,228 @@
 	ViewBag.Title = "Consultar objetos";
 	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
 }
+@section styles {
+	<link href="~/Content/CSS/Layout.css" rel="stylesheet" />
+	<link href="~/Content/CSS/LayoutAdmin.css" rel="stylesheet" />
+}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-		.container {
-			max-width: 1200px;
-			margin: 2rem auto;
-			padding: 0 1rem;
+<style>
+	.container {
+		max-width: 1200px;
+		margin: 2rem auto;
+		padding: 0 1rem;
+	}
+
+	.imagen-container {
+		width: 80px;
+		height: 80px;
+		border-radius: 4px;
+		overflow: hidden;
+		background: #f0f0f0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+		.imagen-container img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: cover;
 		}
 
-		.imagen-container {
-			width: 80px;
-			height: 80px;
-			border-radius: 4px;
-			overflow: hidden;
-			background: #f0f0f0;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+	.btn {
+		padding: 8px 12px;
+		border-radius: 4px;
+		text-decoration: none;
+		font-weight: 500;
+		display: inline-block;
+		transition: all 0.3s;
+		border: none;
+		cursor: pointer;
+		font-size: 0.9rem;
+	}
+
+	.btn-descargar {
+		background: #2196F3;
+		color: white;
+	}
+
+		.btn-descargar:hover {
+			background: #00579d;
+			transform: translateY(-2px);
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 		}
 
-			.imagen-container img {
-				max-width: 100%;
-				max-height: 100%;
-				object-fit: cover;
-			}
+	.btn-modificar {
+		background: #FF9800;
+		color: white;
+	}
 
-		.btn {
-			padding: 8px 12px;
-			border-radius: 4px;
-			text-decoration: none;
-			font-weight: 500;
-			display: inline-block;
-			transition: all 0.3s;
-			border: none;
-			cursor: pointer;
-			font-size: 0.9rem;
+		.btn-modificar:hover {
+			background: #b16e0a;
+			transform: translateY(-2px);
+			box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 		}
 
-		.btn-descargar {
-			background: #2196F3;
-			color: white;
-		}
+	.categoria-tag {
+		background: #e0f7fa;
+		color: #0097a7;
+		padding: 4px 8px;
+		border-radius: 20px;
+		font-size: 0.85rem;
+		display: inline-block;
+	}
 
-			.btn-descargar:hover {
-				background: #00579d;
-				transform: translateY(-2px);
-				box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-			}
+	.sin-hu {
+		color: #f44336;
+		font-style: italic;
+	}
+</style>
+<div class="header">
+	<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
+		<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
+	</button>
+	<h1>CONSULTAR OBJETOS</h1>
+</div>
 
-		.btn-modificar {
-			background: #FF9800;
-			color: white;
-		}
-
-			.btn-modificar:hover {
-				background: #b16e0a;
-				transform: translateY(-2px);
-				box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-			}
-
-		.categoria-tag {
-			background: #e0f7fa;
-			color: #0097a7;
-			padding: 4px 8px;
-			border-radius: 20px;
-			font-size: 0.85rem;
-			display: inline-block;
-		}
-
-		.sin-hu {
-			color: #f44336;
-			font-style: italic;
-		}
-	</style>
-</head>
-<body>
-	<div class="header">
-		<button class="return-btn" title="Regresar" onclick="location.href='/Admin'">
-			<img src="~/Content/IMGS/FlechaRegresar.png" width="20" />
-		</button>
-		<h1>CONSULTAR OBJETOS</h1>
-	</div>
-
-	<div class="container">
-		@if (ViewBag.Objetos != null && ViewBag.Objetos.Count > 0)
-		{
-			<div class="filtro-container">
-				<label for="categoria">FILTRAR POR CATEGORÍA:</label>
-				<select id="categoria" onchange="filtrarObjetos()">
-					<option value="0">Todas las categorías</option>
-					@if (ViewBag.Categorias != null)
+<div class="container">
+	@if (ViewBag.Objetos != null && ViewBag.Objetos.Count > 0)
+	{
+		<div class="filtro-container">
+			<label for="categoria">FILTRAR POR CATEGORÍA:</label>
+			<select id="categoria" onchange="filtrarObjetos()">
+				<option value="0">Todas las categorías</option>
+				@if (ViewBag.Categorias != null)
+				{
+					foreach (var categoria in ViewBag.Categorias)
 					{
-						foreach (var categoria in ViewBag.Categorias)
-						{
-							<option value="@categoria.ID"
-									@(ViewBag.CategoriaSeleccionada != null && ViewBag.CategoriaSeleccionada == categoria.ID ? "selected" : "")>
-								@categoria.Nombre
-							</option>
-						}
+						<option value="@categoria.ID"
+								@(ViewBag.CategoriaSeleccionada != null && ViewBag.CategoriaSeleccionada == categoria.ID ? "selected" : "")>
+							@categoria.Nombre
+						</option>
 					}
-				</select>
-			</div>
-			<br />
+				}
+			</select>
+		</div>
+		<br />
 
-			<div class="tabla-container">
-				<table>
-					<thead>
-						<tr>
-							<th>IMAGEN</th>
-							<th>NOMBRE</th>
-							<th>CATEGORÍA</th>
-							<th>ARCHIVO HU</th>
-							<th>MODIFICAR</th>
-						</tr>
-					</thead>
-					<tbody id="tabla-objetos">
-						@foreach (var objeto in ViewBag.Objetos)
-						{
-							<tr data-categoria="@objeto.CategoriasID">
-								<td>
-									<div class="imagen-container">
-										@if (objeto.Imagen != null)
-										{
-											<img src="data:image;base64,@Convert.ToBase64String(objeto.Imagen)" alt="@objeto.Nombre" />
-										}
-										else
-										{
-											<span>Sin imagen</span>
-										}
-									</div>
-								</td>
-								<td>@objeto.Nombre</td>
-								<td>
-									@if (objeto.Categorias != null)
+		<div class="tabla-container">
+			<table>
+				<thead>
+					<tr>
+						<th>IMAGEN</th>
+						<th>NOMBRE</th>
+						<th>CATEGORÍA</th>
+						<th>ARCHIVO HU</th>
+						<th>MODIFICAR</th>
+					</tr>
+				</thead>
+				<tbody id="tabla-objetos">
+					@foreach (var objeto in ViewBag.Objetos)
+					{
+						<tr data-categoria="@objeto.CategoriasID">
+							<td>
+								<div class="imagen-container">
+									@if (objeto.Imagen != null)
 									{
-										<span class="categoria-tag">@objeto.Categorias.Nombre</span>
+										<img src="data:image;base64,@Convert.ToBase64String(objeto.Imagen)" alt="@objeto.Nombre" />
 									}
 									else
 									{
-										<span class="categoria-tag">Sin categoría</span>
+										<span>Sin imagen</span>
 									}
-								</td>
-								<td>
-									@Html.ActionLink("Descargar .hu", "DescargarHu", "Admin",
-										new { id = objeto.ID },
-										new { @class = "btn btn-descargar", title = "Descargar invariantes Hu" })
-								</td>
-								<td>
-									<button class="btn btn-modificar" onclick="location.href='@Url.Action("Modificar", "Admin", new { ObjetoID = objeto.ID })'">Modificar</button>
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-			</div>
-		}
-		else
-		{
-			<div class="sin-objetos">
-				<h2>Aún no hay objetos registrados</h2>
-				<p>Comienza agregando un nuevo objeto desde la página de administración</p>
-			</div>
-		}
-	</div>
-
-	<script>
-		function generarColorDesdeId(id) {
-			const hue = (id * 137.508) % 360;
-			return `hsl(${hue}, 70%, 80%)`;
-		}
-
-		function colorearFilasPorCategoria() {
-			const filas = document.querySelectorAll('#tabla-objetos tr');
-			const categoriasUsadas = new Set();
-
-			filas.forEach(fila => {
-				const categoriaId = fila.getAttribute('data-categoria');
-				if (categoriaId) categoriasUsadas.add(categoriaId);
-			});
-
-			const coloresPorCategoria = {};
-			categoriasUsadas.forEach(categoriaId => {
-				coloresPorCategoria[categoriaId] = generarColorDesdeId(parseInt(categoriaId));
-			});
-
-			filas.forEach(fila => {
-				const categoriaId = fila.getAttribute('data-categoria');
-				if (categoriaId && coloresPorCategoria[categoriaId]) {
-					const color = coloresPorCategoria[categoriaId];
-					fila.style.backgroundColor = color;
-
-					const etiquetaCategoria = fila.querySelector('.categoria-tag');
-					if (etiquetaCategoria) {
-						etiquetaCategoria.style.backgroundColor = color;
-						etiquetaCategoria.style.color = '#000'; 
+								</div>
+							</td>
+							<td>@objeto.Nombre</td>
+							<td>
+								@if (objeto.Categorias != null)
+								{
+									<span class="categoria-tag">@objeto.Categorias.Nombre</span>
+								}
+								else
+								{
+									<span class="categoria-tag">Sin categoría</span>
+								}
+							</td>
+							<td>
+								@Html.ActionLink("Descargar .hu", "DescargarHu", "Admin",
+										 new { id = objeto.ID },
+										 new { @class = "btn btn-descargar", title = "Descargar invariantes Hu" })
+							</td>
+							<td>
+								<button class="btn btn-modificar" onclick="location.href='@Url.Action("Modificar", "Admin", new { ObjetoID = objeto.ID })'">Modificar</button>
+							</td>
+						</tr>
 					}
+				</tbody>
+			</table>
+		</div>
+	}
+	else
+	{
+		<div class="sin-objetos">
+			<h2>Aún no hay objetos registrados</h2>
+			<p>Comienza agregando un nuevo objeto desde la página de administración</p>
+		</div>
+	}
+</div>
+
+<script>
+	function generarColorDesdeId(id) {
+		const hue = (id * 137.508) % 360;
+		return `hsl(${hue}, 70%, 80%)`;
+	}
+
+	function colorearFilasPorCategoria() {
+		const filas = document.querySelectorAll('#tabla-objetos tr');
+		const categoriasUsadas = new Set();
+
+		filas.forEach(fila => {
+			const categoriaId = fila.getAttribute('data-categoria');
+			if (categoriaId) categoriasUsadas.add(categoriaId);
+		});
+
+		const coloresPorCategoria = {};
+		categoriasUsadas.forEach(categoriaId => {
+			coloresPorCategoria[categoriaId] = generarColorDesdeId(parseInt(categoriaId));
+		});
+
+		filas.forEach(fila => {
+			const categoriaId = fila.getAttribute('data-categoria');
+			if (categoriaId && coloresPorCategoria[categoriaId]) {
+				const color = coloresPorCategoria[categoriaId];
+				fila.style.backgroundColor = color;
+
+				const etiquetaCategoria = fila.querySelector('.categoria-tag');
+				if (etiquetaCategoria) {
+					etiquetaCategoria.style.backgroundColor = color;
+					etiquetaCategoria.style.color = '#000';
 				}
-			});
-		}
+			}
+		});
+	}
 
-        function filtrarObjetos() {
-            const categoriaId = document.getElementById('categoria').value;
-            const filas = document.querySelectorAll('#tabla-objetos tr');
+    function filtrarObjetos() {
+        const categoriaId = document.getElementById('categoria').value;
+        const filas = document.querySelectorAll('#tabla-objetos tr');
 
-            filas.forEach(fila => {
-                if (categoriaId === "0" || fila.getAttribute('data-categoria') === categoriaId) {
-                    fila.style.display = '';
-                } else {
-                    fila.style.display = 'none';
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            @if (ViewBag.CategoriaSeleccionada != null)
-            {
-                <text>
-                document.getElementById('categoria').value = '@ViewBag.CategoriaSeleccionada';
-					filtrarObjetos();
-                </text>
+        filas.forEach(fila => {
+            if (categoriaId === "0" || fila.getAttribute('data-categoria') === categoriaId) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
             }
-			colorearFilasPorCategoria();
         });
-	</script>
-</body>
-</html>
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (ViewBag.CategoriaSeleccionada != null)
+        {
+            <text>
+            document.getElementById('categoria').value = '@ViewBag.CategoriaSeleccionada';
+				filtrarObjetos();
+            </text>
+        }
+		colorearFilasPorCategoria();
+    });
+</script>
