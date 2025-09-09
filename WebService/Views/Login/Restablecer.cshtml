@@ -5,108 +5,99 @@
 	Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.25">
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<link rel="stylesheet" href="~/Content/Login.css">
 	<link rel="stylesheet" href="~/Content/Usuario.css">
-	<title>Restablecer Contraseña</title>
 </head>
-<body>
-	<div class="login-container">
-		<h1>Restablecer contraseña</h1>
-		<h2>Por favor ingresa los siguientes datos para restablecer su contraseña</h2>
+<div class="login-container">
+	<h1>Restablecer contraseña</h1>
+	<h2>Por favor ingresa los siguientes datos para restablecer su contraseña</h2>
 
-		@if (ViewBag.Error != null)
-		{
-			<div class="alert alert-danger">
-				@ViewBag.Error
-			</div>
-		}
+	@if (ViewBag.Error != null)
+	{
+		<div class="alert alert-danger">
+			@ViewBag.Error
+		</div>
+	}
 
-		@using (Html.BeginForm("Restablecer", "Login", FormMethod.Post))
-		{
-			@Html.AntiForgeryToken()
-			@Html.HiddenFor(model => model.Token)
+	@using (Html.BeginForm("Restablecer", "Login", FormMethod.Post))
+	{
+		@Html.AntiForgeryToken()
+		@Html.HiddenFor(model => model.Token)
 
-			<div class="form-group">
-				@Html.PasswordFor(model => model.NuevaContraseña, new
-				{
-					@class = "form-control",
-					placeholder = "Nueva contraseña",
-					required = "required"
-				})
-				@Html.ValidationMessageFor(model => model.NuevaContraseña, "", new { @class = "text-danger" })
-			</div>
+		<div class="form-group">
+			@Html.PasswordFor(model => model.NuevaContraseña, new
+			{
+				@class = "form-control",
+				placeholder = "Nueva contraseña",
+				required = "required"
+			})
+			@Html.ValidationMessageFor(model => model.NuevaContraseña, "", new { @class = "text-danger" })
+		</div>
 
-			<div class="form-group">
-				@Html.PasswordFor(model => model.ConfirmarContraseña, new
-				{
-					@class = "form-control",
-					placeholder = "Confirmar contraseña",
-					required = "required"
-				})
-				@Html.ValidationMessageFor(model => model.ConfirmarContraseña, "", new { @class = "text-danger" })
-			</div>
+		<div class="form-group">
+			@Html.PasswordFor(model => model.ConfirmarContraseña, new
+			{
+				@class = "form-control",
+				placeholder = "Confirmar contraseña",
+				required = "required"
+			})
+			@Html.ValidationMessageFor(model => model.ConfirmarContraseña, "", new { @class = "text-danger" })
+		</div>
 
-			<button type="submit" class="login-btn">
-				Guardar <img src="~/Content/IMGS/save.svg" alt="guardar">
-			</button>
-		}
-	</div>
+		<button type="submit" class="login-btn">
+			Guardar <img src="~/Content/IMGS/save.svg" alt="guardar">
+		</button>
+	}
+</div>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-	<script>
-		@if (ViewBag.ErrorType != null)
-		{
-			<text>
-				document.addEventListener('DOMContentLoaded', function() {
-					if ('@ViewBag.ErrorType' === 'Error') {
-						Swal.fire({
-							icon: 'error',
-							title: 'Error',
-							text: 'El token de restablecimiento es inválido o ha expirado.',
-							timer: 5000,
-							confirmButtonText: 'Aceptar'
-						}).then(() => {
-							window.location.href = '/Login/Recuperar';
-						});
-					}
-				});
-			</text>
-		}
-	</script>
-	<style>
-		.text-danger {
-			color: #dc3545;
-			font-size: 14px;
-			margin-top: 5px;
-		}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+<script>
+	@if (ViewBag.ErrorType != null)
+	{
+		<text>
+			document.addEventListener('DOMContentLoaded', function() {
+				if ('@ViewBag.ErrorType' === 'Error') {
+					Swal.fire({
+						icon: 'error',
+						title: 'Error',
+						text: 'El token de restablecimiento es inválido o ha expirado.',
+						timer: 5000,
+						confirmButtonText: 'Aceptar'
+					}).then(() => {
+						window.location.href = '/Login/Recuperar';
+					});
+				}
+			});
+		</text>
+	}
+</script>
+<style>
+	.text-danger {
+		color: #dc3545;
+		font-size: 14px;
+		margin-top: 5px;
+	}
 
-		.alert-danger {
-			background-color: #f8d7da;
-			color: #721c24;
-			padding: 10px;
-			border-radius: 5px;
-			margin-bottom: 15px;
-			border: 1px solid #f5c6cb;
-		}
+	.alert-danger {
+		background-color: #f8d7da;
+		color: #721c24;
+		padding: 10px;
+		border-radius: 5px;
+		margin-bottom: 15px;
+		border: 1px solid #f5c6cb;
+	}
 
-		.form-group {
-			margin-bottom: 15px;
-		}
+	.form-group {
+		margin-bottom: 15px;
+	}
 
-		.form-control {
-			width: 100%;
-			padding: 10px;
-			border: 1px solid #ced4da;
-			border-radius: 4px;
-		}
-	</style>
-</body>
-</html>
+	.form-control {
+		width: 100%;
+		padding: 10px;
+		border: 1px solid #ced4da;
+		border-radius: 4px;
+	}
+</style>

@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Koulen&display=swap');
 
+:root {
+	--primario: #82a0bc;
+	--secundario: #A7CCED;
+	--terciario: #304D6D;
+	--blanco: #ffffff;
+	--hover: #92aac0;
+	--texto: #000000;
+	--gradiente: linear-gradient(to right, var(--secundario) 10%, var(--terciario) 65%); 
+}
+
 body {
 	margin: 0;
 	padding: 0;
