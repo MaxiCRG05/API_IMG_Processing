@@ -26,12 +26,24 @@
 				<div class="opciones">
 					<div class="etiqueta">Selecciona objetos para entrenar la IA<img src="~/Content/IMGS/opciones.svg" alt="opciones" class="flecha"></div>
 					<div class="select-options">
-						<label class="opcion">
-							<img src="~/Content/IMGS/pera_binarizada.png" alt="imagen" class="objeto">
-							Pera
-							<input type="checkbox">
-							<span class="marcado"></span>
-						</label>
+						@if (ViewBag.Objetos != null && ViewBag.Objetos.Count > 0)
+						{
+							foreach (var objeto in ViewBag.Objetos)
+							{
+								<label class="opcion">
+									<img src="data:image;base64,@Convert.ToBase64String(objeto.Imagen)" alt="@objeto.Nombre" class="objeto">
+									@objeto.Nombre
+									<input type="checkbox">
+									<span class="marcado"></span>
+								</label>
+							}
+						}
+						else
+						{
+							<div class="sin-objetos">
+								No hay objetos disponibles en las categorías de este proyecto.
+							</div>
+						}
 					</div>
 				</div>
 				<button type="submit">Entrenar red neuronal<img src="~/Content/IMGS/study.svg" alt="Entrenar"></button>
@@ -62,3 +74,73 @@
 		</div>
 	</body>
 </html>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.objeto-checkbox');
+            const contador = document.getElementById('contadorSeleccionados');
+            const btnEntrenar = document.getElementById('btnEntrenar');
+
+            function actualizarContador() {
+                const seleccionados = document.querySelectorAll('.objeto-checkbox:checked').length;
+                contador.textContent = `${seleccionados} objetos seleccionados`;
+
+                btnEntrenar.disabled = seleccionados === 0;
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.objeto-item');
+                    if (this.checked) {
+                        item.classList.add('seleccionado');
+                    } else {
+                        item.classList.remove('seleccionado');
+                    }
+                    actualizarContador();
+                });
+            });
+
+            function obtenerObjetosSeleccionados() {
+                const seleccionados = [];
+                document.querySelectorAll('.objeto-checkbox:checked').forEach(checkbox => {
+                    const id = checkbox.id.replace('objeto_', '');
+                    seleccionados.push(parseInt(id));
+                });
+                return seleccionados;
+            }
+
+            btnEntrenar.addEventListener('click', function() {
+                const objetosSeleccionados = obtenerObjetosSeleccionados();
+
+                if (objetosSeleccionados.length === 0) {
+                    alert('Por favor, selecciona al menos un objeto para entrenar.');
+                    return;
+                }
+
+                fetch('/IA/Entrenar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        proyectoId: @Model.ID,
+                        objetos: objetosSeleccionados
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Entrenamiento iniciado correctamente.');
+                    } else {
+                        alert('Error al iniciar el entrenamiento: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al conectar con el servidor.');
+                });
+            });
+
+            actualizarContador();
+        });
+</script>

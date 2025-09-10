@@ -12,8 +12,8 @@ using WebService.Scripts;
 
 namespace WebService.Controllers.WEB
 {
-    public class ClienteController : Controller
-    {
+	public class ClienteController : Controller
+	{
 		readonly Context db = new Context();
 
 		// GET: Cliente
@@ -40,8 +40,13 @@ namespace WebService.Controllers.WEB
 		}
 
 		[AutorizarRol("Usuario")]
-		public ActionResult Proyecto(int proyectoID)
+		public ActionResult Proyecto(int? proyectoID = null)
 		{
+			if (proyectoID == null)
+			{
+				return RedirectToAction("Index", "Cliente");
+			}
+
 			if (Session["UsuarioID"] == null)
 			{
 				return RedirectToAction("Index", "Login");
@@ -53,10 +58,21 @@ namespace WebService.Controllers.WEB
 
 			if (proyecto == null)
 			{
-				return HttpNotFound();
+				return RedirectToAction("Index", "Cliente");
 			}
 
-			return View(proyecto); 
+			var categoriasProyecto = db.ProyectosCategorias
+				.Where(pc => pc.ProyectoID == proyectoID)
+				.Select(pc => pc.CategoriaID)
+				.ToList();
+
+			var objetos = db.Objetos
+				.Where(o => categoriasProyecto.Contains(o.CategoriasID))
+				.ToList();
+
+			ViewBag.Objetos = objetos;
+
+			return View(proyecto);
 		}
 
 		[HttpPost]

@@ -7,44 +7,7 @@
 	--blanco: #ffffff;
 	--hover: #92aac0;
 	--texto: #000000;
-	--gradiente: linear-gradient(to right, var(--secundario) 10%, var(--terciario) 65%); 
 }
-
-body {
-	margin: 0;
-	padding: 0;
-	background-color: var(--blanco);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	color: var(--terciario);
-}
-
-header {
-	position: relative;
-	font-family: "Koulen", sans-serif;
-	width: 100%;
-	padding: 15px 30px;
-	background: var(--gradiente);
-	height: 130px;
-	color: var(--blanco);
-	box-sizing: border-box;
-	border-bottom-left-radius: 80%;
-	border-bottom-right-radius: 80%;
-}
-
-	header h1 {
-		position: absolute;
-		width: 100%;
-		z-index: 1;
-		font-size: 48px;
-		font-weight: 400;
-		margin-right: auto;
-		margin-left: 20px;
-		text-align: center;
-		height: 75px;
-		top: -5px;
-	}
 
 .retroceder {
 	position: absolute;
