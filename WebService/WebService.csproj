@@ -269,7 +269,7 @@
     <Compile Include="Controllers\WEB\Vista\AdminController.cs" />
     <Compile Include="Controllers\WEB\Modelo\CategoriasController.cs" />
     <Compile Include="Controllers\WEB\Vista\ClienteController.cs" />
-    <Compile Include="Controllers\WEB\Modelo\IAController.cs" />
+    <Compile Include="Controllers\WEB\Vista\IAController.cs" />
     <Compile Include="Controllers\WEB\Modelo\InvariantesHuController.cs" />
     <Compile Include="Controllers\WEB\Vista\LoginController.cs" />
     <Compile Include="Controllers\WEB\Modelo\ObjetosController.cs" />

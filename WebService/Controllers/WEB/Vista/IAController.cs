@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebService.Scripts;
 
 namespace WebService.Controllers.WEB
 {
     public class IAController : Controller
     {
-        // GET: IA
-        public ActionResult Index()
+		[AutorizarRol("Cliente")]
+		public ActionResult Crear(int? proyectoID = null)
         {
-            return View();
-        }
+			if (proyectoID == null)
+				return RedirectToAction("Index", "Cliente");
 
-        public ActionResult Crear()
-        {
+			ViewBag.ProyectoID = proyectoID;
 			return View();
 		}
     }

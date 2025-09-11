@@ -1,5 +1,4 @@
-﻿using Google.Cloud.Firestore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
@@ -96,6 +95,7 @@ namespace WebService.Controllers.WEB
 
 				return RedirectToAction("Index");
 			}
+			ViewBag.ProyectoID = proyecto.ID;
 
 			return View(proyecto);
 		}

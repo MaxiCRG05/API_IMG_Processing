@@ -119,6 +119,39 @@ img {
 .opciones.open .select-options {
 	max-height: 200px;
 	border-top: 1px solid var(--blanco);
+	overflow-y: auto;
+}
+
+.select-options::-webkit-scrollbar {
+	width: 8px;
+}
+
+.select-options::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 4px;
+}
+
+.select-options::-webkit-scrollbar-thumb {
+	background: var(--primario);
+	border-radius: 4px;
+}
+
+	.select-options::-webkit-scrollbar-thumb:hover {
+		background: var(--terciario);
+	}
+
+.select-options {
+	scrollbar-width: thin;
+	scrollbar-color: var(--primario) #f1f1f1;
+}
+
+.scroll-indicator {
+	text-align: center;
+	font-size: 12px;
+	color: var(--terciario);
+	padding: 5px;
+	background-color: rgba(163, 204, 237, 0.2);
+	border-bottom: 1px solid var(--secundario);
 }
 
 .etiqueta:hover {
@@ -139,6 +172,7 @@ label {
 	height: 100px;
 	line-height: 100px;
 	text-align: center;
+	padding: 10px 0;
 }
 
 	.opcion input {
