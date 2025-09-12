@@ -9,7 +9,7 @@ namespace WebService.Controllers.WEB
 {
     public class IAController : Controller
     {
-		[AutorizarRol("Cliente")]
+		[AutorizarRol("Usuario", "Admin")]
 		public ActionResult Crear(int? proyectoID = null)
         {
 			if (proyectoID == null)

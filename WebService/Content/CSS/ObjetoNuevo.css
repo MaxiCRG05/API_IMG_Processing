@@ -237,7 +237,6 @@ label {
 	transform: rotate(45deg);
 }
 
-/*Diseño de menú oculto*/
 .menu-lateral {
 	font-family: "Inter", sans-serif;
 	font-size: 18px;
@@ -249,7 +248,7 @@ label {
 	height: 100vh;
 	background-color: var(--blanco);
 	box-shadow: 4px 0 8px rgba(0,0,0,0.2);
-	padding: 15px;
+	padding: 40px;
 	z-index: 999;
 	transition: transform 0.3s ease;
 }
@@ -294,19 +293,18 @@ label {
 			margin-right: 10px;
 		}
 
-/* Submenú */
 .submenu {
 	flex-direction: column;
 	align-items: flex-start;
 }
 
-/*.submenu .subopciones {
+.submenu .subopciones {
 	list-style: none;
 	padding-left: 32px;
 	display: none;
 	margin-top: 5px;
-}*/
+}
 
-/*.submenu.activo .subopciones {
+.submenu.activo .subopciones {
 	display: block;
-}*/
+}

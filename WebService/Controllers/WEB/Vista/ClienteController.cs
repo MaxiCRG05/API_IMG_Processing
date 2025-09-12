@@ -225,6 +225,9 @@ namespace WebService.Controllers.WEB
 		{
 			if (Session["UsuarioID"] == null)
 			{
+				if (Request.IsAjaxRequest())
+					return Json(new { success = false, message = "Sesión expirada" });
+
 				return RedirectToAction("Index", "Login");
 			}
 
@@ -233,9 +236,49 @@ namespace WebService.Controllers.WEB
 			{
 				db.Proyectos.Remove(proyecto);
 				db.SaveChanges();
+
+				if (Request.IsAjaxRequest())
+					return Json(new { success = true });
+			}
+			else
+			{
+				if (Request.IsAjaxRequest())
+					return Json(new { success = false, message = "Proyecto no encontrado" });
 			}
 
 			return RedirectToAction("Index");
+		}
+
+		[HttpPut]
+		[AutorizarRol("Usuario")]
+		[ValidateAntiForgeryToken]
+		public JsonResult ActualizarFechaModificacion(int id)
+		{
+			try
+			{
+				if (Session["UsuarioID"] == null)
+				{
+					return Json(new { success = false, message = "Sesión expirada" });
+				}
+
+				int usuarioId = (int)Session["UsuarioID"];
+				var proyecto = db.Proyectos.FirstOrDefault(p => p.ID == id && p.UsuarioID == usuarioId);
+
+				if (proyecto == null)
+				{
+					return Json(new { success = false, message = "Proyecto no encontrado" });
+				}
+
+				proyecto.FechaModificacion = DateTime.Now;
+				db.Entry(proyecto).State = EntityState.Modified;
+				db.SaveChanges();
+
+				return Json(new { success = true, message = "Fecha de modificación actualizada" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Error: " + ex.Message });
+			}
 		}
 	}
 }
