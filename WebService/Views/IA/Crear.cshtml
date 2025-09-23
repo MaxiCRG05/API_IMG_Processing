@@ -1,13 +1,27 @@
 ﻿@{
-	ViewBag.Title = "Crear";
+	ViewBag.Title = "Crear IA";
 	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
 }
 
+@Html.AntiForgeryToken()
 <!DOCTYPE html>
 <html lang="es">
 <head>
 	<meta charset="utf-8" />
 	<title>@ViewBag.Title</title>
+	<link href="~/Content/CSS/IA.css" rel="stylesheet" />
+	<style>
+		.hidden {
+			display: none;
+		}
+
+		.capa-oculta {
+			margin: 10px 0;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+	</style>
 </head>
 <body>
 	<header>
@@ -21,39 +35,94 @@
 
 	<div class="container">
 		<div class="form-section">
-			<form method="post" action="/RedNeuronal/Guardar">
-				<label for="capas">N° de Capas</label>
-				<input type="text" id="capas" name="capas" placeholder="Ej. 4" min="3" max="10" />
+			<form method="post" action="/IA/Crear">
+				<input type="hidden" name="proyectoID" value="@ViewBag.ProyectoID" />
 
-				<label for="capasOcultas">N° de Capas ocultas</label>
-				<input type="text" id="capasOcultas" name="capasOcultas" placeholder="Ej. 2" min="1" max="" />
+				<label for="totalCapas">N° Total de Capas</label>
+				<input type="number" name="totalCapas" min="3" max="10" placeholder="(Mínimo de 3 y Máximo de 10) Ej. 8" required />
 
-				<label for="neuronaCapa">N° de Neuronas en capa oculta </label>
-				<input type="text" id="neuronaCapa" name="neuronaCapa" placeholder="Ej. 0.75" />
+				<label for="numNeuronasCapaEntrada">N° de Neuronas en Capa de Entrada</label>
+				<input type="number" name="numNeuronasCapaEntrada" min="1" max="7" placeholder="(Mínimo de 1 y Máximo de 7) Ej. 7" required />
 
-				<label for="alfa">Alfa</label>
-				<input type="text" id="alfa" name="alfa" placeholder="Ej. 0.75" />
+				<div id="capasOcultasContainer"></div>
 
-				<label for="epocas">Épocas</label>
-				<input type="text" id="epocas" name="epocas" placeholder="Ej. 10000" />
+				<label for="numNeuronasCapaSalida">N° de Neuronas en Capa de Salida</label>
+				<input type="number" name="numNeuronasCapaSalida" min="1" placeholder="(Mínimo de 1) Ej. 5" required />
 
-				<label for="errorMin">Error mínimo</label>
-				<input type="text" id="errorMin" name="errorMin" placeholder="Ej. 0.00001" />
+				<label for="alfa">Alfa (Tasa de Aprendizaje)</label>
+				<input type="number" step="0.001" id="alfa" name="alfa" placeholder="Ej. 0.1" required />
 
-				<div class="button-group">
-					<button type="submit" class="btn btn-save">Guardar <img src="~/Content/IMGS/Save.png" />
-					</button>
-					<button type="button" class="btn btn-cancel" onclick="window.location.href='@Url.Action("Index", "Home")'">Cancelar <img src="~/Content/IMGS/Cruz3.png" />
-					</button>
-				</div>
+				<label for="errorMinimo">Error Mínimo a alcanzar</label>
+				<input type="number" name="errorMinimo" placeholder="Ej. 0.00001" required />
+
+				<label for="epocas">Epocas para el Entrenamiento</label>
+				<input type="number" name="epocas" placeholder="(Mínimo de 10000) Ej. 10000" required />
+
+				<button type="submit" class="btn-crear">Crear Red Neuronal</button>
 			</form>
 		</div>
 
 		<div class="diagram-section">
-			@{
-				//<img src="" alt="Diagrama Red Neuronal" />
-			}
+			<div id="diagramaRed"></div>
 		</div>
 	</div>
+
+	<script>
+		document.getElementById('totalCapas').addEventListener('change', function () {
+			generarCamposCapasOcultas(this.value);
+			actualizarDiagrama();
+		});
+
+		function generarCamposCapasOcultas(totalCapas) {
+			const container = document.getElementById('capasOcultasContainer');
+			container.innerHTML = '';
+
+			const numCapasOcultas = totalCapas - 2;
+
+			for (let i = 1; i <= numCapasOcultas; i++) {
+				const div = document.createElement('div');
+				div.className = 'capa-oculta';
+				div.innerHTML = `
+						<label for="capaOculta${i}">N° de Neuronas en Capa Oculta ${i}</label>
+						<input type="number" id="capaOculta${i}" name="numNeuronasNCapas" min="1" placeholder="Ej. 5" required />
+					`;
+				container.appendChild(div);
+			}
+		}
+
+		function actualizarDiagrama() {
+			const totalCapas = parseInt(document.getElementById('totalCapas').value) || 0;
+			const diagrama = document.getElementById('diagramaRed');
+
+			if (totalCapas < 3) {
+				diagrama.innerHTML = '<p>Ingresa al menos 3 capas para ver el diagrama</p>';
+				return;
+			}
+
+			let html = '<h3>Diagrama de la Red Neuronal</h3><div class="red-diagram">';
+
+			html += '<div class="capa entrada">Capa Entrada</div>';
+
+			for (let i = 1; i <= totalCapas - 2; i++) {
+				html += `<div class="capa oculta">Capa Oculta ${i}</div>`;
+			}
+
+			html += '<div class="capa salida">Capa Salida</div>';
+			html += '</div>';
+
+			diagrama.innerHTML = html;
+		}
+
+		document.getElementById('formRedNeuronal').addEventListener('submit', function (e) {
+			const totalCapas = parseInt(document.getElementById('totalCapas').value);
+			const capasOcultas = document.querySelectorAll('input[name="numNeuronasNCapas"]').length;
+
+			if (totalCapas - 2 !== capasOcultas) {
+				e.preventDefault();
+				alert('Por favor, complete todas las capas ocultas');
+				return false;
+			}
+		});
+	</script>
 </body>
 </html>

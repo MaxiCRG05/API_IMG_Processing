@@ -303,6 +303,7 @@
     <Compile Include="Scripts\C#\MetodosProcesamiento.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\CSS\IA.css" />
     <Content Include="Content\IMGS\borrar.svg" />
     <Content Include="Content\IMGS\cerrar.svg" />
     <Content Include="Content\IMGS\Cruz.svg" />

@@ -70,7 +70,7 @@
 				<button type="submit">Reconocer objetos<img src="~/Content/IMGS/reconocer.svg" alt="Reconocer"></button>
 			</article>
 			<div class="preview-box">
-				<img src="" class="ImgObjeto" id="ImgObjeto" />
+				<img class="ImgObjeto" id="ImgObjeto" />
 			</div>
 		</section>
 		<script src="~/Scripts/proyecto.js"></script>
@@ -96,10 +96,8 @@
 
 <script>
 	function guardarProyecto(proyectoID) {
-		// Obtener el token anti-forgery
 		const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-		// Realizar la petición Fetch para actualizar la fecha de modificación
 		fetch('/Cliente/ActualizarFechaModificacion', {
 			method: 'PUT',
 			headers: {
