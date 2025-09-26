@@ -29,8 +29,8 @@ namespace WebService.Controllers.WEB
 		}
 
 		[HttpPost]
-		[AutorizarRol("Usuario", "Admin")]
 		[ValidateAntiForgeryToken]
+		[AutorizarRol("Usuario", "Admin")]
 		public ActionResult Crear(int proyectoID, int totalCapas, int numNeuronasCapaEntrada,
 							   int numNeuronasCapaSalida, double alfa, double errorMinimo,
 							   int epocas, List<int> numNeuronasNCapas)

@@ -3,19 +3,27 @@
   "WorkspaceRootPath": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\views\\ia\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\views\\ia\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:views\\ia\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\controllers\\web\\vista\\iacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:controllers\\web\\vista\\iacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\content\\css\\ia.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:content\\css\\ia.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|c:\\users\\equipo 15\\source\\repos\\procesamiento_imgs_api\\webservice\\controllers\\web\\vista\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\content\\css\\layoutadmin.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:content\\css\\layoutadmin.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\controllers\\web\\vista\\iacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:controllers\\web\\vista\\iacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\views\\shared\\globaladmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:views\\shared\\globaladmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\controllers\\web\\vista\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B79EDF48-2120-460E-B9AE-587FC4FD56F4}|WebService.csproj|solutionrelative:controllers\\web\\vista\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -26,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -35,28 +43,51 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "LayoutAdmin.css",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Content\\CSS\\LayoutAdmin.css",
+              "RelativeDocumentMoniker": "Content\\CSS\\LayoutAdmin.css",
+              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Content\\CSS\\LayoutAdmin.css",
+              "RelativeToolTip": "Content\\CSS\\LayoutAdmin.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-25T20:00:05.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "GlobalAdmin.cshtml",
+              "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Views\\Shared\\GlobalAdmin.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\GlobalAdmin.cshtml",
+              "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Views\\Shared\\GlobalAdmin.cshtml",
+              "RelativeToolTip": "Views\\Shared\\GlobalAdmin.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-25T19:59:51.721Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "IA.css",
               "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Content\\CSS\\IA.css",
               "RelativeDocumentMoniker": "Content\\CSS\\IA.css",
               "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Content\\CSS\\IA.css",
               "RelativeToolTip": "Content\\CSS\\IA.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-09-23T00:03:07.066Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "ClienteController.cs",
               "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\WEB\\Vista\\ClienteController.cs",
               "RelativeDocumentMoniker": "Controllers\\WEB\\Vista\\ClienteController.cs",
               "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\WEB\\Vista\\ClienteController.cs",
               "RelativeToolTip": "Controllers\\WEB\\Vista\\ClienteController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAwBAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAPwAAAAAAAAAAAAkwAwBAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-22T21:05:02.426Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-22T21:05:02.426Z"
             },
             {
               "$type": "Document",
@@ -66,23 +97,22 @@
               "RelativeDocumentMoniker": "Views\\IA\\Crear.cshtml",
               "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Views\\IA\\Crear.cshtml",
               "RelativeToolTip": "Views\\IA\\Crear.cshtml",
-              "ViewState": "AgIAACoAAAAAAAAAAAAAADQAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAUwBcAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-09-22T20:41:59.517Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "IAController.cs",
               "DocumentMoniker": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\WEB\\Vista\\IAController.cs",
               "RelativeDocumentMoniker": "Controllers\\WEB\\Vista\\IAController.cs",
               "ToolTip": "C:\\Users\\Equipo 15\\source\\repos\\Procesamiento_Imgs_API\\WebService\\Controllers\\WEB\\Vista\\IAController.cs",
               "RelativeToolTip": "Controllers\\WEB\\Vista\\IAController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGUAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-22T20:41:43.216Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-22T20:41:43.216Z"
             }
           ]
         }

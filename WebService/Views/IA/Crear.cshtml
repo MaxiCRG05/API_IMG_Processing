@@ -3,7 +3,6 @@
 	Layout = "~/Views/Shared/GlobalAdmin.cshtml";
 }
 
-@Html.AntiForgeryToken()
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,6 +10,27 @@
 	<title>@ViewBag.Title</title>
 	<link href="~/Content/CSS/IA.css" rel="stylesheet" />
 	<style>
+		.diagram-section {
+			position: relative;
+			min-height: 500px;
+		}
+
+		#diagramaRed {
+			position: relative;
+			width: 100%;
+			min-height: 400px;
+		}
+
+		.form-section input[type="number"] {
+			min-width: 400px;
+			padding: 12px;
+			margin: 20px 0px 20px 0px;
+			border-radius: 20px;
+			border: 2px solid #aac0d4;
+			font-size: 16px;
+			transition: 0.3s ease-in-out;
+		}
+
 		.hidden {
 			display: none;
 		}
@@ -35,27 +55,28 @@
 
 	<div class="container">
 		<div class="form-section">
-			<form method="post" action="/IA/Crear">
+			@Html.AntiForgeryToken()
+			<form method="post" action="/IA/Crear" id="formRedNeuronal">
 				<input type="hidden" name="proyectoID" value="@ViewBag.ProyectoID" />
 
-				<label for="totalCapas">N° Total de Capas</label>
-				<input type="number" name="totalCapas" min="3" max="10" placeholder="(Mínimo de 3 y Máximo de 10) Ej. 8" required />
+				<label for="totalCapas">N° Total de Capas</label><br />
+				<input type="number" id="totalCapas" name="totalCapas" min="3" max="10" placeholder="(Mínimo de 3 y Máximo de 10) Ej. 8" required />
 
-				<label for="numNeuronasCapaEntrada">N° de Neuronas en Capa de Entrada</label>
-				<input type="number" name="numNeuronasCapaEntrada" min="1" max="7" placeholder="(Mínimo de 1 y Máximo de 7) Ej. 7" required />
+				<label for="numNeuronasCapaEntrada">N° de Neuronas en Capa de Entrada</label><br />
+				<input type="number" id="numNeuronasCapaEntrada" name="numNeuronasCapaEntrada" min="1" max="7" placeholder="(Mínimo de 1 y Máximo de 7) Ej. 7" required />
 
 				<div id="capasOcultasContainer"></div>
 
-				<label for="numNeuronasCapaSalida">N° de Neuronas en Capa de Salida</label>
-				<input type="number" name="numNeuronasCapaSalida" min="1" placeholder="(Mínimo de 1) Ej. 5" required />
+				<label for="numNeuronasCapaSalida">N° de Neuronas en Capa de Salida</label><br />
+				<input type="number" id="numNeuronasCapaSalida" name="numNeuronasCapaSalida" min="1" placeholder="(Mínimo de 1) Ej. 5" required />
 
-				<label for="alfa">Alfa (Tasa de Aprendizaje)</label>
+				<label for="alfa">Alfa (Tasa de Aprendizaje)</label><br />
 				<input type="number" step="0.001" id="alfa" name="alfa" placeholder="Ej. 0.1" required />
 
-				<label for="errorMinimo">Error Mínimo a alcanzar</label>
-				<input type="number" name="errorMinimo" placeholder="Ej. 0.00001" required />
+				<label for="errorMinimo">Error Mínimo a alcanzar</label><br />
+				<input type="number" step="0.00001" name="errorMinimo" placeholder="Ej. 0.00001" required />
 
-				<label for="epocas">Epocas para el Entrenamiento</label>
+				<label for="epocas">Epocas para el Entrenamiento</label><br />
 				<input type="number" name="epocas" placeholder="(Mínimo de 10000) Ej. 10000" required />
 
 				<button type="submit" class="btn-crear">Crear Red Neuronal</button>
@@ -73,6 +94,9 @@
 			actualizarDiagrama();
 		});
 
+		document.getElementById('numNeuronasCapaEntrada').addEventListener('input', actualizarDiagrama);
+		document.getElementById('numNeuronasCapaSalida').addEventListener('input', actualizarDiagrama);
+
 		function generarCamposCapasOcultas(totalCapas) {
 			const container = document.getElementById('capasOcultasContainer');
 			container.innerHTML = '';
@@ -83,34 +107,134 @@
 				const div = document.createElement('div');
 				div.className = 'capa-oculta';
 				div.innerHTML = `
-						<label for="capaOculta${i}">N° de Neuronas en Capa Oculta ${i}</label>
-						<input type="number" id="capaOculta${i}" name="numNeuronasNCapas" min="1" placeholder="Ej. 5" required />
-					`;
+					<label for="capaOculta${i}">N° de Neuronas en Capa Oculta ${i}</label>
+					<input type="number" id="capaOculta${i}" name="numNeuronasNCapas" min="1" placeholder="Ej. 5" required oninput="actualizarDiagrama()" />
+				`;
 				container.appendChild(div);
 			}
+		}
+
+		function obtenerNumeroNeuronasPorCapa() {
+			const numEntrada = parseInt(document.getElementById('numNeuronasCapaEntrada').value) || 1;
+			const numSalida = parseInt(document.getElementById('numNeuronasCapaSalida').value) || 1;
+
+			const neuronasOcultas = [];
+			const inputsOcultos = document.querySelectorAll('input[name="numNeuronasNCapas"]');
+			inputsOcultos.forEach(input => {
+				neuronasOcultas.push(parseInt(input.value) || 1);
+			});
+
+			return [numEntrada, ...neuronasOcultas, numSalida];
+		}
+
+		function dibujarConexiones(contenedor, capas) {
+			const conexionesAnteriores = contenedor.querySelector('.conexiones');
+			if (conexionesAnteriores) {
+				conexionesAnteriores.remove();
+			}
+
+			const conexionesContainer = document.createElement('div');
+			conexionesContainer.className = 'conexiones';
+
+			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svg.setAttribute('width', '100%');
+			svg.setAttribute('height', '100%');
+			svg.style.position = 'absolute';
+			svg.style.top = '0';
+			svg.style.left = '0';
+			svg.style.pointerEvents = 'none';
+
+			for (let i = 0; i < capas.length - 1; i++) {
+				const capaActual = capas[i].querySelector('.capa-neuronas');
+				const capaSiguiente = capas[i + 1].querySelector('.capa-neuronas');
+
+				if (!capaActual || !capaSiguiente) continue;
+
+				const neuronasActual = capaActual.querySelectorAll('.neurona');
+				const neuronasSiguiente = capaSiguiente.querySelectorAll('.neurona');
+
+				neuronasActual.forEach(neuronaActual => {
+					const rectActual = neuronaActual.getBoundingClientRect();
+					const rectContenedor = contenedor.getBoundingClientRect();
+
+					const x1 = rectActual.left + rectActual.width / 2 - rectContenedor.left;
+					const y1 = rectActual.top + rectActual.height / 2 - rectContenedor.top;
+
+					neuronasSiguiente.forEach(neuronaSiguiente => {
+						const rectSiguiente = neuronaSiguiente.getBoundingClientRect();
+						const x2 = rectSiguiente.left + rectSiguiente.width / 2 - rectContenedor.left;
+						const y2 = rectSiguiente.top + rectSiguiente.height / 2 - rectContenedor.top;
+
+						const linea = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+						linea.setAttribute('x1', x1);
+						linea.setAttribute('y1', y1);
+						linea.setAttribute('x2', x2);
+						linea.setAttribute('y2', y2);
+						linea.setAttribute('class', 'conexion');
+
+						svg.appendChild(linea);
+					});
+				});
+			}
+
+			conexionesContainer.appendChild(svg);
+			contenedor.appendChild(conexionesContainer);
 		}
 
 		function actualizarDiagrama() {
 			const totalCapas = parseInt(document.getElementById('totalCapas').value) || 0;
 			const diagrama = document.getElementById('diagramaRed');
 
-			if (totalCapas < 3) {
-				diagrama.innerHTML = '<p>Ingresa al menos 3 capas para ver el diagrama</p>';
+			if (totalCapas < 3 || totalCapas > 10) {
+				diagrama.innerHTML = '<p>Ingresa un mínimo de 3 capas pero un máximo de 10 capas para ver el diagrama</p>';
 				return;
 			}
 
+			const neuronasPorCapa = obtenerNumeroNeuronasPorCapa();
+
 			let html = '<h3>Diagrama de la Red Neuronal</h3><div class="red-diagram">';
 
-			html += '<div class="capa entrada">Capa Entrada</div>';
+			html += `
+				<div class="capa-container">
+					<div class="capa-titulo">Capa de Entrada</div>
+					<div class="capa-neuronas entrada">
+			`;
+			for (let i = 0; i < neuronasPorCapa[0]; i++) {
+				html += `<div class="neurona entrada">${i + 1}</div>`;
+			}
+			html += '</div></div>';
 
 			for (let i = 1; i <= totalCapas - 2; i++) {
-				html += `<div class="capa oculta">Capa Oculta ${i}</div>`;
+				html += `
+					<div class="capa-container">
+						<div class="capa-titulo">Capa Oculta ${i}</div>
+						<div class="capa-neuronas oculta">
+				`;
+				for (let j = 0; j < (neuronasPorCapa[i] || 1); j++) {
+					html += `<div class="neurona oculta">${j + 1}</div>`;
+				}
+				html += '</div></div>';
 			}
 
-			html += '<div class="capa salida">Capa Salida</div>';
+			html += `
+				<div class="capa-container">
+					<div class="capa-titulo">Capa de Salida</div>
+					<div class="capa-neuronas salida">
+			`;
+			for (let i = 0; i < neuronasPorCapa[neuronasPorCapa.length - 1]; i++) {
+				html += `<div class="neurona salida">${i + 1}</div>`;
+			}
+			html += '</div></div>';
+
 			html += '</div>';
 
 			diagrama.innerHTML = html;
+
+			setTimeout(() => {
+				const contenedorDiagrama = diagrama.querySelector('.red-diagram');
+				const capas = contenedorDiagrama.querySelectorAll('.capa-container');
+				dibujarConexiones(contenedorDiagrama, capas);
+			}, 100);
 		}
 
 		document.getElementById('formRedNeuronal').addEventListener('submit', function (e) {
@@ -121,6 +245,14 @@
 				e.preventDefault();
 				alert('Por favor, complete todas las capas ocultas');
 				return false;
+			}
+		});
+
+		window.addEventListener('DOMContentLoaded', () => {
+			const totalCapas = document.getElementById('totalCapas').value;
+			if (totalCapas && totalCapas >= 3) {
+				generarCamposCapasOcultas(totalCapas);
+				actualizarDiagrama();
 			}
 		});
 	</script>
