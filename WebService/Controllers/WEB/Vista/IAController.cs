@@ -32,8 +32,8 @@ namespace WebService.Controllers.WEB
 		[ValidateAntiForgeryToken]
 		[AutorizarRol("Usuario", "Admin")]
 		public ActionResult Crear(int proyectoID, int totalCapas, int numNeuronasCapaEntrada,
-							   int numNeuronasCapaSalida, double alfa, double errorMinimo,
-							   int epocas, List<int> numNeuronasNCapas)
+					   int numNeuronasCapaSalida, double alfa, double errorMinimo,
+					   int epocas, List<int> numNeuronasNCapas)
 		{
 			try
 			{
@@ -81,7 +81,7 @@ namespace WebService.Controllers.WEB
 					return View();
 				}
 
-				string arquitectura = numNeuronasCapaEntrada.ToString();
+				string arquitectura = totalCapas.ToString() + "," + numNeuronasCapaEntrada.ToString();
 
 				foreach (var neuronas in numNeuronasNCapas)
 				{
@@ -102,12 +102,14 @@ namespace WebService.Controllers.WEB
 				db.RedesNeuronales.Add(redNeuronal);
 				db.SaveChanges();
 
-
 				TempData["MensajeExito"] = "Red neuronal creada exitosamente";
 				return RedirectToAction("Proyecto", "Cliente", new { proyectoID = proyectoID });
 			}
 			catch (Exception ex)
 			{
+				System.Diagnostics.Debug.WriteLine("Error al crear red neuronal: " + ex.Message);
+				System.Diagnostics.Debug.WriteLine("Stack Trace: " + ex.StackTrace);
+
 				ModelState.AddModelError("", "Error al crear la red neuronal: " + ex.Message);
 				ViewBag.ProyectoID = proyectoID;
 				return View();
