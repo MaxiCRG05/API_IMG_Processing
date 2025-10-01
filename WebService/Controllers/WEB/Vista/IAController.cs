@@ -13,7 +13,6 @@ namespace WebService.Controllers.WEB
     {
 		readonly Context db = new Context();
 
-		[AutorizarRol("Usuario", "Admin")]
 		public ActionResult Crear(int? proyectoID = null)
 		{
 			if (proyectoID == null)
@@ -24,6 +23,34 @@ namespace WebService.Controllers.WEB
 
 			int usuarioId = (int)Session["UsuarioID"];
 
+			var redExistente = db.RedesNeuronales
+				.FirstOrDefault(r => r.ProyectoID == proyectoID);
+
+			if (redExistente != null)
+			{
+				ViewBag.RedExistente = redExistente;
+				ViewBag.EsEdicion = true;
+
+				var arquitectura = redExistente.Arquitectura.Split(',');
+				if (arquitectura.Length >= 3)
+				{
+					ViewBag.TotalCapas = arquitectura[0];
+					ViewBag.NeuronasEntrada = arquitectura[1];
+					ViewBag.NeuronasSalida = arquitectura[arquitectura.Length - 1];
+
+					var capasOcultas = new List<string>();
+					for (int i = 2; i < arquitectura.Length - 1; i++)
+					{
+						capasOcultas.Add(arquitectura[i]);
+					}
+					ViewBag.CapasOcultas = capasOcultas;
+				}
+			}
+			else
+			{
+				ViewBag.EsEdicion = false;
+			}
+
 			ViewBag.ProyectoID = proyectoID;
 			return View();
 		}
@@ -32,8 +59,8 @@ namespace WebService.Controllers.WEB
 		[ValidateAntiForgeryToken]
 		[AutorizarRol("Usuario", "Admin")]
 		public ActionResult Crear(int proyectoID, int totalCapas, int numNeuronasCapaEntrada,
-					   int numNeuronasCapaSalida, double alfa, double errorMinimo,
-					   int epocas, List<int> numNeuronasNCapas)
+						   int numNeuronasCapaSalida, double alfa, double errorMinimo,
+						   int epocas, List<int> numNeuronasNCapas)
 		{
 			try
 			{
@@ -50,6 +77,7 @@ namespace WebService.Controllers.WEB
 					return View();
 				}
 
+				// Validaciones
 				if (totalCapas < 3 || totalCapas > 10)
 				{
 					ModelState.AddModelError("totalCapas", "El número total de capas debe estar entre 3 y 10");
@@ -90,29 +118,68 @@ namespace WebService.Controllers.WEB
 
 				arquitectura += "," + numNeuronasCapaSalida;
 
-				var redNeuronal = new RedNeuronal
+				var redExistente = db.RedesNeuronales
+					.FirstOrDefault(r => r.ProyectoID == proyectoID);
+
+				if (redExistente != null)
 				{
-					ProyectoID = proyectoID,
-					Epocas = epocas,
-					Arquitectura = arquitectura,
-					Alfa = alfa,
-					ErrorMin = errorMinimo
-				};
+					redExistente.Epocas = epocas;
+					redExistente.Arquitectura = arquitectura;
+					redExistente.Alfa = alfa;
+					redExistente.ErrorMin = errorMinimo;
 
-				db.RedesNeuronales.Add(redNeuronal);
-				db.SaveChanges();
+					db.Entry(redExistente).State = System.Data.Entity.EntityState.Modified;
+					db.SaveChanges();
 
-				TempData["MensajeExito"] = "Red neuronal creada exitosamente";
+					TempData["RedCreadaExitosamente"] = true;
+					TempData["MensajeExito"] = "Red neuronal modificada exitosamente";
+				}
+				else
+				{
+					var redNeuronal = new RedNeuronal
+					{
+						ProyectoID = proyectoID,
+						Epocas = epocas,
+						Arquitectura = arquitectura,
+						Alfa = alfa,
+						ErrorMin = errorMinimo
+					};
+
+					db.RedesNeuronales.Add(redNeuronal);
+					db.SaveChanges();
+
+					TempData["RedCreadaExitosamente"] = true;
+					TempData["MensajeExito"] = "Red neuronal creada exitosamente";
+				}
+
 				return RedirectToAction("Proyecto", "Cliente", new { proyectoID = proyectoID });
 			}
 			catch (Exception ex)
 			{
-				System.Diagnostics.Debug.WriteLine("Error al crear red neuronal: " + ex.Message);
+				System.Diagnostics.Debug.WriteLine("Error al crear/modificar red neuronal: " + ex.Message);
 				System.Diagnostics.Debug.WriteLine("Stack Trace: " + ex.StackTrace);
 
-				ModelState.AddModelError("", "Error al crear la red neuronal: " + ex.Message);
+				ModelState.AddModelError("", "Error al crear/modificar la red neuronal: " + ex.Message);
 				ViewBag.ProyectoID = proyectoID;
 				return View();
+			}
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[AutorizarRol("Usuario", "Admin")]
+		public JsonResult Entrenar(int proyectoId, List<int> objetos)
+		{
+			try
+			{
+				if (Session["UsuarioID"] == null)
+					return Json(new { success = false, message = "Sesión expirada" });
+
+				return Json(new { success = true, message = "Entrenamiento iniciado" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Error: " + ex.Message });
 			}
 		}
 	}

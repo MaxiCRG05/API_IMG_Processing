@@ -41,6 +41,15 @@
 			border: 1px solid #ddd;
 			border-radius: 5px;
 		}
+
+		.alert-info {
+			background-color: #d1ecf1;
+			border: 1px solid #bee5eb;
+			border-radius: 10px;
+			padding: 15px;
+			margin-bottom: 20px;
+			color: #0c5460;
+		}
 	</style>
 </head>
 <body>
@@ -55,32 +64,50 @@
 
 	<div class="container">
 		<div class="form-section">
-			<form method="post" action="/IA/Crear" id="formRedNeuronal">
-				@Html.AntiForgeryToken() 
-				<input type="hidden" name="proyectoID" value="@ViewBag.ProyectoID" />
+			@if (ViewBag.EsEdicion)
+			{
+				<div class="alert-info">
+					<strong>⚠️ Red neuronal existente detectada</strong><br />
+					Estás modificando la red neuronal existente. Los cambios se guardarán sobre la configuración actual.
+				</div>
+			}
+		<form method="post" action="/IA/Crear" id="formRedNeuronal">
+			@Html.AntiForgeryToken()
+			<input type="hidden" name="proyectoID" value="@ViewBag.ProyectoID" />
 
-				<label for="totalCapas">N° Total de Capas</label><br />
-				<input type="number" id="totalCapas" name="totalCapas" min="3" max="10" placeholder="(Mínimo de 3 y Máximo de 10) Ej. 8" required />
+			<label for="totalCapas">N° Total de Capas</label><br />
+			<input type="number" id="totalCapas" name="totalCapas" min="3" max="10"
+				   placeholder="(Mínimo de 3 y Máximo de 10) Ej. 8"
+				   value="@ViewBag.TotalCapas" required />
 
-				<label for="numNeuronasCapaEntrada">N° de Neuronas en Capa de Entrada</label><br />
-				<input type="number" id="numNeuronasCapaEntrada" name="numNeuronasCapaEntrada" min="1" max="7" placeholder="(Mínimo de 1 y Máximo de 7) Ej. 7" oninput="actualizarDiagrama()" required />
+			<label for="numNeuronasCapaEntrada">N° de Neuronas en Capa de Entrada</label><br />
+			<input type="number" id="numNeuronasCapaEntrada" name="numNeuronasCapaEntrada"
+				   min="1" max="7" placeholder="(Mínimo de 1 y Máximo de 7) Ej. 7"
+				   value="@ViewBag.NeuronasEntrada" oninput="actualizarDiagrama()" required />
 
-				<div id="capasOcultasContainer"></div>
+			<div id="capasOcultasContainer"></div>
 
-				<label for="numNeuronasCapaSalida">N° de Neuronas en Capa de Salida</label><br />
-				<input type="number" id="numNeuronasCapaSalida" name="numNeuronasCapaSalida" min="1" max="10" placeholder="(Mínimo de 1) Ej. 5" oninput="actualizarDiagrama()" required />
+			<label for="numNeuronasCapaSalida">N° de Neuronas en Capa de Salida</label><br />
+			<input type="number" id="numNeuronasCapaSalida" name="numNeuronasCapaSalida"
+				   min="1" max="10" placeholder="(Mínimo de 1) Ej. 5"
+				   value="@ViewBag.NeuronasSalida" oninput="actualizarDiagrama()" required />
 
-				<label for="alfa">Alfa (Tasa de Aprendizaje)</label><br />
-				<input type="number" step="0.001" id="alfa" name="alfa" placeholder="Ej. 0.1" required />
+			<label for="alfa">Alfa (Tasa de Aprendizaje)</label><br />
+			<input type="number" step="0.001" id="alfa" name="alfa" placeholder="Ej. 0.1"
+				   value="@(ViewBag.RedExistente?.Alfa)" required />
 
-				<label for="errorMinimo">Error Mínimo a alcanzar</label><br />
-				<input type="number" step="0.00001" name="errorMinimo" placeholder="Ej. 0.00001" required />
+			<label for="errorMinimo">Error Mínimo a alcanzar</label><br />
+			<input type="number" step="0.00001" name="errorMinimo" placeholder="Ej. 0.00001"
+				   value="@(ViewBag.RedExistente?.ErrorMin)" required />
 
-				<label for="epocas">Epocas para el Entrenamiento</label><br />
-				<input type="number" name="epocas" placeholder="(Mínimo de 10000) Ej. 10000" required />
+			<label for="epocas">Epocas para el Entrenamiento</label><br />
+			<input type="number" name="epocas" placeholder="(Mínimo de 10000) Ej. 10000"
+				   value="@(ViewBag.RedExistente?.Epocas)" required />
 
-				<button type="submit" class="btn-crear">Crear Red Neuronal</button>
-			</form>
+			<button type="submit" class="btn-crear">
+				@(ViewBag.EsEdicion ? "Modificar Red Neuronal" : "Crear Red Neuronal")
+			</button>
+		</form>
 		</div>
 
 		<div class="diagram-section">
@@ -89,30 +116,36 @@
 	</div>
 
 	<script>
-		document.getElementById('totalCapas').addEventListener('change', function () {
-			generarCamposCapasOcultas(this.value);
-			actualizarDiagrama();
-		});
+		var capasOcultasValores = @Html.Raw(Json.Encode(ViewBag.CapasOcultas ?? new List<string>()));
 
-		document.getElementById('numNeuronasCapaEntrada').addEventListener('input', actualizarDiagrama);
-		document.getElementById('numNeuronasCapaSalida').addEventListener('input', actualizarDiagrama);
+        document.getElementById('totalCapas').addEventListener('change', function () {
+            generarCamposCapasOcultas(this.value);
+            actualizarDiagrama();
+        });
 
-		function generarCamposCapasOcultas(totalCapas) {
-			const container = document.getElementById('capasOcultasContainer');
-			container.innerHTML = '';
+        document.getElementById('numNeuronasCapaEntrada').addEventListener('input', actualizarDiagrama);
+        document.getElementById('numNeuronasCapaSalida').addEventListener('input', actualizarDiagrama);
 
-			const numCapasOcultas = totalCapas - 2;
+        function generarCamposCapasOcultas(totalCapas) {
+            const container = document.getElementById('capasOcultasContainer');
+            container.innerHTML = '';
 
-			for (let i = 1; i <= numCapasOcultas; i++) {
-				const div = document.createElement('div');
-				div.className = 'capa-oculta';
-				div.innerHTML = `
-            <label for="capaOculta${i}">N° de Neuronas en Capa Oculta ${i}</label>
-            <input type="number" id="capaOculta${i}" name="numNeuronasNCapas" min="1" placeholder="Ej. 5" required oninput="actualizarDiagrama()" />
-        `;
-				container.appendChild(div);
-			}
-		}
+            const numCapasOcultas = totalCapas - 2;
+
+            for (let i = 1; i <= numCapasOcultas; i++) {
+                const div = document.createElement('div');
+                div.className = 'capa-oculta';
+
+                const valor = capasOcultasValores && capasOcultasValores.length >= i ? capasOcultasValores[i-1] : '';
+
+                div.innerHTML = `
+                    <label for="capaOculta${i}">N° de Neuronas en Capa Oculta ${i}</label>
+                    <input type="number" id="capaOculta${i}" name="numNeuronasNCapas" min="1"
+                           placeholder="Ej. 5" value="${valor}" required oninput="actualizarDiagrama()" />
+                `;
+                container.appendChild(div);
+            }
+        }
 
 		function dibujarConexiones(contenedor, capas) {
 			const conexionesAnteriores = contenedor.querySelector('.conexiones');
@@ -329,10 +362,10 @@
 			let html = '<h3>Diagrama de la Red Neuronal</h3><div class="red-diagram">';
 
 			html += `
-        <div class="capa-container">
-            <div class="capa-titulo">Capa de Entrada</div>
-            <div class="capa-neuronas entrada">
-    `;
+			<div class="capa-container">
+				<div class="capa-titulo">Capa de Entrada</div>
+				<div class="capa-neuronas entrada">
+		`;
 			for (let i = 0; i < neuronasPorCapa[0]; i++) {
 				html += `<div class="neurona entrada neurona-appear" style="animation-delay: ${i * 0.1}s;">${i + 1}</div>`;
 			}
@@ -340,10 +373,10 @@
 
 			for (let i = 1; i <= totalCapas - 2; i++) {
 				html += `
-            <div class="capa-container">
-                <div class="capa-titulo">Capa Oculta ${i}</div>
-                <div class="capa-neuronas oculta">
-        `;
+				<div class="capa-container">
+					<div class="capa-titulo">Capa Oculta ${i}</div>
+					<div class="capa-neuronas oculta">
+			`;
 				for (let j = 0; j < (neuronasPorCapa[i] || 1); j++) {
 					html += `<div class="neurona oculta neurona-appear" style="animation-delay: ${(i + j) * 0.1}s;">${j + 1}</div>`;
 				}
@@ -351,10 +384,10 @@
 			}
 
 			html += `
-        <div class="capa-container">
-            <div class="capa-titulo">Capa de Salida</div>
-            <div class="capa-neuronas salida">
-    `;
+			<div class="capa-container">
+				<div class="capa-titulo">Capa de Salida</div>
+				<div class="capa-neuronas salida">
+		`;
 			for (let i = 0; i < neuronasPorCapa[neuronasPorCapa.length - 1]; i++) {
 				html += `<div class="neurona salida neurona-appear" style="animation-delay: ${(totalCapas + i) * 0.1}s;">${i + 1}</div>`;
 			}
@@ -456,6 +489,117 @@
 				actualizarDiagrama();
 			}
 		});
+
+		window.addEventListener('DOMContentLoaded', () => {
+            const totalCapas = document.getElementById('totalCapas').value;
+            if (totalCapas && totalCapas >= 3) {
+                generarCamposCapasOcultas(totalCapas);
+                setTimeout(() => {
+                    actualizarDiagrama();
+                }, 100);
+            }
+        });
+
+        document.getElementById('formRedNeuronal').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const esEdicion = @(ViewBag.EsEdicion ? "true" : "false");
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: esEdicion ? 'Red neuronal modificada exitosamente' : 'Red neuronal creada exitosamente en la base de datos',
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonColor: '#3085d6'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = response.url;
+                        }
+                    });
+                } else {
+                    return response.text().then(text => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al ' + (esEdicion ? 'modificar' : 'crear') + ' la red neuronal',
+                            confirmButtonText: 'Aceptar',
+                            confirmButtonColor: '#d33'
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error de conexión al ' + (esEdicion ? 'modificar' : 'crear') + ' la red neuronal',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#d33'
+                });
+            });
+        });
 	</script>
 </body>
 </html>
+
+<script>
+	document.getElementById('formRedNeuronal').addEventListener('submit', function (e) {
+		e.preventDefault();
+
+		const formData = new FormData(this);
+
+		fetch(this.action, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+			}
+		})
+			.then(response => {
+				if (response.redirected) {
+					Swal.fire({
+						icon: 'success',
+						title: '¡Éxito!',
+						text: 'Red neuronal creada exitosamente en la base de datos',
+						confirmButtonText: 'Aceptar',
+						confirmButtonColor: '#3085d6'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							window.location.href = response.url;
+						}
+					});
+				} else {
+					return response.text().then(text => {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error',
+							text: 'Hubo un problema al crear la red neuronal',
+							confirmButtonText: 'Aceptar',
+							confirmButtonColor: '#d33'
+						});
+					});
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: 'Error de conexión al crear la red neuronal',
+					confirmButtonText: 'Aceptar',
+					confirmButtonColor: '#d33'
+				});
+			});
+	});
+</script>

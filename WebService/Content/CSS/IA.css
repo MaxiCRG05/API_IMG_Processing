@@ -257,7 +257,6 @@
 		text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 	}
 
-/* Sistema de conexiones mejorado */
 .conexiones {
 	position: absolute;
 	top: 0;
@@ -271,10 +270,7 @@
 .conexion {
 	stroke: #78909c;
 	stroke-width: 1.5px;
-	opacity: 0;
-	stroke-dasharray: 100;
-	stroke-dashoffset: 100;
-	transition: all 0.4s ease;
+	opacity: 0.6;
 }
 
 	.conexion.visible {
@@ -287,7 +283,6 @@
 		opacity: 0.8;
 	}
 
-/* Efectos de carga escalonada para neuronas */
 .neurona:nth-child(1) {
 	animation-delay: 0.1s;
 }
@@ -308,7 +303,6 @@
 	animation-delay: 0.5s;
 }
 
-/* Responsive improvements */
 @media (max-width: 768px) {
 	.red-diagram {
 		gap: 30px;
