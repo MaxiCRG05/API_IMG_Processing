@@ -255,76 +255,21 @@ namespace WebService.Controllers.WEB
 		[HttpPost]
 		[AutorizarRol("Usuario")]
 		[ValidateAntiForgeryToken]
-		public JsonResult ActualizarFechaModificacion(int proyectoID)
+		public JsonResult ActualizarFechaModificacion()
 		{
 			try
 			{
-				System.Diagnostics.Debug.WriteLine($"=== ACTUALIZAR FECHA MODIFICACION ===");
-				System.Diagnostics.Debug.WriteLine($"ProyectoID recibido: {proyectoID}");
-				System.Diagnostics.Debug.WriteLine($"UsuarioID en sesión: {Session["UsuarioID"]}");
-
 				if (Session["UsuarioID"] == null)
 				{
-					System.Diagnostics.Debug.WriteLine("Error: Sesión expirada");
 					return Json(new { success = false, message = "Sesión expirada." });
 				}
 
-				int usuarioId = (int)Session["UsuarioID"];
-				var proyecto = db.Proyectos.FirstOrDefault(p => p.ID == proyectoID && p.UsuarioID == usuarioId);
-
-				System.Diagnostics.Debug.WriteLine($"Proyecto encontrado: {proyecto != null}");
-
-				if (proyecto == null)
-				{
-					System.Diagnostics.Debug.WriteLine("Error: Proyecto no encontrado");
-					return Json(new { success = false, message = "Proyecto no encontrado." });
-				}
-
-				proyecto.FechaModificacion = DateTime.Now;
-				db.Entry(proyecto).State = EntityState.Modified;
-				db.SaveChanges();
-
-				System.Diagnostics.Debug.WriteLine("Fecha actualizada correctamente");
-
-				return Json(new
-				{
-					success = true,
-					message = "Proyecto guardado correctamente.",
-					fecha = proyecto.FechaModificacion.ToString("g")
-				});
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine($"ERROR COMPLETO: {ex.ToString()}");
-				return Json(new
-				{
-					success = false,
-					message = $"Error interno del servidor: {ex.Message}"
-				});
-			}
-		}
-
-		[HttpPost]
-		[AutorizarRol("Usuario")]
-		[ValidateAntiForgeryToken]
-		public JsonResult ActualizarFechaModificacionAlternativo()
-		{
-			try
-			{
-				// Leer el proyectoID del FormData
-				var proyectoIDStr = Request.Form["proyectoID"];
-				System.Diagnostics.Debug.WriteLine($"ProyectoID recibido (string): {proyectoIDStr}");
-
-				if (!int.TryParse(proyectoIDStr, out int proyectoID))
+				string proyectoIDStr = Request.Form["proyectoID"];
+				if (string.IsNullOrEmpty(proyectoIDStr) || !int.TryParse(proyectoIDStr, out int proyectoID))
 				{
 					return Json(new { success = false, message = "ID de proyecto no válido." });
 				}
 
-				if (Session["UsuarioID"] == null)
-				{
-					return Json(new { success = false, message = "Sesión expirada." });
-				}
-
 				int usuarioId = (int)Session["UsuarioID"];
 				var proyecto = db.Proyectos.FirstOrDefault(p => p.ID == proyectoID && p.UsuarioID == usuarioId);
 
@@ -344,13 +289,21 @@ namespace WebService.Controllers.WEB
 					fecha = proyecto.FechaModificacion.ToString("g")
 				});
 			}
+			catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+			{
+				var errorMessages = ex.EntityValidationErrors
+					.SelectMany(x => x.ValidationErrors)
+					.Select(x => x.ErrorMessage);
+				var fullErrorMessage = string.Join("; ", errorMessages);
+				return Json(new { success = false, message = "Error de validación: " + fullErrorMessage });
+			}
 			catch (Exception ex)
 			{
-				System.Diagnostics.Debug.WriteLine($"ERROR ALTERNATIVO: {ex.ToString()}");
+				System.Diagnostics.Debug.WriteLine($"ERROR REAL: {ex}");
 				return Json(new
 				{
 					success = false,
-					message = $"Error interno: {ex.Message}"
+					message = "Error interno del servidor. Contacte al administrador."
 				});
 			}
 		}
