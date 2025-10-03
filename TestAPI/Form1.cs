@@ -230,6 +230,11 @@ namespace TestAPI
 			LimpiarTabla();
 		}
 
+		private void button1_MouseClick(object sender, MouseEventArgs e)
+		{
+			string nombreArchivo = Globales.ObtenerNombreArchivo();
+		}
+
 		private void btnSubir_MouseClick(object sender, MouseEventArgs e)
 		{
 			imgEnviar.Image = btm_cargada = Globales.CargarImagen();
@@ -246,6 +251,55 @@ namespace TestAPI
 	}
 	public static class Globales
 	{
+		public static string ObtenerNombreArchivo()
+		{
+			using (SaveFileDialog saveDialog = new SaveFileDialog())
+			{
+				saveDialog.Filter = "Hu Files|*.hu";
+				saveDialog.Title = "Guardar momentos Hu";
+				saveDialog.FileName = $"momentos_hu_{DateTime.Now:yyyyMMddHHmmss}.hu";
+				saveDialog.OverwritePrompt = true;
+				saveDialog.AddExtension = true;
+				saveDialog.AddExtension = true;
+
+				if (saveDialog.ShowDialog() == DialogResult.OK)
+				{
+					return saveDialog.FileName;
+				}
+				return null;
+			}
+		}
+
+		public static void GuardarMomentosHu(List<ResultadoMomentosHu> momentosHu, string filePath)
+		{
+			try
+			{
+				using (StreamWriter writer = new StreamWriter(filePath))
+				{
+					writer.WriteLine("ID,CenterX,CenterY,Hu1,Hu2,Hu3,Hu4,Hu5,Hu6,Hu7");
+
+					for (int i = 0; i < momentosHu.Count; i++)
+					{
+						var momento = momentosHu[i];
+						string linea = $"{i + 1},{momento.Center.X:F4},{momento.Center.Y:F4}," +
+									   $"{momento.Moments[0]:E6},{momento.Moments[1]:E6}," +
+									   $"{momento.Moments[2]:E6},{momento.Moments[3]:E6}," +
+									   $"{momento.Moments[4]:E6},{momento.Moments[5]:E6}," +
+									   $"{momento.Moments[6]:E6}";
+						writer.WriteLine(linea);
+					}
+				}
+
+				MessageBox.Show($"Momentos Hu guardados correctamente en:\n{filePath}",
+							  "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Error al guardar los momentos Hu: {ex.Message}",
+							  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
 		public static Bitmap CargarImagen()
 		{
 			using (OpenFileDialog finder = new OpenFileDialog())

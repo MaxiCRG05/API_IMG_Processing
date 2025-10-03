@@ -50,6 +50,8 @@
 			this.H7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.btnLimpiar = new System.Windows.Forms.Button();
 			this.lbTiempo = new System.Windows.Forms.Label();
+			this.button1 = new System.Windows.Forms.Button();
+			this.lbl = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tabla)).BeginInit();
@@ -98,7 +100,7 @@
 			this.btnSubir.Name = "btnSubir";
 			this.btnSubir.Size = new System.Drawing.Size(148, 23);
 			this.btnSubir.TabIndex = 4;
-			this.btnSubir.Text = "SUBIR IMAGEN";
+			this.btnSubir.Text = "SUBIR IMAGEN(ES)";
 			this.btnSubir.UseVisualStyleBackColor = true;
 			this.btnSubir.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnSubir_MouseClick);
 			// 
@@ -254,11 +256,32 @@
 			this.lbTiempo.Text = "TIEMPO:";
 			this.lbTiempo.Visible = false;
 			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(24, 343);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(157, 23);
+			this.button1.TabIndex = 14;
+			this.button1.Text = "DESCARGAR ARCHIVO .HU";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.button1_MouseClick);
+			// 
+			// lbl
+			// 
+			this.lbl.AutoSize = true;
+			this.lbl.Location = new System.Drawing.Point(179, 13);
+			this.lbl.Name = "lbl";
+			this.lbl.Size = new System.Drawing.Size(35, 13);
+			this.lbl.TabIndex = 15;
+			this.lbl.Text = "label6";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1187, 715);
+			this.Controls.Add(this.lbl);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.btnLimpiar);
 			this.Controls.Add(this.tabla);
 			this.Controls.Add(this.lblObjetos);
@@ -311,6 +334,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn H7;
 		private System.Windows.Forms.Button btnLimpiar;
 		private System.Windows.Forms.Label lbTiempo;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Label lbl;
 	}
 }
 
