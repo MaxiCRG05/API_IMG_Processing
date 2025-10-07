@@ -283,9 +283,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202508262341487_initial.cs" />
-    <Compile Include="Migrations\202508262341487_initial.Designer.cs">
-      <DependentUpon>202508262341487_initial.cs</DependentUpon>
+    <Compile Include="Migrations\202510070026192_initial.cs" />
+    <Compile Include="Migrations\202510070026192_initial.Designer.cs">
+      <DependentUpon>202510070026192_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Categoria.cs" />
@@ -480,8 +480,8 @@
     <Content Include="Views\Admin\Consultar.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202508262341487_initial.resx">
-      <DependentUpon>202508262341487_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202510070026192_initial.resx">
+      <DependentUpon>202510070026192_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,7 +15,8 @@ namespace TestAPI
 	{
 		Stopwatch sw = new Stopwatch();
 		API api;
-		Bitmap btm_cargada, btm_recibida;
+		List<Bitmap> btm_cargadas = new List<Bitmap>();
+		Bitmap btm_recibida;
 		bool imgSubida = false, opcionSeleccionada = false;
 		int opcion;
 		private string url = "http://localhost:35271/api";
@@ -36,6 +38,7 @@ namespace TestAPI
 		{
 			imgEnviar.Image = null;
 			imgRecibir.Image = null;
+			btm_cargadas.Clear();
 		}
 
 		private void LimpiarTabla()
@@ -49,6 +52,7 @@ namespace TestAPI
 		{
 			tabla.Columns.Clear();
 			tabla.Columns.Add("ID", "ID");
+			tabla.Columns.Add("Imagen", "Imagen");
 			for (int i = 1; i <= 7; i++)
 			{
 				tabla.Columns.Add($"Hu{i}", $"Hu {i}");
@@ -62,7 +66,11 @@ namespace TestAPI
 		public void PonerTiempo()
 		{
 			lbTiempo.Visible = true;
-			lbTiempo.Text = (sw.ElapsedMilliseconds > 1000) ? (sw.ElapsedMilliseconds / 1000 < 60) ? ($"{sw.ElapsedMilliseconds / 1000.0:F2} segundos") : $"{sw.ElapsedMilliseconds / 60000}m {sw.ElapsedMilliseconds / 1000 % 60:F2}s" : $"{sw.ElapsedMilliseconds} ms";
+			lbTiempo.Text = (sw.ElapsedMilliseconds > 1000) ?
+				(sw.ElapsedMilliseconds / 1000 < 60) ?
+					($"{sw.ElapsedMilliseconds / 1000.0:F2} segundos") :
+					$"{sw.ElapsedMilliseconds / 60000}m {sw.ElapsedMilliseconds / 1000 % 60:F2}s" :
+				$"{sw.ElapsedMilliseconds} ms";
 		}
 
 		public void VerificarEnviar()
@@ -74,7 +82,7 @@ namespace TestAPI
 		{
 			if (opcion == 4)
 			{
-				lblObjetos.Text = $"{api.GetObjetos()} objetos encontrados";
+				lblObjetos.Text = $"{api.GetObjetos()} objetos encontrados en total";
 				lblObjetos.Visible = true;
 				label5.Visible = true;
 			}
@@ -109,28 +117,42 @@ namespace TestAPI
 				if (imgSubida && opcionSeleccionada)
 				{
 					sw.Start();
-					btm_recibida = await api.Enviar(opcion, btm_cargada);
-					PonerNumObjetos();
-					imgRecibir.Image = btm_recibida;
 
-					if (opcion == 4)
+					if (opcion == 4) 
 					{
-						tabla.Visible = true;
-						MostrarMomentosHuEnTabla();
+						var resultados = await api.EnviarMultiplesImagenes(opcion, btm_cargadas);
+						if (resultados.Count > 0)
+						{
+							btm_recibida = resultados[0].ImagenProcesada;
+							imgRecibir.Image = btm_recibida;
+
+							api.SetMomentosHu(resultados);
+							PonerNumObjetos();
+
+							tabla.Visible = true;
+							MostrarMomentosHuEnTabla();
+						}
 					}
 					else
-						tabla.Visible = false;
+					{
+						if (btm_cargadas.Count > 0)
+						{
+							btm_recibida = await api.Enviar(opcion, btm_cargadas[0]);
+							imgRecibir.Image = btm_recibida;
+							tabla.Visible = false;
+						}
+					}
 
 					sw.Stop();
 					PonerTiempo();
 					sw.Reset();
 				}
 				else
-					MessageBox.Show("Por favor, sube una imagen y selecciona una opción antes de enviar.");
+					MessageBox.Show("Por favor, sube al menos una imagen y selecciona una opción antes de enviar.");
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error al enviar la imagen: " + ex.Message);
+				MessageBox.Show("Error al enviar la(s) imagen(es): " + ex.Message);
 			}
 		}
 
@@ -139,27 +161,35 @@ namespace TestAPI
 			tabla.Rows.Clear();
 
 			var momentosHu = api.GetMomentosHu();
+			int rowIndex = 0;
 
-			for (int i = 0; i < momentosHu.Count; i++)
+			for (int imgIndex = 0; imgIndex < momentosHu.Count; imgIndex++)
 			{
-				var momento = momentosHu[i];
+				var momentosPorImagen = momentosHu[imgIndex];
 
-				DataGridViewRow row = new DataGridViewRow();
-				row.CreateCells(tabla);
-
-				row.Cells[0].Value = i + 1; 
-				for (int j = 0; j < 7; j++)
+				for (int i = 0; i < momentosPorImagen.Count; i++)
 				{
-					if (j < momento.Moments.Length)
-					{
-						row.Cells[j + 1].Value = momento.Moments[j];
-					}
-				}
+					var momento = momentosPorImagen[i];
 
-				tabla.Rows.Add(row);
+					DataGridViewRow row = new DataGridViewRow();
+					row.CreateCells(tabla);
+
+					row.Cells[0].Value = rowIndex + 1;
+					row.Cells[1].Value = $"Imagen {imgIndex + 1}";
+					for (int j = 0; j < 7; j++)
+					{
+						if (j < momento.Moments.Length)
+						{
+							row.Cells[j + 2].Value = momento.Moments[j];
+						}
+					}
+
+					tabla.Rows.Add(row);
+					rowIndex++;
+				}
 			}
 
-			for (int i = 1; i < tabla.Columns.Count; i++)
+			for (int i = 2; i < tabla.Columns.Count; i++)
 			{
 				tabla.Columns[i].DefaultCellStyle.Format = "N6";
 			}
@@ -233,13 +263,28 @@ namespace TestAPI
 		private void button1_MouseClick(object sender, MouseEventArgs e)
 		{
 			string nombreArchivo = Globales.ObtenerNombreArchivo();
+			if (nombreArchivo != null && opcion == 4)
+			{
+				var todosMomentosHu = api.GetMomentosHu();
+				Globales.GuardarMomentosHu(todosMomentosHu, nombreArchivo);
+			}
 		}
 
 		private void btnSubir_MouseClick(object sender, MouseEventArgs e)
 		{
-			imgEnviar.Image = btm_cargada = Globales.CargarImagen();
-			imgSubida = true;
-			VerificarEnviar();
+			var imagenes = Globales.CargarMultiplesImagenes();
+			if (imagenes != null && imagenes.Count > 0)
+			{
+				btm_cargadas = imagenes;
+				imgEnviar.Image = btm_cargadas[0]; 
+				imgSubida = true;
+				VerificarEnviar();
+
+				MessageBox.Show($"{btm_cargadas.Count} imagen(es) cargada(s) correctamente.",
+							  "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+				lblImgs.Text = btm_cargadas.Count.ToString();
+			}
 		}
 
 		private void cbOpciones_SelectedIndexChanged(object sender, EventArgs e)
@@ -249,6 +294,7 @@ namespace TestAPI
 			VerificarEnviar();
 		}
 	}
+
 	public static class Globales
 	{
 		public static string ObtenerNombreArchivo()
@@ -260,7 +306,6 @@ namespace TestAPI
 				saveDialog.FileName = $"momentos_hu_{DateTime.Now:yyyyMMddHHmmss}.hu";
 				saveDialog.OverwritePrompt = true;
 				saveDialog.AddExtension = true;
-				saveDialog.AddExtension = true;
 
 				if (saveDialog.ShowDialog() == DialogResult.OK)
 				{
@@ -270,23 +315,28 @@ namespace TestAPI
 			}
 		}
 
-		public static void GuardarMomentosHu(List<ResultadoMomentosHu> momentosHu, string filePath)
+		public static void GuardarMomentosHu(List<List<ResultadoMomentosHu>> momentosHuPorImagen, string filePath)
 		{
 			try
 			{
 				using (StreamWriter writer = new StreamWriter(filePath))
 				{
-					writer.WriteLine("ID,CenterX,CenterY,Hu1,Hu2,Hu3,Hu4,Hu5,Hu6,Hu7");
-
-					for (int i = 0; i < momentosHu.Count; i++)
+					foreach (var momentosHuImagen in momentosHuPorImagen)
 					{
-						var momento = momentosHu[i];
-						string linea = $"{i + 1},{momento.Center.X:F4},{momento.Center.Y:F4}," +
-									   $"{momento.Moments[0]:E6},{momento.Moments[1]:E6}," +
-									   $"{momento.Moments[2]:E6},{momento.Moments[3]:E6}," +
-									   $"{momento.Moments[4]:E6},{momento.Moments[5]:E6}," +
-									   $"{momento.Moments[6]:E6}";
-						writer.WriteLine(linea);
+						if (momentosHuImagen.Count > 0)
+						{
+							var momento = momentosHuImagen[0];
+
+							string linea = $"{momento.Moments[0]:E6},{momento.Moments[1]:E6}," +
+										   $"{momento.Moments[2]:E6},{momento.Moments[3]:E6}," +
+										   $"{momento.Moments[4]:E6},{momento.Moments[5]:E6}," +
+										   $"{momento.Moments[6]:E6}";
+							writer.WriteLine(linea);
+						}
+						else
+						{
+							writer.WriteLine("0,0,0,0,0,0,0");
+						}
 					}
 				}
 
@@ -320,20 +370,50 @@ namespace TestAPI
 			}
 		}
 
-		public static Bitmap RecibirImagen(API api)
+		public static List<Bitmap> CargarMultiplesImagenes()
 		{
-			try
+			using (OpenFileDialog finder = new OpenFileDialog())
 			{
-				Bitmap btm = new Bitmap(1920, 1080);
+				try
+				{
+					finder.Filter = "Imagenes|*.jpg;*.jpeg;*.png;*.bmp;*.jfif";
+					finder.Title = "Selecciona una o más imágenes";
+					finder.Multiselect = true;
+					finder.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-				return btm;
-			}
-			catch(IOException e)
-			{
-				Console.WriteLine("Error al recibir la imagen: " + e.Message);
-				return null;
+					if (finder.ShowDialog() == DialogResult.OK)
+					{
+						List<Bitmap> imagenes = new List<Bitmap>();
+						foreach (string fileName in finder.FileNames)
+						{
+							try
+							{
+								Bitmap imagen = (Bitmap)Image.FromFile(fileName);
+								imagenes.Add(imagen);
+							}
+							catch (Exception ex)
+							{
+								MessageBox.Show($"Error al cargar la imagen {Path.GetFileName(fileName)}: {ex.Message}");
+							}
+						}
+						return imagenes;
+					}
+					return null;
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show("Error al cargar las imágenes: " + ex.Message);
+					return null;
+				}
 			}
 		}
+	}
+
+	public class ResultadoProcesamiento
+	{
+		public Bitmap ImagenProcesada { get; set; }
+		public int TotalObjetos { get; set; }
+		public List<ResultadoMomentosHu> MomentosHu { get; set; }
 	}
 
 	public class ResultadoMomentosHu
@@ -348,11 +428,23 @@ namespace TestAPI
 		string url;
 		string[] opciones = { "EscalaGrises", "Binarizar", "DetectarBordes", "Etiquetado", "InvariantesHu" };
 		private int objetos = 0;
-		private List<ResultadoMomentosHu> momentosHu = new List<ResultadoMomentosHu>();
+		private List<List<ResultadoMomentosHu>> momentosHuPorImagen = new List<List<ResultadoMomentosHu>>();
 
-		public List<ResultadoMomentosHu> GetMomentosHu()
+		public List<List<ResultadoMomentosHu>> GetMomentosHu()
 		{
-			return momentosHu;
+			return momentosHuPorImagen;
+		}
+
+		public void SetMomentosHu(List<ResultadoProcesamiento> resultados)
+		{
+			momentosHuPorImagen.Clear();
+			objetos = 0;
+
+			foreach (var resultado in resultados)
+			{
+				momentosHuPorImagen.Add(resultado.MomentosHu);
+				objetos += resultado.TotalObjetos;
+			}
 		}
 
 		public API(string url)
@@ -387,7 +479,7 @@ namespace TestAPI
 
 					if (response.IsSuccessStatusCode)
 					{
-						if (opcion == 4) 
+						if (opcion == 4)
 						{
 							var jsonResponse = await response.Content.ReadAsStringAsync();
 							var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
@@ -399,8 +491,10 @@ namespace TestAPI
 
 							if (jsonObj.MomentosHu != null)
 							{
-								momentosHu = JsonConvert.DeserializeObject<List<ResultadoMomentosHu>>(
+								var momentosHuList = JsonConvert.DeserializeObject<List<ResultadoMomentosHu>>(
 									jsonObj.MomentosHu.ToString());
+								momentosHuPorImagen.Clear();
+								momentosHuPorImagen.Add(momentosHuList);
 							}
 
 							using (MemoryStream imageStream = new MemoryStream(imageBytes))
@@ -412,7 +506,7 @@ namespace TestAPI
 						{
 							var responseStream = await response.Content.ReadAsStreamAsync();
 							objetos = 0;
-							momentosHu.Clear(); 
+							momentosHuPorImagen.Clear();
 							return new Bitmap(responseStream);
 						}
 					}
@@ -427,6 +521,75 @@ namespace TestAPI
 				Console.WriteLine("Error: " + ex.Message);
 				throw;
 			}
+		}
+
+		public async Task<List<ResultadoProcesamiento>> EnviarMultiplesImagenes(int opcion, List<Bitmap> imagenes)
+		{
+			string endpoint = $"{url}/Procesamiento/Multiples{opciones[opcion]}";
+			var resultados = new List<ResultadoProcesamiento>();
+
+			try
+			{
+				using (var content = new MultipartFormDataContent())
+				{
+					for (int i = 0; i < imagenes.Count; i++)
+					{
+						using (MemoryStream ms = new MemoryStream())
+						{
+							imagenes[i].Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+							ms.Position = 0;
+							var imageContent = new ByteArrayContent(ms.ToArray());
+							imageContent.Headers.ContentType =
+								new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+							content.Add(imageContent, "files", $"image{i}.png");
+						}
+					}
+
+					var response = await client.PostAsync(endpoint, content);
+
+					if (response.IsSuccessStatusCode)
+					{
+						var jsonResponse = await response.Content.ReadAsStringAsync();
+						var jsonArray = JsonConvert.DeserializeObject<List<dynamic>>(jsonResponse);
+
+						foreach (var jsonObj in jsonArray)
+						{
+							string imageBase64 = jsonObj.Imagen;
+							byte[] imageBytes = Convert.FromBase64String(imageBase64);
+							int totalObjetos = jsonObj.TotalObjetos;
+
+							List<ResultadoMomentosHu> momentosHu = null;
+							if (jsonObj.MomentosHu != null)
+							{
+								momentosHu = JsonConvert.DeserializeObject<List<ResultadoMomentosHu>>(
+									jsonObj.MomentosHu.ToString());
+							}
+
+							using (MemoryStream imageStream = new MemoryStream(imageBytes))
+							{
+								var resultado = new ResultadoProcesamiento
+								{
+									ImagenProcesada = new Bitmap(imageStream),
+									TotalObjetos = totalObjetos,
+									MomentosHu = momentosHu
+								};
+								resultados.Add(resultado);
+							}
+						}
+					}
+					else
+					{
+						throw new Exception($"Error: {response.ReasonPhrase}");
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Error: " + ex.Message);
+				throw;
+			}
+
+			return resultados;
 		}
 	}
 }

@@ -51,7 +51,8 @@
 			this.btnLimpiar = new System.Windows.Forms.Button();
 			this.lbTiempo = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
-			this.lbl = new System.Windows.Forms.Label();
+			this.lblTxt = new System.Windows.Forms.Label();
+			this.lblImgs = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tabla)).BeginInit();
@@ -59,7 +60,7 @@
 			// 
 			// imgEnviar
 			// 
-			this.imgEnviar.Location = new System.Drawing.Point(257, 12);
+			this.imgEnviar.Location = new System.Drawing.Point(348, 12);
 			this.imgEnviar.Name = "imgEnviar";
 			this.imgEnviar.Size = new System.Drawing.Size(389, 318);
 			this.imgEnviar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -79,7 +80,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(391, 353);
+			this.label1.Location = new System.Drawing.Point(482, 353);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(99, 13);
 			this.label1.TabIndex = 2;
@@ -266,21 +267,30 @@
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.button1_MouseClick);
 			// 
-			// lbl
+			// lblTxt
 			// 
-			this.lbl.AutoSize = true;
-			this.lbl.Location = new System.Drawing.Point(179, 13);
-			this.lbl.Name = "lbl";
-			this.lbl.Size = new System.Drawing.Size(35, 13);
-			this.lbl.TabIndex = 15;
-			this.lbl.Text = "label6";
+			this.lblTxt.AutoSize = true;
+			this.lblTxt.Location = new System.Drawing.Point(178, 17);
+			this.lblTxt.Name = "lblTxt";
+			this.lblTxt.Size = new System.Drawing.Size(97, 13);
+			this.lblTxt.TabIndex = 15;
+			this.lblTxt.Text = "Imagenes Subidas:";
+			// 
+			// lblImgs
+			// 
+			this.lblImgs.AutoSize = true;
+			this.lblImgs.Location = new System.Drawing.Point(282, 17);
+			this.lblImgs.Name = "lblImgs";
+			this.lblImgs.Size = new System.Drawing.Size(0, 13);
+			this.lblImgs.TabIndex = 16;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1187, 715);
-			this.Controls.Add(this.lbl);
+			this.Controls.Add(this.lblImgs);
+			this.Controls.Add(this.lblTxt);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.btnLimpiar);
 			this.Controls.Add(this.tabla);
@@ -335,7 +345,8 @@
 		private System.Windows.Forms.Button btnLimpiar;
 		private System.Windows.Forms.Label lbTiempo;
 		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.Label lbl;
+		private System.Windows.Forms.Label lblTxt;
+		private System.Windows.Forms.Label lblImgs;
 	}
 }
 
