@@ -20,12 +20,16 @@ namespace TestAPI
 		bool imgSubida = false, opcionSeleccionada = false;
 		int opcion;
 		private string url = "http://localhost:35271/api";
+		private int indiceCargadasActual = 0;
+		private int indiceProcesadasActual = 0;
+		private List<Bitmap> imagenesProcesadas = new List<Bitmap>();
 
 		public Form1()
 		{
 			InitializeComponent();
 			CrearAPI(url);
 			ConfigurarTabla();
+			ActualizarEstadoBotones();
 		}
 
 		private void LimpiarLabels()
@@ -39,6 +43,13 @@ namespace TestAPI
 			imgEnviar.Image = null;
 			imgRecibir.Image = null;
 			btm_cargadas.Clear();
+			imagenesProcesadas.Clear();
+			indiceCargadasActual = 0;
+			indiceProcesadasActual = 0;
+			lblImgs.Text = "0";
+			imgSubida = false;
+			ActualizarEstadoBotones();
+			VerificarEnviar();
 		}
 
 		private void LimpiarTabla()
@@ -118,28 +129,48 @@ namespace TestAPI
 				{
 					sw.Start();
 
-					if (opcion == 4) 
+					if (btm_cargadas.Count > 1)
 					{
 						var resultados = await api.EnviarMultiplesImagenes(opcion, btm_cargadas);
 						if (resultados.Count > 0)
 						{
-							btm_recibida = resultados[0].ImagenProcesada;
-							imgRecibir.Image = btm_recibida;
+							var imagenesProcesadasList = resultados.Select(r => r.ImagenProcesada).ToList();
+							ActualizarListaProcesadas(imagenesProcesadasList);
 
-							api.SetMomentosHu(resultados);
-							PonerNumObjetos();
-
-							tabla.Visible = true;
-							MostrarMomentosHuEnTabla();
+							if (opcion == 4)
+							{
+								api.SetMomentosHu(resultados);
+								PonerNumObjetos();
+								tabla.Visible = true;
+								MostrarMomentosHuEnTabla();
+							}
+							else
+							{
+								tabla.Visible = false;
+								lblObjetos.Visible = false;
+								label5.Visible = false;
+							}
 						}
 					}
 					else
 					{
 						if (btm_cargadas.Count > 0)
 						{
-							btm_recibida = await api.Enviar(opcion, btm_cargadas[0]);
-							imgRecibir.Image = btm_recibida;
-							tabla.Visible = false;
+							btm_recibida = await api.Enviar(opcion, btm_cargadas[indiceCargadasActual]);
+							ActualizarListaProcesadas(new List<Bitmap> { btm_recibida });
+
+							if (opcion == 4)
+							{
+								PonerNumObjetos();
+								tabla.Visible = true;
+								MostrarMomentosHuEnTabla();
+							}
+							else
+							{
+								tabla.Visible = false;
+								lblObjetos.Visible = false;
+								label5.Visible = false;
+							}
 						}
 					}
 
@@ -152,7 +183,7 @@ namespace TestAPI
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error al enviar la(s) imagen(es): " + ex.Message);
+				MessageBox.Show("Error al enviar la(s) imagen(es): " + ex.Message + "\n\nDetalles técnicos: " + ex.InnerException?.Message);
 			}
 		}
 
@@ -276,15 +307,143 @@ namespace TestAPI
 			if (imagenes != null && imagenes.Count > 0)
 			{
 				btm_cargadas = imagenes;
-				imgEnviar.Image = btm_cargadas[0]; 
+				indiceCargadasActual = 0;
+				imgEnviar.Image = btm_cargadas[indiceCargadasActual];
 				imgSubida = true;
 				VerificarEnviar();
 
 				MessageBox.Show($"{btm_cargadas.Count} imagen(es) cargada(s) correctamente.",
 							  "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-				lblImgs.Text = btm_cargadas.Count.ToString();
+				ActualizarIndicesNavegacion();
+				ActualizarEstadoBotones();
 			}
+		}
+
+		private void btnPrev_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (imagenesProcesadas.Count > 0)
+			{
+				indiceProcesadasActual--;
+				indiceCargadasActual--;
+
+				if (indiceProcesadasActual < 0)
+				{
+					indiceProcesadasActual = imagenesProcesadas.Count - 1;
+					indiceCargadasActual = btm_cargadas.Count - 1;
+				}
+
+				if (indiceCargadasActual < 0) indiceCargadasActual = 0;
+				if (indiceCargadasActual >= btm_cargadas.Count)
+					indiceCargadasActual = btm_cargadas.Count - 1;
+
+				if (indiceProcesadasActual < 0) indiceProcesadasActual = 0;
+				if (indiceProcesadasActual >= imagenesProcesadas.Count)
+					indiceProcesadasActual = imagenesProcesadas.Count - 1;
+
+				imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+				imgRecibir.Image = imagenesProcesadas[indiceProcesadasActual];
+
+				ActualizarIndicesNavegacion();
+			}
+			else if (btm_cargadas.Count > 0)
+			{
+				indiceCargadasActual--;
+				if (indiceCargadasActual < 0)
+					indiceCargadasActual = btm_cargadas.Count - 1;
+
+				imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+				ActualizarIndicesNavegacion();
+			}
+
+			ActualizarEstadoBotones();
+		}
+
+		private void btnProx_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (imagenesProcesadas.Count > 0)
+			{
+				indiceProcesadasActual++;
+				indiceCargadasActual++;
+
+				if (indiceProcesadasActual >= imagenesProcesadas.Count)
+				{
+					indiceProcesadasActual = 0;
+					indiceCargadasActual = 0;
+				}
+
+				if (indiceCargadasActual < 0) indiceCargadasActual = 0;
+				if (indiceCargadasActual >= btm_cargadas.Count)
+					indiceCargadasActual = btm_cargadas.Count - 1;
+
+				if (indiceProcesadasActual < 0) indiceProcesadasActual = 0;
+				if (indiceProcesadasActual >= imagenesProcesadas.Count)
+					indiceProcesadasActual = imagenesProcesadas.Count - 1;
+
+				imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+				imgRecibir.Image = imagenesProcesadas[indiceProcesadasActual];
+
+				ActualizarIndicesNavegacion();
+			}
+			else if (btm_cargadas.Count > 0)
+			{
+				indiceCargadasActual++;
+				if (indiceCargadasActual >= btm_cargadas.Count)
+					indiceCargadasActual = 0;
+
+				imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+				ActualizarIndicesNavegacion();
+			}
+
+			ActualizarEstadoBotones();
+		}
+
+		private void btnDel_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (imagenesProcesadas.Count > 0)
+			{
+				if (btm_cargadas.Count > 0 && imagenesProcesadas.Count > 0)
+				{
+					btm_cargadas.RemoveAt(indiceCargadasActual);
+					imagenesProcesadas.RemoveAt(indiceProcesadasActual);
+
+					if (btm_cargadas.Count == 0 || imagenesProcesadas.Count == 0)
+					{
+						LimpiarImagenes();
+					}
+					else
+					{
+						if (indiceCargadasActual >= btm_cargadas.Count)
+							indiceCargadasActual = btm_cargadas.Count - 1;
+						if (indiceProcesadasActual >= imagenesProcesadas.Count)
+							indiceProcesadasActual = imagenesProcesadas.Count - 1;
+
+						imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+						imgRecibir.Image = imagenesProcesadas[indiceProcesadasActual];
+						ActualizarIndicesNavegacion();
+					}
+				}
+			}
+			else if (btm_cargadas.Count > 0)
+			{
+				btm_cargadas.RemoveAt(indiceCargadasActual);
+
+				if (btm_cargadas.Count == 0)
+				{
+					LimpiarImagenes();
+				}
+				else
+				{
+					if (indiceCargadasActual >= btm_cargadas.Count)
+						indiceCargadasActual = btm_cargadas.Count - 1;
+
+					imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+					ActualizarIndicesNavegacion();
+				}
+			}
+
+			ActualizarEstadoBotones();
+			VerificarEnviar();
 		}
 
 		private void cbOpciones_SelectedIndexChanged(object sender, EventArgs e)
@@ -292,6 +451,72 @@ namespace TestAPI
 			opcion = cbOpciones.SelectedIndex;
 			opcionSeleccionada = true;
 			VerificarEnviar();
+		}
+
+		private void ActualizarIndicesNavegacion()
+		{
+			if (imagenesProcesadas.Count > 0 && btm_cargadas.Count > 0)
+			{
+				lblImgs.Text = $"{indiceCargadasActual + 1} / {btm_cargadas.Count} (Carg) - {indiceProcesadasActual + 1} / {imagenesProcesadas.Count} (Proc)";
+			}
+			else if (btm_cargadas.Count > 0)
+			{
+				lblImgs.Text = $"{indiceCargadasActual + 1} / {btm_cargadas.Count}";
+			}
+			else
+			{
+				lblImgs.Text = "0";
+			}
+		}
+
+		private void ActualizarListaProcesadas(List<Bitmap> nuevasImagenes)
+		{
+			imagenesProcesadas = nuevasImagenes;
+			indiceProcesadasActual = 0;
+			indiceCargadasActual = 0; 
+
+			if (imagenesProcesadas.Count > 0 && btm_cargadas.Count > 0)
+			{
+				imgEnviar.Image = btm_cargadas[indiceCargadasActual];
+				imgRecibir.Image = imagenesProcesadas[indiceProcesadasActual];
+				ActualizarIndicesNavegacion();
+			}
+			ActualizarEstadoBotones();
+		}
+
+		private void ActualizarEstadoBotones()
+		{
+			if (imagenesProcesadas.Count > 0 && btm_cargadas.Count > 0)
+			{
+				bool hayMultipleProcesadas = imagenesProcesadas.Count > 1;
+				bool hayMultipleCargadas = btm_cargadas.Count > 1;
+
+				btnPrev.Enabled = (indiceProcesadasActual > 0) && (indiceCargadasActual > 0);
+				btnProx.Enabled = (indiceProcesadasActual < imagenesProcesadas.Count - 1) &&
+								  (indiceCargadasActual < btm_cargadas.Count - 1);
+				btnDel.Enabled = true;
+			}
+			else if (btm_cargadas.Count > 0)
+			{
+				if (btm_cargadas.Count == 1)
+				{
+					btnPrev.Enabled = false;
+					btnProx.Enabled = false;
+					btnDel.Enabled = true;
+				}
+				else
+				{
+					btnPrev.Enabled = (indiceCargadasActual > 0);
+					btnProx.Enabled = (indiceCargadasActual < btm_cargadas.Count - 1);
+					btnDel.Enabled = true;
+				}
+			}
+			else
+			{
+				btnPrev.Enabled = false;
+				btnProx.Enabled = false;
+				btnDel.Enabled = false;
+			}
 		}
 	}
 
@@ -327,10 +552,10 @@ namespace TestAPI
 						{
 							var momento = momentosHuImagen[0];
 
-							string linea = $"{momento.Moments[0]:E6},{momento.Moments[1]:E6}," +
-										   $"{momento.Moments[2]:E6},{momento.Moments[3]:E6}," +
-										   $"{momento.Moments[4]:E6},{momento.Moments[5]:E6}," +
-										   $"{momento.Moments[6]:E6}";
+							string linea = $"{momento.Moments[0]},{momento.Moments[1]}," +
+										   $"{momento.Moments[2]},{momento.Moments[3]}," +
+										   $"{momento.Moments[4]},{momento.Moments[5]}," +
+										   $"{momento.Moments[6]}";
 							writer.WriteLine(linea);
 						}
 						else
@@ -466,7 +691,7 @@ namespace TestAPI
 				using (MemoryStream ms = new MemoryStream())
 				using (var content = new MultipartFormDataContent())
 				{
-					img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+					img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
 					ms.Position = 0;
 
 					var imageContent = new ByteArrayContent(ms.ToArray());
@@ -479,7 +704,7 @@ namespace TestAPI
 
 					if (response.IsSuccessStatusCode)
 					{
-						if (opcion == 4)
+						if (opcion == 4) 
 						{
 							var jsonResponse = await response.Content.ReadAsStringAsync();
 							var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
@@ -512,14 +737,15 @@ namespace TestAPI
 					}
 					else
 					{
-						throw new Exception($"Error: {response.ReasonPhrase}");
+						var errorContent = await response.Content.ReadAsStringAsync();
+						throw new Exception($"Error: {response.StatusCode} - {response.ReasonPhrase}. Detalles: {errorContent}");
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Error: " + ex.Message);
-				throw;
+				Console.WriteLine("Error en Enviar: " + ex.Message);
+				throw new Exception($"Error al enviar imagen: {ex.Message}", ex);
 			}
 		}
 
@@ -536,7 +762,7 @@ namespace TestAPI
 					{
 						using (MemoryStream ms = new MemoryStream())
 						{
-							imagenes[i].Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+							imagenes[i].Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
 							ms.Position = 0;
 							var imageContent = new ByteArrayContent(ms.ToArray());
 							imageContent.Headers.ContentType =
@@ -556,13 +782,26 @@ namespace TestAPI
 						{
 							string imageBase64 = jsonObj.Imagen;
 							byte[] imageBytes = Convert.FromBase64String(imageBase64);
-							int totalObjetos = jsonObj.TotalObjetos;
+
+							int totalObjetos = 0;
+							try { totalObjetos = jsonObj.TotalObjetos; } catch { }
 
 							List<ResultadoMomentosHu> momentosHu = null;
-							if (jsonObj.MomentosHu != null)
+							if (jsonObj.MomentosHu != null && ((Newtonsoft.Json.Linq.JArray)jsonObj.MomentosHu).Count > 0)
 							{
-								momentosHu = JsonConvert.DeserializeObject<List<ResultadoMomentosHu>>(
-									jsonObj.MomentosHu.ToString());
+								try
+								{
+									momentosHu = JsonConvert.DeserializeObject<List<ResultadoMomentosHu>>(
+										jsonObj.MomentosHu.ToString());
+								}
+								catch
+								{
+									momentosHu = new List<ResultadoMomentosHu>();
+								}
+							}
+							else
+							{
+								momentosHu = new List<ResultadoMomentosHu>();
 							}
 
 							using (MemoryStream imageStream = new MemoryStream(imageBytes))
@@ -579,14 +818,15 @@ namespace TestAPI
 					}
 					else
 					{
-						throw new Exception($"Error: {response.ReasonPhrase}");
+						var errorContent = await response.Content.ReadAsStringAsync();
+						throw new Exception($"Error: {response.StatusCode} - {response.ReasonPhrase}. Detalles: {errorContent}");
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Error: " + ex.Message);
-				throw;
+				Console.WriteLine("Error en EnviarMultiplesImagenes: " + ex.Message);
+				throw new Exception($"Error al procesar múltiples imágenes: {ex.Message}", ex);
 			}
 
 			return resultados;

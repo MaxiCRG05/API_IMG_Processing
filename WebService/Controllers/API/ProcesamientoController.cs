@@ -28,7 +28,16 @@ namespace WebService.Controllers
 
 				var file = provider.Contents.First();
 				var stream = await file.ReadAsStreamAsync();
-				Bitmap image = new Bitmap(stream);
+
+				Bitmap originalImage = new Bitmap(stream);
+				Bitmap image = new Bitmap(originalImage.Width, originalImage.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+				using (Graphics g = Graphics.FromImage(image))
+				{
+					g.DrawImage(originalImage, 0, 0, originalImage.Width, originalImage.Height);
+				}
+
+				originalImage.Dispose();
 
 				Bitmap gris = MetodosProcesamiento.Escala_Grises(image);
 
@@ -40,11 +49,14 @@ namespace WebService.Controllers
 				result.Content = new StreamContent(ms);
 				result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
 
+				image.Dispose();
+				gris.Dispose();
+
 				return result;
 			}
 			catch (Exception e)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Error en EscalaGrises: " + e.Message);
 			}
 		}
 
@@ -325,31 +337,31 @@ namespace WebService.Controllers
 		[ActionName("MultiplesEscalaGrises")]
 		public async Task<HttpResponseMessage> MultiplesEscalaGrises()
 		{
-			return await ProcesarMultiplesImagenes(MetodosProcesamiento.Escala_Grises);
+			return await ProcesarMultiplesImagenesJson(MetodosProcesamiento.Escala_Grises);
 		}
 
 		[HttpPost]
 		[ActionName("MultiplesBinarizar")]
 		public async Task<HttpResponseMessage> MultiplesBinarizar()
 		{
-			return await ProcesarMultiplesImagenes(MetodosProcesamiento.Binarizar);
+			return await ProcesarMultiplesImagenesJson(MetodosProcesamiento.Binarizar);
 		}
 
 		[HttpPost]
 		[ActionName("MultiplesDetectarBordes")]
 		public async Task<HttpResponseMessage> MultiplesDetectarBordes()
 		{
-			return await ProcesarMultiplesImagenes(MetodosProcesamiento.Detectar_Bordes);
+			return await ProcesarMultiplesImagenesJson(MetodosProcesamiento.Detectar_Bordes);
 		}
 
 		[HttpPost]
 		[ActionName("MultiplesEtiquetado")]
 		public async Task<HttpResponseMessage> MultiplesEtiquetado()
 		{
-			return await ProcesarMultiplesImagenes(MetodosProcesamiento.Etiquetado);
+			return await ProcesarMultiplesImagenesJson(MetodosProcesamiento.Etiquetado);
 		}
 
-		private async Task<HttpResponseMessage> ProcesarMultiplesImagenes(Func<Bitmap, Bitmap> funcionProcesamiento)
+		private async Task<HttpResponseMessage> ProcesarMultiplesImagenesJson(Func<Bitmap, Bitmap> funcionProcesamiento)
 		{
 			try
 			{
@@ -359,7 +371,7 @@ namespace WebService.Controllers
 				var provider = new MultipartMemoryStreamProvider();
 				await Request.Content.ReadAsMultipartAsync(provider);
 
-				var imageStreams = new List<MemoryStream>();
+				var resultados = new List<object>();
 
 				foreach (var file in provider.Contents)
 				{
@@ -367,24 +379,26 @@ namespace WebService.Controllers
 					using (Bitmap originalImage = new Bitmap(stream))
 					{
 						Bitmap procesada = funcionProcesamiento(originalImage);
-						MemoryStream ms = new MemoryStream();
-						procesada.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-						ms.Position = 0;
-						imageStreams.Add(ms);
+
+						using (MemoryStream ms = new MemoryStream())
+						{
+							procesada.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+							string imageBase64 = Convert.ToBase64String(ms.ToArray());
+
+							resultados.Add(new
+							{
+								Imagen = imageBase64,
+								TotalObjetos = 0,
+								MomentosHu = new List<object>()
+							});
+						}
+
 						procesada.Dispose();
 					}
 				}
 
-				// Devolver todas las imágenes procesadas (esto es un ejemplo simple)
-				// En una implementación real, podrías devolver un ZIP o otra estructura
-				var result = new HttpResponseMessage(HttpStatusCode.OK);
-				// Nota: Esta implementación devuelve solo la primera imagen por simplicidad
-				// Para múltiples imágenes necesitarías un formato diferente
-				if (imageStreams.Count > 0)
-				{
-					result.Content = new StreamContent(imageStreams[0]);
-					result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-				}
+				HttpResponseMessage result = Request.CreateResponse(HttpStatusCode.OK, resultados);
+				result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
 				return result;
 			}

@@ -53,6 +53,9 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.lblTxt = new System.Windows.Forms.Label();
 			this.lblImgs = new System.Windows.Forms.Label();
+			this.btnPrev = new System.Windows.Forms.Button();
+			this.btnProx = new System.Windows.Forms.Button();
+			this.btnDel = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tabla)).BeginInit();
@@ -284,11 +287,44 @@
 			this.lblImgs.Size = new System.Drawing.Size(0, 13);
 			this.lblImgs.TabIndex = 16;
 			// 
+			// btnPrev
+			// 
+			this.btnPrev.Location = new System.Drawing.Point(707, 348);
+			this.btnPrev.Name = "btnPrev";
+			this.btnPrev.Size = new System.Drawing.Size(30, 23);
+			this.btnPrev.TabIndex = 17;
+			this.btnPrev.Text = "<";
+			this.btnPrev.UseVisualStyleBackColor = true;
+			this.btnPrev.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnPrev_MouseClick);
+			// 
+			// btnProx
+			// 
+			this.btnProx.Location = new System.Drawing.Point(786, 348);
+			this.btnProx.Name = "btnProx";
+			this.btnProx.Size = new System.Drawing.Size(28, 23);
+			this.btnProx.TabIndex = 18;
+			this.btnProx.Text = ">";
+			this.btnProx.UseVisualStyleBackColor = true;
+			this.btnProx.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnProx_MouseClick);
+			// 
+			// btnDel
+			// 
+			this.btnDel.Location = new System.Drawing.Point(743, 348);
+			this.btnDel.Name = "btnDel";
+			this.btnDel.Size = new System.Drawing.Size(37, 23);
+			this.btnDel.TabIndex = 19;
+			this.btnDel.Text = "X";
+			this.btnDel.UseVisualStyleBackColor = true;
+			this.btnDel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnDel_MouseClick);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1187, 715);
+			this.Controls.Add(this.btnDel);
+			this.Controls.Add(this.btnProx);
+			this.Controls.Add(this.btnPrev);
 			this.Controls.Add(this.lblImgs);
 			this.Controls.Add(this.lblTxt);
 			this.Controls.Add(this.button1);
@@ -347,6 +383,9 @@
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Label lblTxt;
 		private System.Windows.Forms.Label lblImgs;
+		private System.Windows.Forms.Button btnPrev;
+		private System.Windows.Forms.Button btnProx;
+		private System.Windows.Forms.Button btnDel;
 	}
 }
 
