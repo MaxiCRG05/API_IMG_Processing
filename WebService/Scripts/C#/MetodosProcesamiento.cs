@@ -11,7 +11,6 @@ using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
 using WebService.Data;
-using WebService.Models;
 
 namespace WebService.Scripts
 {
@@ -24,9 +23,7 @@ namespace WebService.Scripts
 	public static class MetodosProcesamiento
 	{
 		private const int salTam = 16;
-
 		private const int hashTam = 32;
-
 		private const int repeticiones = 10000;
 
 		public static string GenerarToken()
@@ -75,7 +72,7 @@ namespace WebService.Scripts
 
 		public static Bitmap Escala_Grises(Bitmap btm)
 		{
-			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
 			using (Graphics g = Graphics.FromImage(imagenFormato))
 			{
 				g.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height));
@@ -104,7 +101,7 @@ namespace WebService.Scripts
 					byte G = bytedata[currentPixel + 1];
 					byte R = bytedata[currentPixel + 2];
 
-					byte gris = (byte)(0.3 * R + 0.6 * G + 0.1 * B);
+					byte gris = (byte)((R + G + B) / 3);
 
 					bytedata[currentPixel] = bytedata[currentPixel + 1] = bytedata[currentPixel + 2] = gris;
 				}
@@ -118,42 +115,53 @@ namespace WebService.Scripts
 
 		public static Bitmap Binarizar(Bitmap btm)
 		{
-			btm = Escala_Grises(btm);
-			BitmapData bmpdata = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height),
-											ImageLockMode.ReadWrite, btm.PixelFormat);
-			int numbytes = bmpdata.Stride * btm.Height;
+			bool[,] mascaraCambios = ObtenerMascaraCambiosColor(btm);
+
+			Bitmap imagenBinaria = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
+
+			mascaraCambios = AplicarOperacionesMorfologicas(mascaraCambios);
+
+			BitmapData bmpdata = imagenBinaria.LockBits(
+				new Rectangle(0, 0, imagenBinaria.Width, imagenBinaria.Height),
+				ImageLockMode.ReadWrite,
+				imagenBinaria.PixelFormat
+			);
+
+			int numbytes = bmpdata.Stride * imagenBinaria.Height;
 			byte[] bytedata = new byte[numbytes];
 			IntPtr arregloImagen = bmpdata.Scan0;
 
-			Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
-
-			long sum = 0;
-			int pixelCount = 0;
-
 			for (int i = 0; i < numbytes; i += 4)
 			{
-				sum += bytedata[i];
-				pixelCount++;
+				bytedata[i] = 0;    
+				bytedata[i + 1] = 0; 
+				bytedata[i + 2] = 0; 
+				bytedata[i + 3] = 255; 
 			}
 
-			byte promedioBrillo = (byte)(sum / pixelCount);
-			byte umbral = CalcularUmbralOtsu(bytedata, btm.Width, btm.Height, bmpdata.Stride);
-
-			for (int i = 0; i < numbytes; i += 4)
+			for (int y = 0; y < imagenBinaria.Height; y++)
 			{
-				byte bwValue = bytedata[i] > umbral ? (byte)0 : (byte)255;
-				bytedata[i] = bytedata[i + 1] = bytedata[i + 2] = bwValue;
+				for (int x = 0; x < imagenBinaria.Width; x++)
+				{
+					if (mascaraCambios[y, x])
+					{
+						int currentPixel = y * bmpdata.Stride + x * 4;
+						bytedata[currentPixel] = 255;
+						bytedata[currentPixel + 1] = 255; 
+						bytedata[currentPixel + 2] = 255; 
+					}
+				}
 			}
 
 			Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
-			btm.UnlockBits(bmpdata);
+			imagenBinaria.UnlockBits(bmpdata);
 
-			return btm;
+			return imagenBinaria;
 		}
 
 		public static Bitmap Detectar_Bordes(Bitmap btm)
 		{
-			btm = Escala_Grises(btm);
+			btm = DetectarCambiosColor(btm);
 			BitmapData bmpdata = btm.LockBits(new Rectangle(0, 0, btm.Width, btm.Height),
 												ImageLockMode.ReadWrite, btm.PixelFormat);
 			int numbytes = bmpdata.Stride * btm.Height;
@@ -702,6 +710,167 @@ namespace WebService.Scripts
 				.Replace(" ", "_")
 				.Where(c => !invalidos.Contains(c))
 				.ToArray());
+		}
+
+		public static Bitmap DetectarCambiosColor(Bitmap btm, int umbralColor = 50)
+		{
+			bool[,] mascara = ObtenerMascaraCambiosColor(btm, umbralColor);
+
+			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
+
+			BitmapData bmpdata = imagenFormato.LockBits(
+				new Rectangle(0, 0, imagenFormato.Width, imagenFormato.Height),
+				ImageLockMode.ReadWrite,
+				imagenFormato.PixelFormat
+			);
+
+			int numbytes = bmpdata.Stride * imagenFormato.Height;
+			byte[] bytedata = new byte[numbytes];
+			IntPtr arregloImagen = bmpdata.Scan0;
+
+			for (int i = 0; i < numbytes; i += 4)
+			{
+				bytedata[i] = 0;
+				bytedata[i + 1] = 0;
+				bytedata[i + 2] = 0;
+				bytedata[i + 3] = 255;
+			}
+
+			for (int y = 0; y < imagenFormato.Height; y++)
+			{
+				for (int x = 0; x < imagenFormato.Width; x++)
+				{
+					if (mascara[y, x])
+					{
+						Color pixelColor = btm.GetPixel(x, y);
+						int currentPixel = y * bmpdata.Stride + x * 4;
+
+						bytedata[currentPixel] = pixelColor.B;
+						bytedata[currentPixel + 1] = pixelColor.G;
+						bytedata[currentPixel + 2] = pixelColor.R;
+					}
+				}
+			}
+
+			Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
+			imagenFormato.UnlockBits(bmpdata);
+
+			return imagenFormato;
+		}
+
+		private static bool[,] ObtenerMascaraCambiosColor(Bitmap btm, int umbralColor = 50)
+		{
+			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
+			using (Graphics g = Graphics.FromImage(imagenFormato))
+			{
+				g.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height));
+			}
+
+			BitmapData bmpdata = imagenFormato.LockBits(
+				new Rectangle(0, 0, imagenFormato.Width, imagenFormato.Height),
+				ImageLockMode.ReadOnly,
+				imagenFormato.PixelFormat
+			);
+
+			int numbytes = bmpdata.Stride * imagenFormato.Height;
+			byte[] bytedata = new byte[numbytes];
+			IntPtr arregloImagen = bmpdata.Scan0;
+
+			Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
+
+			bool[,] mascara = new bool[imagenFormato.Height, imagenFormato.Width];
+
+			for (int y = 1; y < imagenFormato.Height - 1; y++)
+			{
+				for (int x = 1; x < imagenFormato.Width - 1; x++)
+				{
+					int currentPixel = y * bmpdata.Stride + x * 4;
+
+					byte R = bytedata[currentPixel + 2];
+					byte G = bytedata[currentPixel + 1];
+					byte B = bytedata[currentPixel];
+
+					int cambiosDetectados = 0;
+
+					for (int ky = -1; ky <= 1; ky++)
+					{
+						for (int kx = -1; kx <= 1; kx++)
+						{
+							if (kx == 0 && ky == 0) continue; 
+
+							int neighborX = x + kx;
+							int neighborY = y + ky;
+
+							if (neighborX >= 0 && neighborX < imagenFormato.Width &&
+								neighborY >= 0 && neighborY < imagenFormato.Height)
+							{
+								int neighborPixel = neighborY * bmpdata.Stride + neighborX * 4;
+
+								byte R_neighbor = bytedata[neighborPixel + 2];
+								byte G_neighbor = bytedata[neighborPixel + 1];
+								byte B_neighbor = bytedata[neighborPixel];
+
+								double diff = Math.Sqrt(
+									Math.Pow(R - R_neighbor, 2) +
+									Math.Pow(G - G_neighbor, 2) +
+									Math.Pow(B - B_neighbor, 2)
+								);
+
+								if (diff > umbralColor)
+								{
+									cambiosDetectados++;
+								}
+							}
+						}
+					}
+
+					if (cambiosDetectados >= 2)
+					{
+						mascara[y, x] = true;
+					}
+				}
+			}
+
+			imagenFormato.UnlockBits(bmpdata);
+			return mascara;
+		}
+
+		private static bool[,] AplicarOperacionesMorfologicas(bool[,] mascara)
+		{
+			int height = mascara.GetLength(0);
+			int width = mascara.GetLength(1);
+			bool[,] resultado = new bool[height, width];
+
+			for (int y = 1; y < height - 1; y++)
+			{
+				for (int x = 1; x < width - 1; x++)
+				{
+					if (mascara[y, x] ||
+						mascara[y - 1, x] || mascara[y + 1, x] ||
+						mascara[y, x - 1] || mascara[y, x + 1] ||
+						mascara[y - 1, x - 1] || mascara[y - 1, x + 1] ||
+						mascara[y + 1, x - 1] || mascara[y + 1, x + 1])
+					{
+						resultado[y, x] = true;
+					}
+				}
+			}
+
+			bool[,] cerrado = new bool[height, width];
+			for (int y = 1; y < height - 1; y++)
+			{
+				for (int x = 1; x < width - 1; x++)
+				{
+					if (resultado[y, x] &&
+						resultado[y - 1, x] && resultado[y + 1, x] &&
+						resultado[y, x - 1] && resultado[y, x + 1])
+					{
+						cerrado[y, x] = true;
+					}
+				}
+			}
+
+			return cerrado;
 		}
 	}
 

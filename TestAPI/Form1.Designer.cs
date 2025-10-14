@@ -56,6 +56,7 @@
 			this.btnPrev = new System.Windows.Forms.Button();
 			this.btnProx = new System.Windows.Forms.Button();
 			this.btnDel = new System.Windows.Forms.Button();
+			this.btnDescargarImgs = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.imgEnviar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgRecibir)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tabla)).BeginInit();
@@ -317,11 +318,22 @@
 			this.btnDel.UseVisualStyleBackColor = true;
 			this.btnDel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnDel_MouseClick);
 			// 
+			// btnDescargarImgs
+			// 
+			this.btnDescargarImgs.Location = new System.Drawing.Point(228, 307);
+			this.btnDescargarImgs.Name = "btnDescargarImgs";
+			this.btnDescargarImgs.Size = new System.Drawing.Size(88, 59);
+			this.btnDescargarImgs.TabIndex = 20;
+			this.btnDescargarImgs.Text = "DESCARGAR IMÁGENES PROCESADAS";
+			this.btnDescargarImgs.UseVisualStyleBackColor = true;
+			this.btnDescargarImgs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnDescargarImgs_MouseClick);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1187, 715);
+			this.Controls.Add(this.btnDescargarImgs);
 			this.Controls.Add(this.btnDel);
 			this.Controls.Add(this.btnProx);
 			this.Controls.Add(this.btnPrev);
@@ -386,6 +398,7 @@
 		private System.Windows.Forms.Button btnPrev;
 		private System.Windows.Forms.Button btnProx;
 		private System.Windows.Forms.Button btnDel;
+		private System.Windows.Forms.Button btnDescargarImgs;
 	}
 }
 

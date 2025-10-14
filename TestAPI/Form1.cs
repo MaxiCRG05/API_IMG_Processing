@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic;
 
 namespace TestAPI
 {
@@ -107,7 +108,6 @@ namespace TestAPI
 		private void CrearAPI(string url)
 		{
 			api = new API(url);
-			Console.WriteLine("API creada con URL: " + url);
 		}
 
 		private System.Drawing.Imaging.ImageCodecInfo GetEncoderInfo(string mimeType)
@@ -444,6 +444,297 @@ namespace TestAPI
 
 			ActualizarEstadoBotones();
 			VerificarEnviar();
+		}
+
+		private void btnDescargarImgs_MouseClick(object sender, MouseEventArgs e)
+		{
+			try
+			{
+				if (btm_cargadas.Count == 0 && imagenesProcesadas.Count == 0)
+				{
+					MessageBox.Show("No hay imágenes para descargar.", "Advertencia",
+								  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					return;
+				}
+
+				string nombreBase = ObtenerNombreBase();
+				if (string.IsNullOrEmpty(nombreBase))
+				{
+					return;
+				}
+
+				var tiposSeleccionados = MostrarDialogoTiposImagen();
+				if (tiposSeleccionados == null)
+				{
+					return;
+				}
+
+				using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+				{
+					folderDialog.Description = "Seleccionar carpeta donde guardar las imágenes";
+					folderDialog.ShowNewFolderButton = true;
+					folderDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+					if (folderDialog.ShowDialog() == DialogResult.OK)
+					{
+						string baseFolder = folderDialog.SelectedPath;
+						string carpetaDestino = Path.Combine(baseFolder, $"{nombreBase}_{DateTime.Now:yyyyMMddHHmmss}");
+
+						Directory.CreateDirectory(carpetaDestino);
+
+						int contadorGuardadas = 0;
+
+						string carpetaOriginal = Path.Combine(carpetaDestino, "Original");
+						string carpetaProcesada = Path.Combine(carpetaDestino, "Procesada");
+
+						if (tiposSeleccionados.Value.GuardarOriginales && btm_cargadas.Count > 0)
+						{
+							Directory.CreateDirectory(carpetaOriginal);
+						}
+
+						if (tiposSeleccionados.Value.GuardarProcesadas && imagenesProcesadas.Count > 0)
+						{
+							Directory.CreateDirectory(carpetaProcesada);
+						}
+
+						if (tiposSeleccionados.Value.GuardarOriginales)
+						{
+							for (int i = 0; i < btm_cargadas.Count; i++)
+							{
+								try
+								{
+									string nombreArchivo = $"{nombreBase}_{i + 1}.png";
+									string rutaCompleta = Path.Combine(carpetaOriginal, nombreArchivo);
+									btm_cargadas[i].Save(rutaCompleta, System.Drawing.Imaging.ImageFormat.Png);
+									contadorGuardadas++;
+								}
+								catch (Exception ex)
+								{
+									MessageBox.Show($"Error al guardar imagen original {i + 1}: {ex.Message}",
+												  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+								}
+							}
+						}
+
+						if (tiposSeleccionados.Value.GuardarProcesadas)
+						{
+							for (int i = 0; i < imagenesProcesadas.Count; i++)
+							{
+								try
+								{
+									string nombreArchivo = $"{nombreBase}_{i + 1}.png";
+									string rutaCompleta = Path.Combine(carpetaProcesada, nombreArchivo);
+									imagenesProcesadas[i].Save(rutaCompleta, System.Drawing.Imaging.ImageFormat.Png);
+									contadorGuardadas++;
+								}
+								catch (Exception ex)
+								{
+									MessageBox.Show($"Error al guardar imagen procesada {i + 1}: {ex.Message}",
+												  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+								}
+							}
+						}
+
+						if (tiposSeleccionados.Value.GuardarProcesadas && api.GetMomentosHu().Count > 0 && opcion == 4)
+						{
+							string archivoHu = Path.Combine(carpetaDestino, $"{nombreBase}_momentos_hu.hu");
+							Globales.GuardarMomentosHu(api.GetMomentosHu(), archivoHu);
+						}
+
+						if (contadorGuardadas > 0)
+						{
+							string mensaje = $"{contadorGuardadas} imágenes guardadas correctamente en:\n{carpetaDestino}";
+
+							List<string> detalles = new List<string>();
+							if (tiposSeleccionados.Value.GuardarOriginales && btm_cargadas.Count > 0)
+								detalles.Add($"{btm_cargadas.Count} originales en carpeta 'Original'");
+							if (tiposSeleccionados.Value.GuardarProcesadas && imagenesProcesadas.Count > 0)
+								detalles.Add($"{imagenesProcesadas.Count} procesadas en carpeta 'Procesada'");
+
+							if (detalles.Count > 0)
+							{
+								mensaje += $"\n\n{string.Join("\n", detalles)}";
+							}
+
+							MessageBox.Show(mensaje, "Descarga Exitosa",
+										  MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+							Process.Start("explorer.exe", carpetaDestino);
+						}
+						else
+						{
+							MessageBox.Show("No se guardó ninguna imagen.", "Información",
+										  MessageBoxButtons.OK, MessageBoxIcon.Information);
+							if (Directory.Exists(carpetaDestino) &&
+								!Directory.EnumerateFileSystemEntries(carpetaDestino).Any())
+							{
+								Directory.Delete(carpetaDestino);
+							}
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Error durante la descarga: {ex.Message}", "Error",
+							  MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private string ObtenerNombreBase()
+		{
+			using (Form inputForm = new Form())
+			{
+				inputForm.Text = "Nombre base para las imágenes";
+				inputForm.Size = new Size(350, 150);
+				inputForm.StartPosition = FormStartPosition.CenterParent;
+				inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+				inputForm.MaximizeBox = false;
+				inputForm.MinimizeBox = false;
+
+				Label label = new Label()
+				{
+					Text = "Ingrese el nombre base para las imágenes:",
+					Location = new Point(10, 10),
+					Size = new Size(300, 20)
+				};
+
+				TextBox textBox = new TextBox()
+				{
+					Location = new Point(10, 35),
+					Size = new Size(300, 20),
+					Text = "Imagen"
+				};
+
+				Button okButton = new Button()
+				{
+					Text = "Aceptar",
+					Location = new Point(150, 70),
+					Size = new Size(75, 25),
+					DialogResult = DialogResult.OK
+				};
+
+				Button cancelButton = new Button()
+				{
+					Text = "Cancelar",
+					Location = new Point(235, 70),
+					Size = new Size(75, 25),
+					DialogResult = DialogResult.Cancel
+				};
+
+				inputForm.Controls.Add(label);
+				inputForm.Controls.Add(textBox);
+				inputForm.Controls.Add(okButton);
+				inputForm.Controls.Add(cancelButton);
+
+				inputForm.AcceptButton = okButton;
+				inputForm.CancelButton = cancelButton;
+
+				textBox.SelectAll();
+
+				if (inputForm.ShowDialog() == DialogResult.OK)
+				{
+					string nombre = textBox.Text.Trim();
+
+					if (string.IsNullOrEmpty(nombre))
+					{
+						MessageBox.Show("El nombre no puede estar vacío.", "Error",
+									  MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return ObtenerNombreBase(); 
+					}
+
+					foreach (char c in Path.GetInvalidFileNameChars())
+					{
+						nombre = nombre.Replace(c, '_');
+					}
+
+					return nombre;
+				}
+
+				return null;
+			}
+		}
+
+		private (bool GuardarOriginales, bool GuardarProcesadas)? MostrarDialogoTiposImagen()
+		{
+			using (Form formTipos = new Form())
+			{
+				formTipos.Text = "Seleccionar tipos de imágenes a guardar";
+				formTipos.Size = new Size(350, 200);
+				formTipos.StartPosition = FormStartPosition.CenterParent;
+				formTipos.FormBorderStyle = FormBorderStyle.FixedDialog;
+				formTipos.MaximizeBox = false;
+				formTipos.MinimizeBox = false;
+
+				Label label = new Label()
+				{
+					Text = "Seleccione qué tipos de imágenes desea guardar:",
+					Location = new Point(10, 10),
+					Size = new Size(300, 20)
+				};
+
+				CheckBox chkOriginales = new CheckBox()
+				{
+					Text = $"Imágenes originales ({btm_cargadas.Count} imágenes)",
+					Location = new Point(10, 40),
+					Size = new Size(250, 20),
+					Checked = btm_cargadas.Count > 0,
+					Enabled = btm_cargadas.Count > 0
+				};
+
+				CheckBox chkProcesadas = new CheckBox()
+				{
+					Text = $"Imágenes procesadas ({imagenesProcesadas.Count} imágenes)",
+					Location = new Point(10, 70),
+					Size = new Size(250, 20),
+					Checked = imagenesProcesadas.Count > 0,
+					Enabled = imagenesProcesadas.Count > 0
+				};
+
+				Button okButton = new Button()
+				{
+					Text = "Aceptar",
+					Location = new Point(150, 110),
+					Size = new Size(75, 25),
+					DialogResult = DialogResult.OK
+				};
+
+				Button cancelButton = new Button()
+				{
+					Text = "Cancelar",
+					Location = new Point(235, 110),
+					Size = new Size(75, 25),
+					DialogResult = DialogResult.Cancel
+				};
+
+				formTipos.Controls.Add(label);
+				formTipos.Controls.Add(chkOriginales);
+				formTipos.Controls.Add(chkProcesadas);
+				formTipos.Controls.Add(okButton);
+				formTipos.Controls.Add(cancelButton);
+
+				formTipos.AcceptButton = okButton;
+				formTipos.CancelButton = cancelButton;
+
+				okButton.Click += (s, e) =>
+				{
+					if (!chkOriginales.Checked && !chkProcesadas.Checked)
+					{
+						MessageBox.Show("Debe seleccionar al menos un tipo de imagen para guardar.",
+									  "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						return;
+					}
+					formTipos.DialogResult = DialogResult.OK;
+					formTipos.Close();
+				};
+
+				if (formTipos.ShowDialog() == DialogResult.OK)
+				{
+					return (chkOriginales.Checked, chkProcesadas.Checked);
+				}
+
+				return null;
+			}
 		}
 
 		private void cbOpciones_SelectedIndexChanged(object sender, EventArgs e)
