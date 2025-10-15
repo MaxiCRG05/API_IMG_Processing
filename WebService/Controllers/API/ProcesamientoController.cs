@@ -254,82 +254,91 @@ namespace WebService.Controllers
 				if (!Request.Content.IsMimeMultipartContent())
 					throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
 
-				var provider = new MultipartMemoryStreamProvider();
-				await Request.Content.ReadAsMultipartAsync(provider);
+				var provider = new MultipartFormDataStreamProvider(Path.GetTempPath());
+				var result = await Request.Content.ReadAsMultipartAsync(provider);
 
 				var resultados = new List<object>();
 
-				foreach (var file in provider.Contents)
+				foreach (var file in result.FileData)
 				{
-					using (var stream = await file.ReadAsStreamAsync())
-					using (Bitmap originalImage = new Bitmap(stream))
+					try
 					{
-						List<ResultadoMomentosHu> momentosHu = MetodosProcesamiento.CalcularMomentosHuPorObjeto(originalImage);
-						int totalObjetos = momentosHu.Count;
-
-						Bitmap invariancias = new Bitmap(MetodosProcesamiento.Binarizar(originalImage));
-
-						using (Graphics g = Graphics.FromImage(invariancias))
+						using (var stream = new FileStream(file.LocalFileName, FileMode.Open))
+						using (Bitmap originalImage = new Bitmap(stream))
 						{
-							Pen redPen = new Pen(Color.Red, 3);
-							Font font = new Font("Arial", 12, FontStyle.Bold);
-							Brush redBrush = new SolidBrush(Color.Red);
+							List<ResultadoMomentosHu> momentosHu = MetodosProcesamiento.CalcularMomentosHuPorObjeto(originalImage);
+							int totalObjetos = momentosHu.Count;
 
-							foreach (var momento in momentosHu)
+							Bitmap invariancias = new Bitmap(MetodosProcesamiento.Binarizar(originalImage));
+
+							using (Graphics g = Graphics.FromImage(invariancias))
 							{
-								PointF center = momento.Center;
-								float radius = 10;
+								Pen redPen = new Pen(Color.Red, 3);
+								Font font = new Font("Arial", 12, FontStyle.Bold);
+								Brush redBrush = new SolidBrush(Color.Red);
 
-								g.DrawEllipse(redPen, center.X - radius, center.Y - radius,
-											radius * 2, radius * 2);
+								foreach (var momento in momentosHu)
+								{
+									PointF center = momento.Center;
+									float radius = 10;
 
-								float xSize = 8;
-								g.DrawLine(redPen, center.X - xSize, center.Y - xSize,
-										center.X + xSize, center.Y + xSize);
-								g.DrawLine(redPen, center.X - xSize, center.Y + xSize,
-										center.X + xSize, center.Y - xSize);
+									g.DrawEllipse(redPen, center.X - radius, center.Y - radius,
+												radius * 2, radius * 2);
 
-								int index = momentosHu.IndexOf(momento) + 1;
-								g.DrawString(index.ToString(), font, redBrush,
-											center.X + radius + 2, center.Y - radius - 2);
+									float xSize = 8;
+									g.DrawLine(redPen, center.X - xSize, center.Y - xSize,
+											center.X + xSize, center.Y + xSize);
+									g.DrawLine(redPen, center.X - xSize, center.Y + xSize,
+											center.X + xSize, center.Y - xSize);
+
+									int index = momentosHu.IndexOf(momento) + 1;
+									g.DrawString(index.ToString(), font, redBrush,
+												center.X + radius + 2, center.Y - radius - 2);
+								}
+
+								string textoTotal = $"Total objetos: {totalObjetos}";
+								SizeF textSize = g.MeasureString(textoTotal, font);
+								g.DrawString(textoTotal, font, redBrush,
+											invariancias.Width - textSize.Width - 10,
+											invariancias.Height - textSize.Height - 10);
 							}
 
-							string textoTotal = $"Total objetos: {totalObjetos}";
-							SizeF textSize = g.MeasureString(textoTotal, font);
-							g.DrawString(textoTotal, font, redBrush,
-										invariancias.Width - textSize.Width - 10,
-										invariancias.Height - textSize.Height - 10);
-						}
-
-						using (MemoryStream ms = new MemoryStream())
-						{
-							invariancias.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-							string imageBase64 = Convert.ToBase64String(ms.ToArray());
-
-							resultados.Add(new
+							using (MemoryStream ms = new MemoryStream())
 							{
-								Imagen = imageBase64,
-								TotalObjetos = totalObjetos,
-								MomentosHu = momentosHu.Select(m => new
-								{
-									Moments = m.Moments,
-									Center = new { X = m.Center.X, Y = m.Center.Y }
-								}).ToList()
-							});
-						}
+								invariancias.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+								string imageBase64 = Convert.ToBase64String(ms.ToArray());
 
-						invariancias.Dispose();
+								resultados.Add(new
+								{
+									Imagen = imageBase64,
+									TotalObjetos = totalObjetos,
+									MomentosHu = momentosHu.Select(m => new
+									{
+										Moments = m.Moments,
+										Center = new { X = m.Center.X, Y = m.Center.Y }
+									}).ToList()
+								});
+							}
+
+							invariancias.Dispose();
+						}
+						
+						File.Delete(file.LocalFileName);
+					}
+					catch(Exception ex)
+					{
+						System.Diagnostics.Debug.WriteLine($"Error procesando archivo {file.Headers.ContentDisposition.FileName}: {ex.Message}");
 					}
 				}
 
-				HttpResponseMessage result = Request.CreateResponse(HttpStatusCode.OK, resultados);
-				result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-				return result;
+				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, resultados);
+				response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+				return response;
 			}
 			catch (Exception e)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+					$"Error en MultiplesInvariantesHu: {e.Message} - {e.InnerException?.Message}");
 			}
 		}
 
@@ -368,43 +377,50 @@ namespace WebService.Controllers
 				if (!Request.Content.IsMimeMultipartContent())
 					throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
 
-				var provider = new MultipartMemoryStreamProvider();
-				await Request.Content.ReadAsMultipartAsync(provider);
+				var provider = new MultipartFormDataStreamProvider(Path.GetTempPath());
+				var result = await Request.Content.ReadAsMultipartAsync(provider);
 
 				var resultados = new List<object>();
 
-				foreach (var file in provider.Contents)
+				foreach (var file in result.FileData)
 				{
-					using (var stream = await file.ReadAsStreamAsync())
-					using (Bitmap originalImage = new Bitmap(stream))
+					try
 					{
-						Bitmap procesada = funcionProcesamiento(originalImage);
-
-						using (MemoryStream ms = new MemoryStream())
+						using (var stream = new FileStream(file.LocalFileName, FileMode.Open))
+						using (Bitmap originalImage = new Bitmap(stream))
+						using (Bitmap procesada = funcionProcesamiento(originalImage))
 						{
-							procesada.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-							string imageBase64 = Convert.ToBase64String(ms.ToArray());
-
-							resultados.Add(new
+							using (MemoryStream ms = new MemoryStream())
 							{
-								Imagen = imageBase64,
-								TotalObjetos = 0,
-								MomentosHu = new List<object>()
-							});
+								procesada.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+								string imageBase64 = Convert.ToBase64String(ms.ToArray());
+
+								resultados.Add(new
+								{
+									Imagen = imageBase64,
+									TotalObjetos = 0,
+									MomentosHu = new List<object>()
+								});
+							}
 						}
 
-						procesada.Dispose();
+						File.Delete(file.LocalFileName);
+					}
+					catch (Exception ex)
+					{
+						System.Diagnostics.Debug.WriteLine($"Error procesando archivo: {ex.Message}");
+						continue;
 					}
 				}
 
-				HttpResponseMessage result = Request.CreateResponse(HttpStatusCode.OK, resultados);
-				result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-				return result;
+				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, resultados);
+				response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+				return response;
 			}
 			catch (Exception e)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+					$"Error en ProcesarMultiplesImagenesJson: {e.Message}");
 			}
 		}
 	}

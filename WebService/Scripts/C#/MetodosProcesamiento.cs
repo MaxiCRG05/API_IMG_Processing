@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebService.Data;
@@ -73,6 +74,7 @@ namespace WebService.Scripts
 		public static Bitmap Escala_Grises(Bitmap btm)
 		{
 			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
+
 			using (Graphics g = Graphics.FromImage(imagenFormato))
 			{
 				g.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height));
@@ -84,77 +86,114 @@ namespace WebService.Scripts
 				imagenFormato.PixelFormat
 			);
 
-			int numbytes = bmpdata.Stride * imagenFormato.Height;
-			byte[] bytedata = new byte[numbytes];
-			IntPtr arregloImagen = bmpdata.Scan0;
-
-			Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
-
-			for (int y = 0; y < imagenFormato.Height; y++)
+			try
 			{
-				int currentLine = y * bmpdata.Stride;
-				for (int x = 0; x < imagenFormato.Width; x++)
+				int numbytes = bmpdata.Stride * imagenFormato.Height;
+				byte[] bytedata = new byte[numbytes];
+				IntPtr arregloImagen = bmpdata.Scan0;
+
+				Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
+
+				Parallel.For(0, imagenFormato.Height, y =>
 				{
-					int currentPixel = currentLine + x * 4;
+					int currentLine = y * bmpdata.Stride;
+					for (int x = 0; x < imagenFormato.Width; x++)
+					{
+						int currentPixel = currentLine + x * 4;
 
-					byte B = bytedata[currentPixel];
-					byte G = bytedata[currentPixel + 1];
-					byte R = bytedata[currentPixel + 2];
+						byte B = bytedata[currentPixel];
+						byte G = bytedata[currentPixel + 1];
+						byte R = bytedata[currentPixel + 2];
 
-					byte gris = (byte)((R + G + B) / 3);
+						byte gris = (byte)((R * 0.299 + G * 0.587 + B * 0.114));
 
-					bytedata[currentPixel] = bytedata[currentPixel + 1] = bytedata[currentPixel + 2] = gris;
-				}
+						bytedata[currentPixel] = gris;    
+						bytedata[currentPixel + 1] = gris;
+						bytedata[currentPixel + 2] = gris; 
+														   
+					}
+				});
+
+				Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
 			}
-
-			Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
-			imagenFormato.UnlockBits(bmpdata);
+			finally
+			{
+				imagenFormato.UnlockBits(bmpdata);
+			}
 
 			return imagenFormato;
 		}
 
 		public static Bitmap Binarizar(Bitmap btm)
 		{
-			bool[,] mascaraCambios = ObtenerMascaraCambiosColor(btm);
+			Bitmap imagenGris = Escala_Grises(btm);
+
+			BitmapData bmpdata = imagenGris.LockBits(
+				new Rectangle(0, 0, imagenGris.Width, imagenGris.Height),
+				ImageLockMode.ReadOnly,
+				imagenGris.PixelFormat
+			);
 
 			Bitmap imagenBinaria = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
-
-			mascaraCambios = AplicarOperacionesMorfologicas(mascaraCambios);
-
-			BitmapData bmpdata = imagenBinaria.LockBits(
+			BitmapData bmpdataBinario = imagenBinaria.LockBits(
 				new Rectangle(0, 0, imagenBinaria.Width, imagenBinaria.Height),
-				ImageLockMode.ReadWrite,
+				ImageLockMode.WriteOnly,
 				imagenBinaria.PixelFormat
 			);
 
-			int numbytes = bmpdata.Stride * imagenBinaria.Height;
-			byte[] bytedata = new byte[numbytes];
-			IntPtr arregloImagen = bmpdata.Scan0;
-
-			for (int i = 0; i < numbytes; i += 4)
+			try
 			{
-				bytedata[i] = 0;    
-				bytedata[i + 1] = 0; 
-				bytedata[i + 2] = 0; 
-				bytedata[i + 3] = 255; 
-			}
+				int numbytes = bmpdata.Stride * imagenGris.Height;
+				int numbytesBinario = bmpdataBinario.Stride * imagenBinaria.Height;
 
-			for (int y = 0; y < imagenBinaria.Height; y++)
-			{
-				for (int x = 0; x < imagenBinaria.Width; x++)
+				byte[] bytedataGris = new byte[numbytes];
+				byte[] bytedataBinario = new byte[numbytesBinario];
+
+				IntPtr arregloImagenGris = bmpdata.Scan0;
+				IntPtr arregloImagenBinario = bmpdataBinario.Scan0;
+
+				Marshal.Copy(arregloImagenGris, bytedataGris, 0, numbytes);
+
+				byte umbral = CalcularUmbralOtsuOptimizado(bytedataGris, imagenGris.Width, imagenGris.Height, bmpdata.Stride);
+
+				Parallel.For(0, bytedataBinario.Length / 4, i =>
 				{
-					if (mascaraCambios[y, x])
-					{
-						int currentPixel = y * bmpdata.Stride + x * 4;
-						bytedata[currentPixel] = 255;
-						bytedata[currentPixel + 1] = 255; 
-						bytedata[currentPixel + 2] = 255; 
-					}
-				}
-			}
+					int baseIndex = i * 4;
+					bytedataBinario[baseIndex] = 0;    
+					bytedataBinario[baseIndex + 1] = 0; 
+					bytedataBinario[baseIndex + 2] = 0; 
+					bytedataBinario[baseIndex + 3] = 255; 
+				});
 
-			Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
-			imagenBinaria.UnlockBits(bmpdata);
+				Parallel.For(0, imagenGris.Height, y =>
+				{
+					int currentLine = y * bmpdata.Stride;
+					int currentLineBinario = y * bmpdataBinario.Stride;
+
+					for (int x = 0; x < imagenGris.Width; x++)
+					{
+						int currentPixel = currentLine + x * 4;
+						int currentPixelBinario = currentLineBinario + x * 4;
+
+						byte intensidad = bytedataGris[currentPixel];
+
+						if (intensidad >= umbral)
+						{
+							bytedataBinario[currentPixelBinario] = 255;     
+							bytedataBinario[currentPixelBinario + 1] = 255; 
+							bytedataBinario[currentPixelBinario + 2] = 255;
+						}
+					}
+				});
+
+				Marshal.Copy(bytedataBinario, 0, arregloImagenBinario, numbytesBinario);
+			}
+			finally
+			{
+				imagenGris.UnlockBits(bmpdata);
+				imagenBinaria.UnlockBits(bmpdataBinario);
+				imagenGris.Dispose();
+			}
 
 			return imagenBinaria;
 		}
@@ -604,23 +643,35 @@ namespace WebService.Scripts
 			return relabelingMap;
 		}
 
-		public static byte CalcularUmbralOtsu(byte[] datosImagen, int ancho, int alto, int stride)
+		private static byte CalcularUmbralOtsuOptimizado(byte[] datosImagen, int ancho, int alto, int stride)
 		{
 			int[] histograma = new int[256];
 
-			for (int y = 0; y < alto; y++)
+			Parallel.For(0, alto, y =>
 			{
+				int[] histogramaLocal = new int[256];
+				int currentLine = y * stride;
+
 				for (int x = 0; x < ancho; x++)
 				{
-					int index = y * stride + x * 4;
-					byte intensidad = datosImagen[index];
-					histograma[intensidad]++;
+					int currentPixel = currentLine + x * 4;
+					byte intensidad = datosImagen[currentPixel];
+					histogramaLocal[intensidad]++;
 				}
-			}
+
+				lock (histograma)
+				{
+					for (int i = 0; i < 256; i++)
+					{
+						histograma[i] += histogramaLocal[i];
+					}
+				}
+			});
 
 			int total = ancho * alto;
 			float sum = 0;
-			for (int t = 0; t < 256; t++) sum += t * histograma[t];
+			for (int t = 0; t < 256; t++)
+				sum += t * histograma[t];
 
 			float sumB = 0;
 			int wB = 0;
@@ -652,6 +703,7 @@ namespace WebService.Scripts
 
 			return threshold;
 		}
+
 
 		public static byte[] ConvertirABytes(HttpPostedFileBase file)
 		{

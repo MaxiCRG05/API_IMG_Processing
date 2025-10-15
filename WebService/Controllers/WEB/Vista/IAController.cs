@@ -168,6 +168,23 @@ namespace WebService.Controllers.WEB
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AutorizarRol("Usuario", "Admin")]
+		public JsonResult Cargar(int proyectoId)
+		{
+			try
+			{
+				db.RedesNeuronales.FirstOrDefault(r => r.ProyectoID == proyectoId);
+
+				return Json(new { success = true, message = "Entrenamiento iniciado" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Error: " + ex.Message });
+			}
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[AutorizarRol("Usuario", "Admin")]
 		public JsonResult Entrenar(int proyectoId, List<int> objetos)
 		{
 			try
