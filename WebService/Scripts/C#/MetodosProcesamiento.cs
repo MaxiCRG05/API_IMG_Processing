@@ -71,131 +71,135 @@ namespace WebService.Scripts
 			return true;
 		}
 
-		public static Bitmap Escala_Grises(Bitmap btm)
+		public static Bitmap Escala_Grises(Bitmap original)
 		{
-			Bitmap imagenFormato = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
-
-			using (Graphics g = Graphics.FromImage(imagenFormato))
-			{
-				g.DrawImage(btm, new Rectangle(0, 0, btm.Width, btm.Height));
-			}
-
-			BitmapData bmpdata = imagenFormato.LockBits(
-				new Rectangle(0, 0, imagenFormato.Width, imagenFormato.Height),
-				ImageLockMode.ReadWrite,
-				imagenFormato.PixelFormat
-			);
+			BitmapData originalData = null;
+			BitmapData grayData = null;
+				Bitmap gray = new Bitmap(original.Width, original.Height,
+					System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
 			try
 			{
-				int numbytes = bmpdata.Stride * imagenFormato.Height;
-				byte[] bytedata = new byte[numbytes];
-				IntPtr arregloImagen = bmpdata.Scan0;
+				originalData = original.LockBits(
+					new Rectangle(0, 0, original.Width, original.Height),
+					ImageLockMode.ReadOnly,
+					System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-				Marshal.Copy(arregloImagen, bytedata, 0, numbytes);
+				grayData = gray.LockBits(
+					new Rectangle(0, 0, gray.Width, gray.Height),
+					ImageLockMode.WriteOnly,
+					System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-				Parallel.For(0, imagenFormato.Height, y =>
+				int bytesPerPixel = 3;
+				int originalStride = originalData.Stride;
+				int grayStride = grayData.Stride;
+				int width = original.Width;
+				int height = original.Height;
+
+				byte[] originalBuffer = new byte[Math.Abs(originalStride) * height];
+				byte[] grayBuffer = new byte[Math.Abs(grayStride) * height];
+
+				Marshal.Copy(originalData.Scan0, originalBuffer, 0, originalBuffer.Length);
+
+				for (int y = 0; y < height; y++)
 				{
-					int currentLine = y * bmpdata.Stride;
-					for (int x = 0; x < imagenFormato.Width; x++)
+					int originalRowOffset = y * originalStride;
+					int grayRowOffset = y * grayStride;
+
+					for (int x = 0; x < width; x++)
 					{
-						int currentPixel = currentLine + x * 4;
+						int originalPixelPos = originalRowOffset + (x * bytesPerPixel);
+						int grayPixelPos = grayRowOffset + (x * bytesPerPixel);
 
-						byte B = bytedata[currentPixel];
-						byte G = bytedata[currentPixel + 1];
-						byte R = bytedata[currentPixel + 2];
+						byte b = originalBuffer[originalPixelPos];
+						byte g = originalBuffer[originalPixelPos + 1];
+						byte r = originalBuffer[originalPixelPos + 2];
 
-						byte gris = (byte)((R * 0.299 + G * 0.587 + B * 0.114));
+						byte grayValue = (byte)((r * 0.299 + g * 0.587 + b * 0.114));
 
-						bytedata[currentPixel] = gris;    
-						bytedata[currentPixel + 1] = gris;
-						bytedata[currentPixel + 2] = gris; 
-														   
+						grayBuffer[grayPixelPos] = grayValue;     
+						grayBuffer[grayPixelPos + 1] = grayValue; 
+						grayBuffer[grayPixelPos + 2] = grayValue; 
 					}
-				});
+				}
 
-				Marshal.Copy(bytedata, 0, arregloImagen, numbytes);
+				Marshal.Copy(grayBuffer, 0, grayData.Scan0, grayBuffer.Length);
+
+				return gray;
 			}
 			finally
 			{
-				imagenFormato.UnlockBits(bmpdata);
+				if (originalData != null)
+					original.UnlockBits(originalData);
+				if (grayData != null)
+					gray.UnlockBits(grayData);
 			}
-
-			return imagenFormato;
 		}
 
-		public static Bitmap Binarizar(Bitmap btm)
+		public static Bitmap Binarizar(Bitmap original)
 		{
-			Bitmap imagenGris = Escala_Grises(btm);
+			int threshold = 128;
 
-			BitmapData bmpdata = imagenGris.LockBits(
-				new Rectangle(0, 0, imagenGris.Width, imagenGris.Height),
-				ImageLockMode.ReadOnly,
-				imagenGris.PixelFormat
-			);
-
-			Bitmap imagenBinaria = new Bitmap(btm.Width, btm.Height, PixelFormat.Format32bppArgb);
-			BitmapData bmpdataBinario = imagenBinaria.LockBits(
-				new Rectangle(0, 0, imagenBinaria.Width, imagenBinaria.Height),
-				ImageLockMode.WriteOnly,
-				imagenBinaria.PixelFormat
-			);
-
-			try
+			using (var grayImage = Escala_Grises(original))
 			{
-				int numbytes = bmpdata.Stride * imagenGris.Height;
-				int numbytesBinario = bmpdataBinario.Stride * imagenBinaria.Height;
+				BitmapData grayData = null;
+				BitmapData binaryData = null;
+				Bitmap binary = new Bitmap(original.Width, original.Height,
+					 System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-				byte[] bytedataGris = new byte[numbytes];
-				byte[] bytedataBinario = new byte[numbytesBinario];
-
-				IntPtr arregloImagenGris = bmpdata.Scan0;
-				IntPtr arregloImagenBinario = bmpdataBinario.Scan0;
-
-				Marshal.Copy(arregloImagenGris, bytedataGris, 0, numbytes);
-
-				byte umbral = CalcularUmbralOtsuOptimizado(bytedataGris, imagenGris.Width, imagenGris.Height, bmpdata.Stride);
-
-				Parallel.For(0, bytedataBinario.Length / 4, i =>
+				try
 				{
-					int baseIndex = i * 4;
-					bytedataBinario[baseIndex] = 0;    
-					bytedataBinario[baseIndex + 1] = 0; 
-					bytedataBinario[baseIndex + 2] = 0; 
-					bytedataBinario[baseIndex + 3] = 255; 
-				});
+					grayData = grayImage.LockBits(
+						new Rectangle(0, 0, grayImage.Width, grayImage.Height),
+						ImageLockMode.ReadOnly,
+						System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-				Parallel.For(0, imagenGris.Height, y =>
-				{
-					int currentLine = y * bmpdata.Stride;
-					int currentLineBinario = y * bmpdataBinario.Stride;
+					binaryData = binary.LockBits(
+						new Rectangle(0, 0, binary.Width, binary.Height),
+						ImageLockMode.WriteOnly,
+						System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-					for (int x = 0; x < imagenGris.Width; x++)
+					int bytesPerPixel = 3;
+					int grayStride = grayData.Stride;
+					int binaryStride = binaryData.Stride;
+					int width = grayImage.Width;
+					int height = grayImage.Height;
+
+					byte[] grayBuffer = new byte[Math.Abs(grayStride) * height];
+					byte[] binaryBuffer = new byte[Math.Abs(binaryStride) * height];
+
+					Marshal.Copy(grayData.Scan0, grayBuffer, 0, grayBuffer.Length);
+
+					for (int y = 0; y < height; y++)
 					{
-						int currentPixel = currentLine + x * 4;
-						int currentPixelBinario = currentLineBinario + x * 4;
+						int grayRowOffset = y * grayStride;
+						int binaryRowOffset = y * binaryStride;
 
-						byte intensidad = bytedataGris[currentPixel];
-
-						if (intensidad >= umbral)
+						for (int x = 0; x < width; x++)
 						{
-							bytedataBinario[currentPixelBinario] = 255;     
-							bytedataBinario[currentPixelBinario + 1] = 255; 
-							bytedataBinario[currentPixelBinario + 2] = 255;
+							int grayPixelPos = grayRowOffset + (x * bytesPerPixel);
+							int binaryPixelPos = binaryRowOffset + (x * bytesPerPixel);
+
+							byte grayValue = grayBuffer[grayPixelPos];
+							byte binaryValue = (grayValue >= threshold) ? (byte)255 : (byte)0;
+
+							binaryBuffer[binaryPixelPos] = binaryValue;
+							binaryBuffer[binaryPixelPos + 1] = binaryValue;
+							binaryBuffer[binaryPixelPos + 2] = binaryValue;
 						}
 					}
-				});
 
-				Marshal.Copy(bytedataBinario, 0, arregloImagenBinario, numbytesBinario);
+					Marshal.Copy(binaryBuffer, 0, binaryData.Scan0, binaryBuffer.Length);
+					return binary;
+				}
+				finally
+				{
+					if (grayData != null)
+						grayImage.UnlockBits(grayData);
+					if (binaryData != null)
+						binary.UnlockBits(binaryData);
+				}
 			}
-			finally
-			{
-				imagenGris.UnlockBits(bmpdata);
-				imagenBinaria.UnlockBits(bmpdataBinario);
-				imagenGris.Dispose();
-			}
-
-			return imagenBinaria;
 		}
 
 		public static Bitmap Detectar_Bordes(Bitmap btm)
@@ -385,6 +389,55 @@ namespace WebService.Scripts
 			}
 
 			return resultados;
+		}
+
+		public static byte CalcularUmbralOtsu(byte[] datosImagen, int ancho, int alto, int stride)
+		{
+			int[] histograma = new int[256];
+
+			for (int y = 0; y < alto; y++)
+			{
+				for (int x = 0; x < ancho; x++)
+				{
+					int index = y * stride + x * 4;
+					byte intensidad = datosImagen[index];
+					histograma[intensidad]++;
+				}
+			}
+
+			int total = ancho * alto;
+			float sum = 0;
+			for (int t = 0; t < 256; t++) sum += t * histograma[t];
+
+			float sumB = 0;
+			int wB = 0;
+			int wF = 0;
+			float varMax = 0;
+			byte threshold = 0;
+
+			for (int t = 0; t < 256; t++)
+			{
+				wB += histograma[t];
+				if (wB == 0) continue;
+
+				wF = total - wB;
+				if (wF == 0) break;
+
+				sumB += (float)(t * histograma[t]);
+
+				float mB = sumB / wB;
+				float mF = (sum - sumB) / wF;
+
+				float varBetween = (float)wB * (float)wF * (mB - mF) * (mB - mF);
+
+				if (varBetween > varMax)
+				{
+					varMax = varBetween;
+					threshold = (byte)t;
+				}
+			}
+
+			return threshold;
 		}
 
 		private static int[,] ConvertirAMatrizBinaria(Bitmap imagen)
@@ -885,44 +938,6 @@ namespace WebService.Scripts
 
 			imagenFormato.UnlockBits(bmpdata);
 			return mascara;
-		}
-
-		private static bool[,] AplicarOperacionesMorfologicas(bool[,] mascara)
-		{
-			int height = mascara.GetLength(0);
-			int width = mascara.GetLength(1);
-			bool[,] resultado = new bool[height, width];
-
-			for (int y = 1; y < height - 1; y++)
-			{
-				for (int x = 1; x < width - 1; x++)
-				{
-					if (mascara[y, x] ||
-						mascara[y - 1, x] || mascara[y + 1, x] ||
-						mascara[y, x - 1] || mascara[y, x + 1] ||
-						mascara[y - 1, x - 1] || mascara[y - 1, x + 1] ||
-						mascara[y + 1, x - 1] || mascara[y + 1, x + 1])
-					{
-						resultado[y, x] = true;
-					}
-				}
-			}
-
-			bool[,] cerrado = new bool[height, width];
-			for (int y = 1; y < height - 1; y++)
-			{
-				for (int x = 1; x < width - 1; x++)
-				{
-					if (resultado[y, x] &&
-						resultado[y - 1, x] && resultado[y + 1, x] &&
-						resultado[y, x - 1] && resultado[y, x + 1])
-					{
-						cerrado[y, x] = true;
-					}
-				}
-			}
-
-			return cerrado;
 		}
 	}
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,14 @@ namespace WebService.Controllers
 {
 	public class ProcesamientoController : ApiController
 	{
+		private static readonly Lazy<Pen> _lazyRedPen = new Lazy<Pen>(() => new Pen(Color.Red, 3));
+		private static readonly Lazy<Font> _lazyFont = new Lazy<Font>(() => new Font("Arial", 12, FontStyle.Bold));
+		private static readonly Lazy<SolidBrush> _lazyRedBrush = new Lazy<SolidBrush>(() => new SolidBrush(Color.Red));
+
+		private static Pen RedPen => _lazyRedPen.Value;
+		private static Font Font => _lazyFont.Value;
+		private static SolidBrush RedBrush => _lazyRedBrush.Value;
+
 		[HttpPost]
 		[ActionName("EscalaGrises")]
 		public async Task<HttpResponseMessage> EscalaGrises()
@@ -27,36 +36,25 @@ namespace WebService.Controllers
 				await Request.Content.ReadAsMultipartAsync(provider);
 
 				var file = provider.Contents.First();
-				var stream = await file.ReadAsStreamAsync();
 
-				Bitmap originalImage = new Bitmap(stream);
-				Bitmap image = new Bitmap(originalImage.Width, originalImage.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-
-				using (Graphics g = Graphics.FromImage(image))
+				using (var stream = await file.ReadAsStreamAsync())
+				using (var originalImage = new Bitmap(stream))
+				using (var gris = MetodosProcesamiento.Escala_Grises(originalImage))
+				using (var ms = new MemoryStream())
 				{
-					g.DrawImage(originalImage, 0, 0, originalImage.Width, originalImage.Height);
+					gris.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+					ms.Position = 0;
+
+					var result = new HttpResponseMessage(HttpStatusCode.OK);
+					result.Content = new StreamContent(ms);
+					result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+					return result;
 				}
-
-				originalImage.Dispose();
-
-				Bitmap gris = MetodosProcesamiento.Escala_Grises(image);
-
-				MemoryStream ms = new MemoryStream();
-				gris.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-				ms.Position = 0;
-
-				HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-				result.Content = new StreamContent(ms);
-				result.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-
-				image.Dispose();
-				gris.Dispose();
-
-				return result;
 			}
 			catch (Exception e)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Error en EscalaGrises: " + e.Message);
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
+					"Error en EscalaGrisesOptimizado: " + e.Message);
 			}
 		}
 
@@ -256,7 +254,6 @@ namespace WebService.Controllers
 
 				var provider = new MultipartFormDataStreamProvider(Path.GetTempPath());
 				var result = await Request.Content.ReadAsMultipartAsync(provider);
-
 				var resultados = new List<object>();
 
 				foreach (var file in result.FileData)
@@ -264,82 +261,80 @@ namespace WebService.Controllers
 					try
 					{
 						using (var stream = new FileStream(file.LocalFileName, FileMode.Open))
-						using (Bitmap originalImage = new Bitmap(stream))
+						using (var originalImage = new Bitmap(stream))
 						{
-							List<ResultadoMomentosHu> momentosHu = MetodosProcesamiento.CalcularMomentosHuPorObjeto(originalImage);
-							int totalObjetos = momentosHu.Count;
-
-							Bitmap invariancias = new Bitmap(MetodosProcesamiento.Binarizar(originalImage));
-
-							using (Graphics g = Graphics.FromImage(invariancias))
-							{
-								Pen redPen = new Pen(Color.Red, 3);
-								Font font = new Font("Arial", 12, FontStyle.Bold);
-								Brush redBrush = new SolidBrush(Color.Red);
-
-								foreach (var momento in momentosHu)
-								{
-									PointF center = momento.Center;
-									float radius = 10;
-
-									g.DrawEllipse(redPen, center.X - radius, center.Y - radius,
-												radius * 2, radius * 2);
-
-									float xSize = 8;
-									g.DrawLine(redPen, center.X - xSize, center.Y - xSize,
-											center.X + xSize, center.Y + xSize);
-									g.DrawLine(redPen, center.X - xSize, center.Y + xSize,
-											center.X + xSize, center.Y - xSize);
-
-									int index = momentosHu.IndexOf(momento) + 1;
-									g.DrawString(index.ToString(), font, redBrush,
-												center.X + radius + 2, center.Y - radius - 2);
-								}
-
-								string textoTotal = $"Total objetos: {totalObjetos}";
-								SizeF textSize = g.MeasureString(textoTotal, font);
-								g.DrawString(textoTotal, font, redBrush,
-											invariancias.Width - textSize.Width - 10,
-											invariancias.Height - textSize.Height - 10);
-							}
-
-							using (MemoryStream ms = new MemoryStream())
-							{
-								invariancias.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-								string imageBase64 = Convert.ToBase64String(ms.ToArray());
-
-								resultados.Add(new
-								{
-									Imagen = imageBase64,
-									TotalObjetos = totalObjetos,
-									MomentosHu = momentosHu.Select(m => new
-									{
-										Moments = m.Moments,
-										Center = new { X = m.Center.X, Y = m.Center.Y }
-									}).ToList()
-								});
-							}
-
-							invariancias.Dispose();
+							var resultado = await ProcesarImagenHu(originalImage);
+							resultados.Add(resultado);
 						}
-						
 						File.Delete(file.LocalFileName);
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
-						System.Diagnostics.Debug.WriteLine($"Error procesando archivo {file.Headers.ContentDisposition.FileName}: {ex.Message}");
+						System.Diagnostics.Debug.WriteLine($"Error procesando archivo: {ex.Message}");
 					}
 				}
 
-				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, resultados);
-				response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-				return response;
+				return Request.CreateResponse(HttpStatusCode.OK, resultados);
 			}
 			catch (Exception e)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
-					$"Error en MultiplesInvariantesHu: {e.Message} - {e.InnerException?.Message}");
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
 			}
+		}
+
+		private async Task<object> ProcesarImagenHu(Bitmap originalImage)
+		{
+			return await Task.Run(() =>
+			{
+				var momentosHu = MetodosProcesamiento.CalcularMomentosHuPorObjeto(originalImage);
+				int totalObjetos = momentosHu.Count;
+
+				using (var imagenBinarizada = MetodosProcesamiento.Binarizar(originalImage))
+				using (var invariancias = new Bitmap(imagenBinarizada))
+				using (var g = Graphics.FromImage(invariancias))
+				using (var ms = new MemoryStream())
+				{
+					g.CompositingQuality = CompositingQuality.HighSpeed;
+					g.SmoothingMode = SmoothingMode.None;
+					g.InterpolationMode = InterpolationMode.Low;
+					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+
+					for (int i = 0; i < momentosHu.Count; i++)
+					{
+						var momento = momentosHu[i];
+						PointF center = momento.Center;
+						float radius = 10;
+
+						g.DrawEllipse(RedPen, center.X - radius, center.Y - radius, radius * 2, radius * 2);
+
+						float xSize = 8;
+						g.DrawLine(RedPen, center.X - xSize, center.Y - xSize, center.X + xSize, center.Y + xSize);
+						g.DrawLine(RedPen, center.X - xSize, center.Y + xSize, center.X + xSize, center.Y - xSize);
+
+						g.DrawString((i + 1).ToString(), Font, RedBrush, center.X + radius + 2, center.Y - radius - 2);
+					}
+
+					string textoTotal = $"Total objetos: {totalObjetos}";
+					SizeF textSize = g.MeasureString(textoTotal, Font);
+					g.DrawString(textoTotal, Font, RedBrush,
+								invariancias.Width - textSize.Width - 10,
+								invariancias.Height - textSize.Height - 10);
+
+					invariancias.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+					string imageBase64 = Convert.ToBase64String(ms.ToArray());
+
+					return new
+					{
+						Imagen = imageBase64,
+						TotalObjetos = totalObjetos,
+						MomentosHu = momentosHu.Select(m => new
+						{
+							Moments = m.Moments,
+							Center = new { X = m.Center.X, Y = m.Center.Y }
+						}).ToList()
+					};
+				}
+			});
 		}
 
 		[HttpPost]
@@ -379,48 +374,34 @@ namespace WebService.Controllers
 
 				var provider = new MultipartFormDataStreamProvider(Path.GetTempPath());
 				var result = await Request.Content.ReadAsMultipartAsync(provider);
-
-				var resultados = new List<object>();
+				var processedImages = new List<string>();
 
 				foreach (var file in result.FileData)
 				{
 					try
 					{
 						using (var stream = new FileStream(file.LocalFileName, FileMode.Open))
-						using (Bitmap originalImage = new Bitmap(stream))
-						using (Bitmap procesada = funcionProcesamiento(originalImage))
+						using (var originalImage = new Bitmap(stream))
+						using (var processedImage = MetodosProcesamiento.Escala_Grises(originalImage))
+						using (var ms = new MemoryStream())
 						{
-							using (MemoryStream ms = new MemoryStream())
-							{
-								procesada.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-								string imageBase64 = Convert.ToBase64String(ms.ToArray());
-
-								resultados.Add(new
-								{
-									Imagen = imageBase64,
-									TotalObjetos = 0,
-									MomentosHu = new List<object>()
-								});
-							}
+							processedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+							string base64Image = Convert.ToBase64String(ms.ToArray());
+							processedImages.Add(base64Image);
 						}
-
 						File.Delete(file.LocalFileName);
 					}
 					catch (Exception ex)
 					{
 						System.Diagnostics.Debug.WriteLine($"Error procesando archivo: {ex.Message}");
-						continue;
 					}
 				}
 
-				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, resultados);
-				response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-				return response;
+				return Request.CreateResponse(HttpStatusCode.OK, new { Imagenes = processedImages });
 			}
 			catch (Exception e)
 			{
-				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError,
-					$"Error en ProcesarMultiplesImagenesJson: {e.Message}");
+				return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
 			}
 		}
 	}
